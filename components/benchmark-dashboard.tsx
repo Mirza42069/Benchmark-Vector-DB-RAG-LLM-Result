@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import benchmarkData from "../benchmark result.json";
 import {
   Card,
@@ -19,6 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Line, LineChart } from "recharts";
 import { cn } from "@/lib/utils";
 import {
   Trophy,
@@ -32,6 +41,12 @@ import {
   TrendingUp,
   BarChart3,
   Activity,
+  LayoutDashboard,
+  CheckCircle,
+  Clock,
+  Gauge,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -82,7 +97,7 @@ interface QualityMetrics {
   per_query: QualityPerQuery[];
 }
 
-type TabType = "speed" | "scalability" | "quality";
+type TabType = "summary" | "speed" | "scalability" | "quality";
 
 // Sub-components moved outside to avoid re-creation on render
 const FormatMs = ({ ms }: { ms: number }) => (
@@ -94,6 +109,48 @@ const FormatPercent = ({ value }: { value: number }) => (
     {(value * 100).toFixed(1)}%
   </span>
 );
+
+// Animated Counter Component
+const AnimatedCounter = ({
+  value,
+  suffix = "",
+  decimals = 0,
+  duration = 1000
+}: {
+  value: number;
+  suffix?: string;
+  decimals?: number;
+  duration?: number;
+}) => {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      setDisplayValue(value * easeOutQuart);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [value, duration]);
+
+  return (
+    <span className="font-mono tabular-nums">
+      {displayValue.toFixed(decimals)}{suffix}
+    </span>
+  );
+};
 
 const SortIcon = ({
   active,
@@ -144,7 +201,7 @@ const TabButton = ({
 export function BenchmarkDashboard() {
   const { metadata, speed_test, scalability_test, retrieval_quality } =
     benchmarkData;
-  const [activeTab, setActiveTab] = useState<TabType>("speed");
+  const [activeTab, setActiveTab] = useState<TabType>("summary");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDb, setFilterDb] = useState<string>("all");
   const [sortConfig, setSortConfig] = useState<{
@@ -330,6 +387,13 @@ export function BenchmarkDashboard() {
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-2 p-1.5 bg-muted/50 rounded-xl w-fit">
           <TabButton
+            tab="summary"
+            label="Summary"
+            icon={LayoutDashboard}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+          <TabButton
             tab="speed"
             label="Speed Test"
             icon={Zap}
@@ -355,10 +419,10 @@ export function BenchmarkDashboard() {
 
       <Separator />
 
-      {/* Speed Test Tab */}
-      {activeTab === "speed" && (
+      {/* Summary Tab */}
+      {activeTab === "summary" && (
         <div className="space-y-8 animate-in fade-in-50 duration-300">
-          {/* Winner Spotlight */}
+          {/* Overall Winner */}
           <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-6 opacity-[0.08] pointer-events-none">
               <Trophy className="w-48 h-48 md:w-64 md:h-64 text-primary" />
@@ -366,21 +430,277 @@ export function BenchmarkDashboard() {
             <CardHeader className="relative z-10">
               <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <Trophy className="w-4 h-4" />
-                <span>Speed Test Winner</span>
+                <span>Overall Winner</span>
               </div>
               <CardTitle className="text-4xl md:text-5xl font-bold">
                 {speedWinner.database}
               </CardTitle>
               <CardDescription className="text-base md:text-lg text-foreground/70 max-w-xl">
-                {speedWinner.speed_improvement_percent}% faster retrieval speed
-                with an average of{" "}
+                Best performing database across speed benchmarks with{" "}
                 <span className="font-semibold text-primary">
-                  {speedWinner.avg_retrieval_ms}ms
+                  {speedWinner.speed_improvement_percent}%
                 </span>{" "}
-                per query.
+                faster retrieval.
               </CardDescription>
             </CardHeader>
           </Card>
+
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Speed Winner */}
+            <Card className="border-amber-500/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2 text-amber-500">
+                  <Zap className="w-5 h-5" />
+                  <CardTitle className="text-sm font-medium">Fastest Retrieval</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">{speedWinner.database}</p>
+                <p className="text-sm text-muted-foreground">
+                  <AnimatedCounter value={speedWinner.avg_retrieval_ms} decimals={1} suffix="ms" /> avg
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Fastest Query */}
+            <Card className="border-green-500/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2 text-green-500">
+                  <ArrowUp className="w-5 h-5" />
+                  <CardTitle className="text-sm font-medium">Fastest Query</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const fastest = speedRawResults.reduce((min, curr) =>
+                    curr.retrieval_time < min.retrieval_time ? curr : min
+                  );
+                  return (
+                    <>
+                      <p className="text-2xl font-bold">
+                        <AnimatedCounter value={fastest.retrieval_time} decimals={1} suffix="ms" />
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate" title={fastest.query}>
+                        Q{fastest.query_num}: {fastest.database}
+                      </p>
+                    </>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+
+            {/* Slowest Query */}
+            <Card className="border-red-500/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2 text-red-500">
+                  <ArrowDown className="w-5 h-5" />
+                  <CardTitle className="text-sm font-medium">Slowest Query</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const slowest = speedRawResults.reduce((max, curr) =>
+                    curr.retrieval_time > max.retrieval_time ? curr : max
+                  );
+                  return (
+                    <>
+                      <p className="text-2xl font-bold">
+                        <AnimatedCounter value={slowest.retrieval_time} decimals={1} suffix="ms" />
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate" title={slowest.query}>
+                        Q{slowest.query_num}: {slowest.database}
+                      </p>
+                    </>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Secondary Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Best Scalability */}
+            <Card className="border-blue-500/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2 text-blue-500">
+                  <TrendingUp className="w-5 h-5" />
+                  <CardTitle className="text-sm font-medium">Best Scalability</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {(() => {
+                    const lastTopK = sortedScalabilityData[sortedScalabilityData.length - 1];
+                    if (!lastTopK) return 'N/A';
+                    const times = databases.map(db => ({ db, time: (lastTopK as Record<string, number>)[db] }));
+                    return times.reduce((min, curr) => curr.time < min.time ? curr : min).db;
+                  })()}
+                </p>
+                <p className="text-sm text-muted-foreground">at top_k=20</p>
+              </CardContent>
+            </Card>
+
+            {/* Best Quality */}
+            <Card className="border-emerald-500/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2 text-emerald-500">
+                  <Target className="w-5 h-5" />
+                  <CardTitle className="text-sm font-medium">Highest F1 Score</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {(() => {
+                    const scores = databases.map(db => qualityData[db].avg_f1_score);
+                    const allEqual = scores.every(s => Math.abs(s - scores[0]) < 0.001);
+                    if (allEqual) return "All Equal";
+                    return databases.reduce((best, db) =>
+                      qualityData[db].avg_f1_score > qualityData[best].avg_f1_score ? db : best
+                    );
+                  })()}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <AnimatedCounter value={Math.max(...databases.map(db => qualityData[db].avg_f1_score)) * 100} decimals={1} suffix="%" /> F1
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Total Queries */}
+            <Card className="border-violet-500/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2 text-violet-500">
+                  <Activity className="w-5 h-5" />
+                  <CardTitle className="text-sm font-medium">Total Queries</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  <AnimatedCounter value={metadata.num_queries} decimals={0} />
+                </p>
+                <p className="text-sm text-muted-foreground">benchmarked</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Database Comparison */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-muted-foreground" />
+                Database Comparison
+              </CardTitle>
+              <CardDescription>
+                Side-by-side performance summary
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {databases.map((db) => {
+                  const speed = speedSummary.find(s => s.database === db);
+                  const quality = qualityData[db];
+                  const dbColor = db === "Pinecone"
+                    ? "border-amber-500/50 bg-amber-500/5"
+                    : db === "PostgreSQL"
+                      ? "border-blue-500/50 bg-blue-500/5"
+                      : "border-emerald-500/50 bg-emerald-500/5";
+                  const textColor = db === "Pinecone"
+                    ? "text-amber-500"
+                    : db === "PostgreSQL"
+                      ? "text-blue-500"
+                      : "text-emerald-500";
+
+                  return (
+                    <div key={db} className={cn("rounded-lg border p-4 space-y-4", dbColor)}>
+                      <div className="flex items-center justify-between">
+                        <h3 className={cn("text-lg font-semibold", textColor)}>{db}</h3>
+                        {db === speedWinner.database && (
+                          <Badge className="bg-primary/10 text-primary border-primary/30">
+                            <Trophy className="w-3 h-3 mr-1" /> Winner
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="space-y-3 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5" /> Avg Retrieval
+                          </span>
+                          <span className="font-mono font-medium">{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Gauge className="w-3.5 h-3.5" /> Avg Total
+                          </span>
+                          <span className="font-mono font-medium">{speed?.mean_total_ms.toFixed(0)}ms</span>
+                        </div>
+                        <Separator />
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <CheckCircle className="w-3.5 h-3.5" /> Precision
+                          </span>
+                          <span className="font-mono font-medium">{(quality.avg_precision * 100).toFixed(1)}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Target className="w-3.5 h-3.5" /> Recall
+                          </span>
+                          <span className="font-mono font-medium">{(quality.avg_recall * 100).toFixed(1)}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Activity className="w-3.5 h-3.5" /> F1 Score
+                          </span>
+                          <span className="font-mono font-medium">{(quality.avg_f1_score * 100).toFixed(1)}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Benchmark Info */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Benchmark Configuration</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Date</p>
+                  <p className="font-medium">{new Date(metadata.benchmark_date).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">LLM Model</p>
+                  <p className="font-medium">{metadata.llm_model}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Embedding Model</p>
+                  <p className="font-medium">{metadata.embedding_model}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Top-K</p>
+                  <p className="font-medium">{metadata.top_k}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Speed Test Tab */}
+      {activeTab === "speed" && (
+        <div className="space-y-8 animate-in fade-in-50 duration-300">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+              <Zap className="w-6 h-6 text-primary" />
+              Speed Test Results
+            </h2>
+            <p className="text-muted-foreground">
+              Query response times comparing retrieval and LLM processing speeds
+            </p>
+          </div>
 
           {/* Speed Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -484,6 +804,118 @@ export function BenchmarkDashboard() {
               </Card>
             ))}
           </div>
+
+          {/* Retrieval Time Chart */}
+          <Card className="pt-0">
+            <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+              <div className="grid flex-1 gap-1">
+                <CardTitle>Retrieval Time per Query</CardTitle>
+                <CardDescription>
+                  Comparing retrieval performance across all {metadata.num_queries} queries
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+              <ChartContainer
+                config={{
+                  Pinecone: {
+                    label: "Pinecone",
+                    color: "hsl(45, 93%, 47%)",
+                  },
+                  PostgreSQL: {
+                    label: "PostgreSQL",
+                    color: "hsl(210, 100%, 50%)",
+                  },
+                  ChromaDB: {
+                    label: "ChromaDB",
+                    color: "hsl(142, 71%, 45%)",
+                  },
+                } satisfies ChartConfig}
+                className="aspect-auto h-[300px] w-full"
+              >
+                <AreaChart
+                  data={(() => {
+                    const queryMap = new Map<number, Record<string, number>>();
+                    speedRawResults.forEach((result) => {
+                      if (!queryMap.has(result.query_num)) {
+                        queryMap.set(result.query_num, { query_num: result.query_num });
+                      }
+                      const entry = queryMap.get(result.query_num)!;
+                      entry[result.database] = result.retrieval_time;
+                    });
+                    return Array.from(queryMap.values()).sort((a, b) => a.query_num - b.query_num);
+                  })()}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="fillPinecone" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(45, 93%, 47%)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="hsl(45, 93%, 47%)" stopOpacity={0.1} />
+                    </linearGradient>
+                    <linearGradient id="fillPostgreSQL" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(210, 100%, 50%)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="hsl(210, 100%, 50%)" stopOpacity={0.1} />
+                    </linearGradient>
+                    <linearGradient id="fillChromaDB" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(142, 71%, 45%)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="hsl(142, 71%, 45%)" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis
+                    dataKey="query_num"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    minTickGap={16}
+                    tickFormatter={(value) => `Q${value}`}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => `${value.toFixed(0)}ms`}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        labelFormatter={(_, payload) => {
+                          if (payload && payload.length > 0) {
+                            return `Query ${payload[0]?.payload?.query_num}`;
+                          }
+                          return "Query";
+                        }}
+                        indicator="dot"
+                      />
+                    }
+                  />
+                  <Area
+                    dataKey="Pinecone"
+                    type="monotone"
+                    fill="url(#fillPinecone)"
+                    stroke="hsl(45, 93%, 47%)"
+                    strokeWidth={2}
+                  />
+                  <Area
+                    dataKey="PostgreSQL"
+                    type="monotone"
+                    fill="url(#fillPostgreSQL)"
+                    stroke="hsl(210, 100%, 50%)"
+                    strokeWidth={2}
+                  />
+                  <Area
+                    dataKey="ChromaDB"
+                    type="monotone"
+                    fill="url(#fillChromaDB)"
+                    stroke="hsl(142, 71%, 45%)"
+                    strokeWidth={2}
+                  />
+                  <ChartLegend content={<ChartLegendContent />} />
+                </AreaChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
 
           {/* Detailed Results Table */}
           <div className="space-y-4">
@@ -719,6 +1151,96 @@ export function BenchmarkDashboard() {
             ))}
           </div>
 
+          {/* Scalability Line Chart */}
+          <Card className="pt-0">
+            <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+              <div className="grid flex-1 gap-1">
+                <CardTitle>Scalability Trend</CardTitle>
+                <CardDescription>
+                  How retrieval time scales with increasing top_k values
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+              <ChartContainer
+                config={{
+                  Pinecone: {
+                    label: "Pinecone",
+                    color: "hsl(45, 93%, 47%)",
+                  },
+                  PostgreSQL: {
+                    label: "PostgreSQL",
+                    color: "hsl(210, 100%, 50%)",
+                  },
+                  ChromaDB: {
+                    label: "ChromaDB",
+                    color: "hsl(142, 71%, 45%)",
+                  },
+                } satisfies ChartConfig}
+                className="aspect-auto h-[300px] w-full"
+              >
+                <LineChart
+                  data={sortedScalabilityData}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="top_k"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => `k=${value}`}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => `${value.toFixed(0)}ms`}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        labelFormatter={(_, payload) => {
+                          if (payload && payload.length > 0) {
+                            return `top_k = ${payload[0]?.payload?.top_k}`;
+                          }
+                          return "top_k";
+                        }}
+                        indicator="dot"
+                      />
+                    }
+                  />
+                  <Line
+                    dataKey="Pinecone"
+                    type="monotone"
+                    stroke="hsl(45, 93%, 47%)"
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(45, 93%, 47%)", r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line
+                    dataKey="PostgreSQL"
+                    type="monotone"
+                    stroke="hsl(210, 100%, 50%)"
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(210, 100%, 50%)", r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line
+                    dataKey="ChromaDB"
+                    type="monotone"
+                    stroke="hsl(142, 71%, 45%)"
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(142, 71%, 45%)", r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                  <ChartLegend content={<ChartLegendContent />} />
+                </LineChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
           {/* Scalability Comparison Table */}
           <Card>
             <CardHeader>
@@ -817,6 +1339,11 @@ export function BenchmarkDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {databases.map((db) => {
               const metrics = qualityData[db];
+              const dbColor = db === "Pinecone"
+                ? { text: "text-amber-500", gradient: "from-amber-500 to-amber-400" }
+                : db === "PostgreSQL"
+                  ? { text: "text-blue-500", gradient: "from-blue-500 to-blue-400" }
+                  : { text: "text-emerald-500", gradient: "from-emerald-500 to-emerald-400" };
               return (
                 <Card key={db} className="overflow-hidden">
                   <CardHeader className="pb-4 bg-muted/30">
@@ -832,13 +1359,13 @@ export function BenchmarkDashboard() {
                         <span className="text-muted-foreground font-medium">
                           Precision
                         </span>
-                        <span className="font-semibold text-primary">
+                        <span className={cn("font-semibold", dbColor.text)}>
                           <FormatPercent value={metrics.avg_precision} />
                         </span>
                       </div>
                       <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-700"
+                          className={cn("h-full bg-gradient-to-r rounded-full transition-all duration-700", dbColor.gradient)}
                           style={{ width: `${metrics.avg_precision * 100}%` }}
                         />
                       </div>
@@ -850,13 +1377,13 @@ export function BenchmarkDashboard() {
                         <span className="text-muted-foreground font-medium">
                           Recall
                         </span>
-                        <span className="font-semibold text-emerald-500">
+                        <span className={cn("font-semibold", dbColor.text)}>
                           <FormatPercent value={metrics.avg_recall} />
                         </span>
                       </div>
                       <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-700"
+                          className={cn("h-full bg-gradient-to-r rounded-full transition-all duration-700", dbColor.gradient)}
                           style={{ width: `${metrics.avg_recall * 100}%` }}
                         />
                       </div>
@@ -868,13 +1395,13 @@ export function BenchmarkDashboard() {
                         <span className="text-muted-foreground font-medium">
                           F1 Score
                         </span>
-                        <span className="font-semibold text-blue-500">
+                        <span className={cn("font-semibold", dbColor.text)}>
                           <FormatPercent value={metrics.avg_f1_score} />
                         </span>
                       </div>
                       <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-700"
+                          className={cn("h-full bg-gradient-to-r rounded-full transition-all duration-700", dbColor.gradient)}
                           style={{ width: `${metrics.avg_f1_score * 100}%` }}
                         />
                       </div>
@@ -884,65 +1411,6 @@ export function BenchmarkDashboard() {
               );
             })}
           </div>
-
-          {/* Quality Comparison Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quality Metrics Summary</CardTitle>
-              <CardDescription>
-                Side-by-side comparison of all quality metrics
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3 font-medium text-muted-foreground">
-                        Metric
-                      </th>
-                      {databases.map((db) => (
-                        <th
-                          key={db}
-                          className="text-right p-3 font-medium text-muted-foreground"
-                        >
-                          {db}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b hover:bg-muted/50 transition-colors">
-                      <td className="p-3 font-medium">Avg. Precision</td>
-                      {databases.map((db) => (
-                        <td key={db} className="p-3 text-right font-mono">
-                          <FormatPercent
-                            value={qualityData[db].avg_precision}
-                          />
-                        </td>
-                      ))}
-                    </tr>
-                    <tr className="border-b hover:bg-muted/50 transition-colors">
-                      <td className="p-3 font-medium">Avg. Recall</td>
-                      {databases.map((db) => (
-                        <td key={db} className="p-3 text-right font-mono">
-                          <FormatPercent value={qualityData[db].avg_recall} />
-                        </td>
-                      ))}
-                    </tr>
-                    <tr className="hover:bg-muted/50 transition-colors">
-                      <td className="p-3 font-medium">Avg. F1 Score</td>
-                      {databases.map((db) => (
-                        <td key={db} className="p-3 text-right font-mono">
-                          <FormatPercent value={qualityData[db].avg_f1_score} />
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Per-Query Quality Results */}
           <Card>
@@ -1068,14 +1536,6 @@ export function BenchmarkDashboard() {
         </div>
       )}
 
-      {/* Footer */}
-      <div className="pt-8 border-t">
-        <p className="text-center text-muted-foreground text-sm">
-          Benchmark conducted on{" "}
-          {new Date(metadata.benchmark_date).toLocaleString()} • {metadata.num_queries}{" "}
-          queries across {databases.length} databases
-        </p>
-      </div>
     </div>
   );
 }
