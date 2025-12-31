@@ -1,257 +1,913 @@
 "use client";
 
-import React, { useState } from "react";
-import benchmarkData from "../benchmark_full_20251230_223258.json";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, useMemo } from "react";
+import benchmarkData from "../benchmark result.json";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Search, Trophy, Timer, CheckCircle, Database, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Trophy,
+  Timer,
+  Database,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Zap,
+  Target,
+  TrendingUp,
+  BarChart3,
+  Activity,
+} from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 
+// Type definitions
+interface SpeedTestRawResult {
+  query_num: number;
+  query: string;
+  database: string;
+  retrieval_time: number;
+  llm_time: number;
+  total_time: number;
+  num_docs: number;
+  success: boolean;
+}
 
-// Types derived from the JSON structure
-type BenchmarkData = typeof benchmarkData;
+interface SpeedTestSummary {
+  database: string;
+  mean_total_ms: number;
+  median_total_ms: number;
+  std_total_ms: number;
+  min_total_ms: number;
+  max_total_ms: number;
+  mean_retrieval_ms: number;
+  mean_llm_ms: number;
+}
+
+interface ScalabilityResult {
+  top_k: number;
+  avg_time: number;
+  std_time: number;
+  min_time: number;
+  max_time: number;
+}
+
+interface QualityPerQuery {
+  query: string;
+  precision: number;
+  recall: number;
+  f1_score: number;
+  relevant_retrieved: number;
+  total_retrieved: number;
+}
+
+interface QualityMetrics {
+  avg_precision: number;
+  avg_recall: number;
+  avg_f1_score: number;
+  per_query: QualityPerQuery[];
+}
+
+type TabType = "speed" | "scalability" | "quality";
 
 export function BenchmarkDashboard() {
-    const { metadata, summary, winner, raw_results } = benchmarkData;
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterDb, setFilterDb] = useState<string>("all");
-    const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const { metadata, speed_test, scalability_test, retrieval_quality } =
+    benchmarkData;
+  const [activeTab, setActiveTab] = useState<TabType>("speed");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterDb, setFilterDb] = useState<string>("all");
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(null);
 
-    // Filter and Sort Logic
-    const filteredResults = React.useMemo(() => {
-        return raw_results.filter((result) => {
-            const matchesSearch = result.query.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesDb = filterDb === "all" || result.database === filterDb;
-            return matchesSearch && matchesDb;
-        });
-    }, [searchTerm, filterDb, raw_results]);
+  // Speed test data
+  const speedSummary = speed_test.summary as SpeedTestSummary[];
+  const speedRawResults = speed_test.raw_results as SpeedTestRawResult[];
+  const speedWinner = speed_test.winner;
 
-    const sortedResults = React.useMemo(() => {
-        if (!sortConfig) return filteredResults;
-        return [...filteredResults].sort((a, b) => {
-            // @ts-ignore
-            const aValue = a[sortConfig.key];
-            // @ts-ignore
-            const bValue = b[sortConfig.key];
+  // Scalability test data
+  const scalabilityData = scalability_test as Record<string, ScalabilityResult[]>;
 
-            if (typeof aValue === 'string' && typeof bValue === 'string') {
-                return sortConfig.direction === "asc"
-                    ? aValue.localeCompare(bValue)
-                    : bValue.localeCompare(aValue);
-            }
+  // Retrieval quality data
+  const qualityData = retrieval_quality as Record<string, QualityMetrics>;
 
-            return sortConfig.direction === "asc" ? aValue - bValue : bValue - aValue;
-        });
-    }, [filteredResults, sortConfig]);
+  // Filter and Sort for Speed Test
+  const filteredSpeedResults = useMemo(() => {
+    return speedRawResults.filter((result) => {
+      const matchesSearch = result.query
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesDb = filterDb === "all" || result.database === filterDb;
+      return matchesSearch && matchesDb;
+    });
+  }, [searchTerm, filterDb, speedRawResults]);
 
-    const requestSort = (key: string) => {
-        let direction: "asc" | "desc" = "asc";
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
-            direction = "desc";
-        }
-        setSortConfig({ key, direction });
-    };
+  const sortedSpeedResults = useMemo(() => {
+    if (!sortConfig) return filteredSpeedResults;
+    return [...filteredSpeedResults].sort((a, b) => {
+      const aValue = a[sortConfig.key as keyof SpeedTestRawResult];
+      const bValue = b[sortConfig.key as keyof SpeedTestRawResult];
 
-    const FormatMs = ({ ms }: { ms: number }) => (
-        <span className="font-mono tabular-nums text-sm">
-            {ms.toFixed(2)}ms
-        </span>
-    );
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortConfig.direction === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
 
-    return (
-        <div className="min-h-screen bg-background text-foreground p-6 md:p-12 space-y-12 font-sans">
+      return sortConfig.direction === "asc"
+        ? (aValue as number) - (bValue as number)
+        : (bValue as number) - (aValue as number);
+    });
+  }, [filteredSpeedResults, sortConfig]);
 
-            {/* Header Section */}
-            <div className="space-y-4 text-center md:text-left">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                            Benchmark Results
-                        </h1>
-                        <p className="text-muted-foreground text-lg">
-                            Performance analysis of RAG pipeline across vector databases.
-                        </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-3">
-                        <div className="flex items-center gap-2">
-                            <ModeToggle />
-                            <Badge variant="outline" className="px-3 py-1 text-sm">
-                                {new Date(metadata.benchmark_date).toLocaleDateString()}
-                            </Badge>
-                        </div>
-                        <div className="flex gap-2">
-                            <Badge variant="secondary" className="text-xs">{metadata.llm_model}</Badge>
-                            <Badge variant="secondary" className="text-xs">{metadata.embedding_model}</Badge>
-                        </div>
-                    </div>
+  const requestSort = (key: string) => {
+    let direction: "asc" | "desc" = "asc";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "asc"
+    ) {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
 
-                </div>
-                <Separator className="my-6" />
+  const FormatMs = ({ ms }: { ms: number }) => (
+    <span className="font-mono tabular-nums text-sm">{ms.toFixed(2)}ms</span>
+  );
+
+  const FormatPercent = ({ value }: { value: number }) => (
+    <span className="font-mono tabular-nums text-sm">
+      {(value * 100).toFixed(1)}%
+    </span>
+  );
+
+  const databases = metadata.databases_tested;
+
+  // Tab button component
+  const TabButton = ({
+    tab,
+    label,
+    icon: Icon,
+  }: {
+    tab: TabType;
+    label: string;
+    icon: React.ElementType;
+  }) => (
+    <button
+      onClick={() => setActiveTab(tab)}
+      className={cn(
+        "flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
+        activeTab === tab
+          ? "bg-primary text-primary-foreground shadow-md"
+          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+      )}
+    >
+      <Icon className="w-4 h-4" />
+      {label}
+    </button>
+  );
+
+  return (
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8 lg:p-12 space-y-8 font-sans">
+      {/* Header Section */}
+      <div className="space-y-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+              Vector Database Benchmark
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
+              Performance analysis of RAG pipeline across Pinecone, PostgreSQL,
+              and ChromaDB vector databases.
+            </p>
+          </div>
+          <div className="flex flex-col items-start lg:items-end gap-3">
+            <div className="flex items-center gap-3">
+              <ModeToggle />
+              <Badge variant="outline" className="px-3 py-1.5 text-sm">
+                {new Date(metadata.benchmark_date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </Badge>
             </div>
-
-            {/* Winner Spotlight */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="md:col-span-3 border-primary/20 bg-primary/5 shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                        <Trophy className="w-64 h-64 text-primary" />
-                    </div>
-                    <CardHeader>
-                        <div className="flex items-center gap-2 text-primary font-bold">
-                            <Trophy className="w-5 h-5" />
-                            <span>OVERALL WINNER</span>
-                        </div>
-                        <CardTitle className="text-3xl md:text-4xl">{winner.database}</CardTitle>
-                        <CardDescription className="text-lg text-primary/80 font-medium">
-                            Outperformed competitors with {winner.speed_improvement_percent}% faster speeds and avg retrieval of {winner.avg_retrieval_ms}ms.
-                        </CardDescription>
-                    </CardHeader>
-                </Card>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="text-xs">
+                LLM: {metadata.llm_model}
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                Embed: {metadata.embedding_model}
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {metadata.num_queries} Queries
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                Top-K: {metadata.top_k}
+              </Badge>
             </div>
-
-            {/* Summary Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {summary.map((db) => (
-                    <Card key={db.database} className={cn(
-                        "border transition-all hover:shadow-lg",
-                        db.database === winner.database ? "border-primary shadow-md" : "border-border"
-                    )}>
-                        <CardHeader className="pb-2">
-                            <div className="flex justify-between items-center">
-                                <CardTitle className="text-xl flex items-center gap-2">
-                                    <Database className="w-4 h-4 text-muted-foreground" />
-                                    {db.database}
-                                </CardTitle>
-                                {db.database === winner.database && <Badge>Winner</Badge>}
-                            </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-4">
-                                <div className="space-y-1.5">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-muted-foreground flex items-center gap-1"><Timer className="w-3 h-3" /> Mean Total</span>
-                                        <span className="font-semibold"><FormatMs ms={db.mean_total_ms} /></span>
-                                    </div>
-                                    <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                                        <div
-                                            className={cn(
-                                                "h-full transition-all duration-500",
-                                                db.database === winner.database ? "bg-primary" : "bg-muted-foreground/30"
-                                            )}
-                                            style={{ width: `${(Math.min(...summary.map(s => s.mean_total_ms)) / db.mean_total_ms) * 100}%` }}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Retrieval</span>
-                                        <div className="font-medium text-sm"><FormatMs ms={db.mean_retrieval_ms} /></div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">LLM Gen</span>
-                                        <div className="font-medium text-sm"><FormatMs ms={db.mean_llm_ms} /></div>
-                                    </div>
-                                </div>
-                                <Separator />
-                                <div className="flex justify-between items-center text-sm font-medium">
-                                    <span className="text-muted-foreground flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Success Rate</span>
-                                    <span className="text-primary">{((parseInt(db.successful_queries) / db.total_queries) * 100).toFixed(0)}%</span>
-                                </div>
-                            </div>
-                        </CardContent>
-
-                    </Card>
-                ))}
-            </div>
-
-            {/* Detailed Analysis Section */}
-            <div className="space-y-4">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-4">
-                    <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Detailed Results</h2>
-                        <p className="text-muted-foreground text-sm">Explore individual query performance.</p>
-                    </div>
-                    <div className="flex gap-2 w-full md:w-auto">
-                        <div className="relative w-full md:w-64">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search queries..."
-                                className="pl-8"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                        <Select value={filterDb} onValueChange={setFilterDb}>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Database" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Databases</SelectItem>
-                                {summary.map(s => (
-                                    <SelectItem key={s.database} value={s.database}>{s.database}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-
-                <div className="rounded-md border bg-card">
-                    <div className="relative w-full overflow-auto max-h-[600px]">
-                        <table className="w-full caption-bottom text-sm text-left">
-                            <thead className="[&_tr]:border-b sticky top-0 bg-secondary/90 backdrop-blur z-10">
-                                <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                    <th className="h-12 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground" onClick={() => requestSort('query_num')}>
-                                        # {sortConfig?.key === 'query_num' && (sortConfig.direction === 'asc' ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />)}
-                                    </th>
-                                    <th className="h-12 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground" onClick={() => requestSort('query')}>
-                                        Query {sortConfig?.key === 'query' && (sortConfig.direction === 'asc' ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />)}
-                                    </th>
-                                    <th className="h-12 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground" onClick={() => requestSort('database')}>
-                                        Database {sortConfig?.key === 'database' && (sortConfig.direction === 'asc' ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />)}
-                                    </th>
-                                    <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground" onClick={() => requestSort('retrieval_time')}>
-                                        Retrieval {sortConfig?.key === 'retrieval_time' && (sortConfig.direction === 'asc' ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />)}
-                                    </th>
-                                    <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground" onClick={() => requestSort('llm_time')}>
-                                        Gen Time {sortConfig?.key === 'llm_time' && (sortConfig.direction === 'asc' ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />)}
-                                    </th>
-                                    <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground" onClick={() => requestSort('total_time')}>
-                                        Total {sortConfig?.key === 'total_time' && (sortConfig.direction === 'asc' ? <ChevronUp className="inline w-3 h-3" /> : <ChevronDown className="inline w-3 h-3" />)}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="[&_tr:last-child]:border-0">
-                                {sortedResults.map((row, i) => (
-                                    <tr key={`${row.query_num}-${row.database}`} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                        <td className="p-4 align-middle font-medium">{row.query_num}</td>
-                                        <td className="p-4 align-middle max-w-[300px] truncate" title={row.query}>{row.query}</td>
-                                        <td className="p-4 align-middle">
-                                            <Badge variant="secondary" className="font-normal">{row.database}</Badge>
-                                        </td>
-                                        <td className="p-4 align-middle text-right"><FormatMs ms={row.retrieval_time} /></td>
-                                        <td className="p-4 align-middle text-right"><FormatMs ms={row.llm_time} /></td>
-                                        <td className="p-4 align-middle text-right font-semibold"><FormatMs ms={row.total_time} /></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        {sortedResults.length === 0 && (
-                            <div className="p-12 text-center text-muted-foreground">
-                                No results found matching your criteria.
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    );
+
+        {/* Tab Navigation */}
+        <div className="flex flex-wrap gap-2 p-1.5 bg-muted/50 rounded-xl w-fit">
+          <TabButton tab="speed" label="Speed Test" icon={Zap} />
+          <TabButton tab="scalability" label="Scalability" icon={TrendingUp} />
+          <TabButton tab="quality" label="Retrieval Quality" icon={Target} />
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Speed Test Tab */}
+      {activeTab === "speed" && (
+        <div className="space-y-8 animate-in fade-in-50 duration-300">
+          {/* Winner Spotlight */}
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-6 opacity-[0.08] pointer-events-none">
+              <Trophy className="w-48 h-48 md:w-64 md:h-64 text-primary" />
+            </div>
+            <CardHeader className="relative z-10">
+              <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
+                <Trophy className="w-4 h-4" />
+                <span>Speed Test Winner</span>
+              </div>
+              <CardTitle className="text-4xl md:text-5xl font-bold">
+                {speedWinner.database}
+              </CardTitle>
+              <CardDescription className="text-base md:text-lg text-foreground/70 max-w-xl">
+                {speedWinner.speed_improvement_percent}% faster retrieval speed
+                with an average of{" "}
+                <span className="font-semibold text-primary">
+                  {speedWinner.avg_retrieval_ms}ms
+                </span>{" "}
+                per query.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Speed Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {speedSummary.map((db) => (
+              <Card
+                key={db.database}
+                className={cn(
+                  "border transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
+                  db.database === speedWinner.database
+                    ? "border-primary/50 shadow-md ring-1 ring-primary/20"
+                    : "border-border"
+                )}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Database className="w-4 h-4 text-muted-foreground" />
+                      {db.database}
+                    </CardTitle>
+                    {db.database === speedWinner.database && (
+                      <Badge className="bg-primary/10 text-primary border-primary/30">
+                        Winner
+                      </Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Mean Total Time with Progress */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1.5">
+                        <Timer className="w-3.5 h-3.5" />
+                        Mean Total
+                      </span>
+                      <span className="font-semibold">
+                        <FormatMs ms={db.mean_total_ms} />
+                      </span>
+                    </div>
+                    <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                      <div
+                        className={cn(
+                          "h-full transition-all duration-700 rounded-full",
+                          db.database === speedWinner.database
+                            ? "bg-gradient-to-r from-primary to-primary/60"
+                            : "bg-muted-foreground/30"
+                        )}
+                        style={{
+                          width: `${
+                            (Math.min(...speedSummary.map((s) => s.mean_total_ms)) /
+                              db.mean_total_ms) *
+                            100
+                          }%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-4 pt-2">
+                    <div className="space-y-1">
+                      <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+                        Retrieval
+                      </span>
+                      <div className="font-semibold text-sm">
+                        <FormatMs ms={db.mean_retrieval_ms} />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+                        LLM Gen
+                      </span>
+                      <div className="font-semibold text-sm">
+                        <FormatMs ms={db.mean_llm_ms} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Additional Stats */}
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="text-center p-2 bg-muted/50 rounded-md">
+                      <div className="text-muted-foreground mb-0.5">Min</div>
+                      <div className="font-mono font-medium">
+                        {db.min_total_ms.toFixed(0)}ms
+                      </div>
+                    </div>
+                    <div className="text-center p-2 bg-muted/50 rounded-md">
+                      <div className="text-muted-foreground mb-0.5">Median</div>
+                      <div className="font-mono font-medium">
+                        {db.median_total_ms.toFixed(0)}ms
+                      </div>
+                    </div>
+                    <div className="text-center p-2 bg-muted/50 rounded-md">
+                      <div className="text-muted-foreground mb-0.5">Max</div>
+                      <div className="font-mono font-medium">
+                        {db.max_total_ms.toFixed(0)}ms
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Detailed Results Table */}
+          <div className="space-y-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold tracking-tight">
+                  Query Results
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Individual query performance breakdown
+                </p>
+              </div>
+              <div className="flex gap-2 w-full md:w-auto">
+                <div className="relative flex-1 md:w-64">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search queries..."
+                    className="pl-8"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <Select value={filterDb} onValueChange={setFilterDb}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Database" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Databases</SelectItem>
+                    {databases.map((db) => (
+                      <SelectItem key={db} value={db}>
+                        {db}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <Card>
+              <div className="relative w-full overflow-auto max-h-[500px]">
+                <table className="w-full caption-bottom text-sm text-left">
+                  <thead className="[&_tr]:border-b sticky top-0 bg-card/95 backdrop-blur z-10">
+                    <tr className="border-b transition-colors">
+                      <th
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => requestSort("query_num")}
+                      >
+                        <div className="flex items-center gap-1">
+                          #
+                          {sortConfig?.key === "query_num" &&
+                            (sortConfig.direction === "asc" ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            ))}
+                        </div>
+                      </th>
+                      <th
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => requestSort("query")}
+                      >
+                        <div className="flex items-center gap-1">
+                          Query
+                          {sortConfig?.key === "query" &&
+                            (sortConfig.direction === "asc" ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            ))}
+                        </div>
+                      </th>
+                      <th
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => requestSort("database")}
+                      >
+                        <div className="flex items-center gap-1">
+                          Database
+                          {sortConfig?.key === "database" &&
+                            (sortConfig.direction === "asc" ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            ))}
+                        </div>
+                      </th>
+                      <th
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => requestSort("retrieval_time")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          Retrieval
+                          {sortConfig?.key === "retrieval_time" &&
+                            (sortConfig.direction === "asc" ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            ))}
+                        </div>
+                      </th>
+                      <th
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => requestSort("llm_time")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          LLM
+                          {sortConfig?.key === "llm_time" &&
+                            (sortConfig.direction === "asc" ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            ))}
+                        </div>
+                      </th>
+                      <th
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => requestSort("total_time")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          Total
+                          {sortConfig?.key === "total_time" &&
+                            (sortConfig.direction === "asc" ? (
+                              <ChevronUp className="w-3 h-3" />
+                            ) : (
+                              <ChevronDown className="w-3 h-3" />
+                            ))}
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="[&_tr:last-child]:border-0">
+                    {sortedSpeedResults.map((row) => (
+                      <tr
+                        key={`${row.query_num}-${row.database}`}
+                        className="border-b transition-colors hover:bg-muted/50"
+                      >
+                        <td className="p-4 align-middle font-medium text-muted-foreground">
+                          {row.query_num}
+                        </td>
+                        <td
+                          className="p-4 align-middle max-w-[280px] truncate"
+                          title={row.query}
+                        >
+                          {row.query}
+                        </td>
+                        <td className="p-4 align-middle">
+                          <Badge variant="secondary" className="font-normal">
+                            {row.database}
+                          </Badge>
+                        </td>
+                        <td className="p-4 align-middle text-right">
+                          <FormatMs ms={row.retrieval_time} />
+                        </td>
+                        <td className="p-4 align-middle text-right">
+                          <FormatMs ms={row.llm_time} />
+                        </td>
+                        <td className="p-4 align-middle text-right font-semibold">
+                          <FormatMs ms={row.total_time} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {sortedSpeedResults.length === 0 && (
+                  <div className="p-12 text-center text-muted-foreground">
+                    No results found matching your criteria.
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* Scalability Tab */}
+      {activeTab === "scalability" && (
+        <div className="space-y-8 animate-in fade-in-50 duration-300">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+              <BarChart3 className="w-6 h-6 text-primary" />
+              Scalability Analysis
+            </h2>
+            <p className="text-muted-foreground">
+              Performance at different top_k values (number of documents
+              retrieved)
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {databases.map((db) => (
+              <Card key={db} className="overflow-hidden">
+                <CardHeader className="pb-4 bg-muted/30">
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <Database className="w-5 h-5 text-muted-foreground" />
+                    {db}
+                  </CardTitle>
+                  <CardDescription>Retrieval time by top_k</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div className="space-y-3">
+                    {scalabilityData[db]?.map((item) => (
+                      <div key={item.top_k} className="space-y-1.5">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="font-medium">
+                            top_k = {item.top_k}
+                          </span>
+                          <span className="font-mono text-muted-foreground">
+                            {item.avg_time.toFixed(2)}ms
+                          </span>
+                        </div>
+                        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                          <div
+                            className={cn(
+                              "h-full rounded-full transition-all duration-500",
+                              db === "ChromaDB"
+                                ? "bg-gradient-to-r from-emerald-500 to-emerald-400"
+                                : db === "PostgreSQL"
+                                ? "bg-gradient-to-r from-blue-500 to-blue-400"
+                                : "bg-gradient-to-r from-amber-500 to-amber-400"
+                            )}
+                            style={{
+                              width: `${Math.min(
+                                (item.avg_time /
+                                  Math.max(
+                                    ...Object.values(scalabilityData).flatMap(
+                                      (arr) => arr.map((i) => i.avg_time)
+                                    )
+                                  )) *
+                                  100,
+                                100
+                              )}%`,
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-[10px] text-muted-foreground">
+                          <span>±{item.std_time.toFixed(2)}ms std</span>
+                          <span>
+                            {item.min_time.toFixed(1)} - {item.max_time.toFixed(1)}ms
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Scalability Comparison Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">
+                Performance Comparison Matrix
+              </CardTitle>
+              <CardDescription>
+                Average retrieval time (ms) by database and top_k value
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-3 font-medium text-muted-foreground">
+                        top_k
+                      </th>
+                      {databases.map((db) => (
+                        <th
+                          key={db}
+                          className="text-right p-3 font-medium text-muted-foreground"
+                        >
+                          {db}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scalabilityData[databases[0]]?.map((item, idx) => (
+                      <tr
+                        key={item.top_k}
+                        className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                      >
+                        <td className="p-3 font-medium">{item.top_k}</td>
+                        {databases.map((db) => {
+                          const dbItem = scalabilityData[db]?.[idx];
+                          const minTime = Math.min(
+                            ...databases.map(
+                              (d) => scalabilityData[d]?.[idx]?.avg_time ?? Infinity
+                            )
+                          );
+                          const isMin = dbItem?.avg_time === minTime;
+                          return (
+                            <td
+                              key={db}
+                              className={cn(
+                                "p-3 text-right font-mono",
+                                isMin && "text-primary font-semibold"
+                              )}
+                            >
+                              {dbItem?.avg_time.toFixed(2)}ms
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Quality Tab */}
+      {activeTab === "quality" && (
+        <div className="space-y-8 animate-in fade-in-50 duration-300">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+              <Activity className="w-6 h-6 text-primary" />
+              Retrieval Quality Metrics
+            </h2>
+            <p className="text-muted-foreground">
+              Precision, Recall, and F1-Score analysis across databases
+            </p>
+          </div>
+
+          {/* Quality Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {databases.map((db) => {
+              const metrics = qualityData[db];
+              return (
+                <Card key={db} className="overflow-hidden">
+                  <CardHeader className="pb-4 bg-muted/30">
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      <Database className="w-5 h-5 text-muted-foreground" />
+                      {db}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6 space-y-6">
+                    {/* Precision */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground font-medium">
+                          Precision
+                        </span>
+                        <span className="font-semibold text-primary">
+                          <FormatPercent value={metrics.avg_precision} />
+                        </span>
+                      </div>
+                      <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-700"
+                          style={{ width: `${metrics.avg_precision * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Recall */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground font-medium">
+                          Recall
+                        </span>
+                        <span className="font-semibold text-emerald-500">
+                          <FormatPercent value={metrics.avg_recall} />
+                        </span>
+                      </div>
+                      <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-700"
+                          style={{ width: `${metrics.avg_recall * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* F1 Score */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground font-medium">
+                          F1 Score
+                        </span>
+                        <span className="font-semibold text-blue-500">
+                          <FormatPercent value={metrics.avg_f1_score} />
+                        </span>
+                      </div>
+                      <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-700"
+                          style={{ width: `${metrics.avg_f1_score * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Quality Comparison Summary */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Quality Metrics Summary</CardTitle>
+              <CardDescription>
+                Side-by-side comparison of all quality metrics
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-3 font-medium text-muted-foreground">
+                        Metric
+                      </th>
+                      {databases.map((db) => (
+                        <th
+                          key={db}
+                          className="text-right p-3 font-medium text-muted-foreground"
+                        >
+                          {db}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b hover:bg-muted/50 transition-colors">
+                      <td className="p-3 font-medium">Avg. Precision</td>
+                      {databases.map((db) => (
+                        <td key={db} className="p-3 text-right font-mono">
+                          <FormatPercent
+                            value={qualityData[db].avg_precision}
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="border-b hover:bg-muted/50 transition-colors">
+                      <td className="p-3 font-medium">Avg. Recall</td>
+                      {databases.map((db) => (
+                        <td key={db} className="p-3 text-right font-mono">
+                          <FormatPercent value={qualityData[db].avg_recall} />
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className="hover:bg-muted/50 transition-colors">
+                      <td className="p-3 font-medium">Avg. F1 Score</td>
+                      {databases.map((db) => (
+                        <td key={db} className="p-3 text-right font-mono">
+                          <FormatPercent value={qualityData[db].avg_f1_score} />
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Per-Query Quality Results */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Per-Query Quality Analysis</CardTitle>
+              <CardDescription>
+                Detailed precision, recall, and F1 scores for each query (showing first database)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-auto max-h-[400px]">
+                <table className="w-full text-sm">
+                  <thead className="sticky top-0 bg-card/95 backdrop-blur">
+                    <tr className="border-b">
+                      <th className="text-left p-3 font-medium text-muted-foreground">
+                        Query
+                      </th>
+                      <th className="text-right p-3 font-medium text-muted-foreground">
+                        Precision
+                      </th>
+                      <th className="text-right p-3 font-medium text-muted-foreground">
+                        Recall
+                      </th>
+                      <th className="text-right p-3 font-medium text-muted-foreground">
+                        F1 Score
+                      </th>
+                      <th className="text-right p-3 font-medium text-muted-foreground">
+                        Retrieved
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {qualityData[databases[0]]?.per_query.map((item, idx) => (
+                      <tr
+                        key={idx}
+                        className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                      >
+                        <td
+                          className="p-3 max-w-[300px] truncate"
+                          title={item.query}
+                        >
+                          {item.query}
+                        </td>
+                        <td
+                          className={cn(
+                            "p-3 text-right font-mono",
+                            item.precision === 1.0 && "text-emerald-500"
+                          )}
+                        >
+                          <FormatPercent value={item.precision} />
+                        </td>
+                        <td
+                          className={cn(
+                            "p-3 text-right font-mono",
+                            item.recall === 1.0 && "text-emerald-500"
+                          )}
+                        >
+                          <FormatPercent value={item.recall} />
+                        </td>
+                        <td
+                          className={cn(
+                            "p-3 text-right font-mono",
+                            item.f1_score === 1.0 && "text-emerald-500"
+                          )}
+                        >
+                          <FormatPercent value={item.f1_score} />
+                        </td>
+                        <td className="p-3 text-right text-muted-foreground">
+                          {item.relevant_retrieved}/{item.total_retrieved}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className="pt-8 border-t">
+        <p className="text-center text-muted-foreground text-sm">
+          Benchmark conducted on{" "}
+          {new Date(metadata.benchmark_date).toLocaleString()} • {metadata.num_queries}{" "}
+          queries across {databases.length} databases
+        </p>
+      </div>
+    </div>
+  );
 }

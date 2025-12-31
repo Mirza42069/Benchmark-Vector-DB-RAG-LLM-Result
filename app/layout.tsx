@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Benchmark Result",
-  description: "Benchmark Result",
+  title: "Vector Database Benchmark Results",
+  description: "Performance analysis of RAG pipeline across Pinecone, PostgreSQL, and ChromaDB vector databases",
 };
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -30,6 +30,7 @@ export default function RootLayout({
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
