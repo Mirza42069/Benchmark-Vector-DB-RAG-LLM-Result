@@ -84,6 +84,63 @@ interface QualityMetrics {
 
 type TabType = "speed" | "scalability" | "quality";
 
+// Sub-components moved outside to avoid re-creation on render
+const FormatMs = ({ ms }: { ms: number }) => (
+  <span className="font-mono tabular-nums text-sm">{ms.toFixed(2)}ms</span>
+);
+
+const FormatPercent = ({ value }: { value: number }) => (
+  <span className="font-mono tabular-nums text-sm">
+    {(value * 100).toFixed(1)}%
+  </span>
+);
+
+const SortIcon = ({
+  active,
+  direction,
+}: {
+  active: boolean;
+  direction?: "asc" | "desc";
+}) => (
+  <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+    {active &&
+      (direction === "asc" ? (
+        <ChevronUp className="w-3.5 h-3.5" />
+      ) : (
+        <ChevronDown className="w-3.5 h-3.5" />
+      ))}
+  </div>
+);
+
+interface TabButtonProps {
+  tab: TabType;
+  label: string;
+  icon: React.ElementType;
+  activeTab: TabType;
+  setActiveTab: (tab: TabType) => void;
+}
+
+const TabButton = ({
+  tab,
+  label,
+  icon: Icon,
+  activeTab,
+  setActiveTab,
+}: TabButtonProps) => (
+  <button
+    onClick={() => setActiveTab(tab)}
+    className={cn(
+      "flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
+      activeTab === tab
+        ? "bg-primary text-primary-foreground shadow-md"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+    )}
+  >
+    <Icon className="w-4 h-4" />
+    {label}
+  </button>
+);
+
 export function BenchmarkDashboard() {
   const { metadata, speed_test, scalability_test, retrieval_quality } =
     benchmarkData;
@@ -91,6 +148,14 @@ export function BenchmarkDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDb, setFilterDb] = useState<string>("all");
   const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(null);
+  const [qualitySortConfig, setQualitySortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(null);
+  const [scalabilitySortConfig, setScalabilitySortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
@@ -105,6 +170,9 @@ export function BenchmarkDashboard() {
 
   // Retrieval quality data
   const qualityData = retrieval_quality as Record<string, QualityMetrics>;
+
+  // Databases list - declare early as it's used in useMemo hooks
+  const databases = metadata.databases_tested;
 
   // Filter and Sort for Speed Test
   const filteredSpeedResults = useMemo(() => {
@@ -147,41 +215,75 @@ export function BenchmarkDashboard() {
     setSortConfig({ key, direction });
   };
 
-  const FormatMs = ({ ms }: { ms: number }) => (
-    <span className="font-mono tabular-nums text-sm">{ms.toFixed(2)}ms</span>
-  );
+  const requestQualitySort = (key: string) => {
+    let direction: "asc" | "desc" = "asc";
+    if (
+      qualitySortConfig &&
+      qualitySortConfig.key === key &&
+      qualitySortConfig.direction === "asc"
+    ) {
+      direction = "desc";
+    }
+    setQualitySortConfig({ key, direction });
+  };
 
-  const FormatPercent = ({ value }: { value: number }) => (
-    <span className="font-mono tabular-nums text-sm">
-      {(value * 100).toFixed(1)}%
-    </span>
-  );
+  const requestScalabilitySort = (key: string) => {
+    let direction: "asc" | "desc" = "asc";
+    if (
+      scalabilitySortConfig &&
+      scalabilitySortConfig.key === key &&
+      scalabilitySortConfig.direction === "asc"
+    ) {
+      direction = "desc";
+    }
+    setScalabilitySortConfig({ key, direction });
+  };
 
-  const databases = metadata.databases_tested;
+  // Sorted quality per-query data
+  const sortedQualityResults = useMemo(() => {
+    const data = qualityData[databases[0]]?.per_query || [];
+    if (!qualitySortConfig) return data;
+    return [...data].sort((a, b) => {
+      const aValue = a[qualitySortConfig.key as keyof QualityPerQuery];
+      const bValue = b[qualitySortConfig.key as keyof QualityPerQuery];
 
-  // Tab button component
-  const TabButton = ({
-    tab,
-    label,
-    icon: Icon,
-  }: {
-    tab: TabType;
-    label: string;
-    icon: React.ElementType;
-  }) => (
-    <button
-      onClick={() => setActiveTab(tab)}
-      className={cn(
-        "flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
-        activeTab === tab
-          ? "bg-primary text-primary-foreground shadow-md"
-          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-      )}
-    >
-      <Icon className="w-4 h-4" />
-      {label}
-    </button>
-  );
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return qualitySortConfig.direction === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      return qualitySortConfig.direction === "asc"
+        ? (aValue as number) - (bValue as number)
+        : (bValue as number) - (aValue as number);
+    });
+  }, [qualityData, databases, qualitySortConfig]);
+
+  // Sorted scalability data - always return combined format for consistency
+  const sortedScalabilityData = useMemo(() => {
+    const baseData = scalabilityData[databases[0]] || [];
+
+    // Always create combined data format with database values as properties
+    const combinedData = baseData.map((item, idx) => ({
+      top_k: item.top_k,
+      ...databases.reduce((acc, db) => {
+        acc[db] = scalabilityData[db]?.[idx]?.avg_time ?? 0;
+        return acc;
+      }, {} as Record<string, number>),
+    }));
+
+    if (!scalabilitySortConfig) return combinedData;
+
+    return [...combinedData].sort((a, b) => {
+      const aValue = a[scalabilitySortConfig.key as keyof typeof a];
+      const bValue = b[scalabilitySortConfig.key as keyof typeof b];
+
+      return scalabilitySortConfig.direction === "asc"
+        ? (aValue as number) - (bValue as number)
+        : (bValue as number) - (aValue as number);
+    });
+  }, [scalabilityData, databases, scalabilitySortConfig]);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground p-4 md:p-8 lg:p-12 space-y-8 font-sans">
@@ -227,9 +329,27 @@ export function BenchmarkDashboard() {
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-2 p-1.5 bg-muted/50 rounded-xl w-fit">
-          <TabButton tab="speed" label="Speed Test" icon={Zap} />
-          <TabButton tab="scalability" label="Scalability" icon={TrendingUp} />
-          <TabButton tab="quality" label="Retrieval Quality" icon={Target} />
+          <TabButton
+            tab="speed"
+            label="Speed Test"
+            icon={Zap}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+          <TabButton
+            tab="scalability"
+            label="Scalability"
+            icon={TrendingUp}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+          <TabButton
+            tab="quality"
+            label="Retrieval Quality"
+            icon={Target}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
       </div>
 
@@ -308,11 +428,10 @@ export function BenchmarkDashboard() {
                             : "bg-muted-foreground/30"
                         )}
                         style={{
-                          width: `${
-                            (Math.min(...speedSummary.map((s) => s.mean_total_ms)) /
-                              db.mean_total_ms) *
+                          width: `${(Math.min(...speedSummary.map((s) => s.mean_total_ms)) /
+                            db.mean_total_ms) *
                             100
-                          }%`,
+                            }%`,
                         }}
                       />
                     </div>
@@ -409,87 +528,75 @@ export function BenchmarkDashboard() {
                   <thead className="[&_tr]:border-b sticky top-0 bg-card/95 backdrop-blur z-10">
                     <tr className="border-b transition-colors">
                       <th
-                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
                         onClick={() => requestSort("query_num")}
                       >
                         <div className="flex items-center gap-1">
-                          #
-                          {sortConfig?.key === "query_num" &&
-                            (sortConfig.direction === "asc" ? (
-                              <ChevronUp className="w-3 h-3" />
-                            ) : (
-                              <ChevronDown className="w-3 h-3" />
-                            ))}
+                          <SortIcon
+                            active={sortConfig?.key === "query_num"}
+                            direction={sortConfig?.direction}
+                          />
+                          <span>#</span>
                         </div>
                       </th>
                       <th
-                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
                         onClick={() => requestSort("query")}
                       >
                         <div className="flex items-center gap-1">
-                          Query
-                          {sortConfig?.key === "query" &&
-                            (sortConfig.direction === "asc" ? (
-                              <ChevronUp className="w-3 h-3" />
-                            ) : (
-                              <ChevronDown className="w-3 h-3" />
-                            ))}
+                          <SortIcon
+                            active={sortConfig?.key === "query"}
+                            direction={sortConfig?.direction}
+                          />
+                          <span>Query</span>
                         </div>
                       </th>
                       <th
-                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
                         onClick={() => requestSort("database")}
                       >
                         <div className="flex items-center gap-1">
-                          Database
-                          {sortConfig?.key === "database" &&
-                            (sortConfig.direction === "asc" ? (
-                              <ChevronUp className="w-3 h-3" />
-                            ) : (
-                              <ChevronDown className="w-3 h-3" />
-                            ))}
+                          <SortIcon
+                            active={sortConfig?.key === "database"}
+                            direction={sortConfig?.direction}
+                          />
+                          <span>Database</span>
                         </div>
                       </th>
                       <th
-                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors group"
                         onClick={() => requestSort("retrieval_time")}
                       >
                         <div className="flex items-center justify-end gap-1">
-                          Retrieval
-                          {sortConfig?.key === "retrieval_time" &&
-                            (sortConfig.direction === "asc" ? (
-                              <ChevronUp className="w-3 h-3" />
-                            ) : (
-                              <ChevronDown className="w-3 h-3" />
-                            ))}
+                          <SortIcon
+                            active={sortConfig?.key === "retrieval_time"}
+                            direction={sortConfig?.direction}
+                          />
+                          <span>Retrieval</span>
                         </div>
                       </th>
                       <th
-                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors group"
                         onClick={() => requestSort("llm_time")}
                       >
                         <div className="flex items-center justify-end gap-1">
-                          LLM
-                          {sortConfig?.key === "llm_time" &&
-                            (sortConfig.direction === "asc" ? (
-                              <ChevronUp className="w-3 h-3" />
-                            ) : (
-                              <ChevronDown className="w-3 h-3" />
-                            ))}
+                          <SortIcon
+                            active={sortConfig?.key === "llm_time"}
+                            direction={sortConfig?.direction}
+                          />
+                          <span>LLM</span>
                         </div>
                       </th>
                       <th
-                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                        className="h-11 px-4 align-middle font-medium text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors group"
                         onClick={() => requestSort("total_time")}
                       >
                         <div className="flex items-center justify-end gap-1">
-                          Total
-                          {sortConfig?.key === "total_time" &&
-                            (sortConfig.direction === "asc" ? (
-                              <ChevronUp className="w-3 h-3" />
-                            ) : (
-                              <ChevronDown className="w-3 h-3" />
-                            ))}
+                          <SortIcon
+                            active={sortConfig?.key === "total_time"}
+                            direction={sortConfig?.direction}
+                          />
+                          <span>Total</span>
                         </div>
                       </th>
                     </tr>
@@ -581,8 +688,8 @@ export function BenchmarkDashboard() {
                               db === "ChromaDB"
                                 ? "bg-gradient-to-r from-emerald-500 to-emerald-400"
                                 : db === "PostgreSQL"
-                                ? "bg-gradient-to-r from-blue-500 to-blue-400"
-                                : "bg-gradient-to-r from-amber-500 to-amber-400"
+                                  ? "bg-gradient-to-r from-blue-500 to-blue-400"
+                                  : "bg-gradient-to-r from-amber-500 to-amber-400"
                             )}
                             style={{
                               width: `${Math.min(
@@ -592,7 +699,7 @@ export function BenchmarkDashboard() {
                                       (arr) => arr.map((i) => i.avg_time)
                                     )
                                   )) *
-                                  100,
+                                100,
                                 100
                               )}%`,
                             }}
@@ -619,7 +726,7 @@ export function BenchmarkDashboard() {
                 Performance Comparison Matrix
               </CardTitle>
               <CardDescription>
-                Average retrieval time (ms) by database and top_k value
+                Average retrieval time (ms) by database and top_k value. Click columns to sort.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -627,48 +734,64 @@ export function BenchmarkDashboard() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-3 font-medium text-muted-foreground">
-                        top_k
+                      <th
+                        className="text-left p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                        onClick={() => requestScalabilitySort("top_k")}
+                      >
+                        <div className="flex items-center gap-1">
+                          <SortIcon
+                            active={scalabilitySortConfig?.key === "top_k"}
+                            direction={scalabilitySortConfig?.direction}
+                          />
+                          <span>top_k</span>
+                        </div>
                       </th>
                       {databases.map((db) => (
                         <th
                           key={db}
-                          className="text-right p-3 font-medium text-muted-foreground"
+                          className="text-right p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                          onClick={() => requestScalabilitySort(db)}
                         >
-                          {db}
+                          <div className="flex items-center justify-end gap-1">
+                            <SortIcon
+                              active={scalabilitySortConfig?.key === db}
+                              direction={scalabilitySortConfig?.direction}
+                            />
+                            <span>{db}</span>
+                          </div>
                         </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {scalabilityData[databases[0]]?.map((item, idx) => (
-                      <tr
-                        key={item.top_k}
-                        className="border-b last:border-0 hover:bg-muted/50 transition-colors"
-                      >
-                        <td className="p-3 font-medium">{item.top_k}</td>
-                        {databases.map((db) => {
-                          const dbItem = scalabilityData[db]?.[idx];
-                          const minTime = Math.min(
-                            ...databases.map(
-                              (d) => scalabilityData[d]?.[idx]?.avg_time ?? Infinity
-                            )
-                          );
-                          const isMin = dbItem?.avg_time === minTime;
-                          return (
-                            <td
-                              key={db}
-                              className={cn(
-                                "p-3 text-right font-mono",
-                                isMin && "text-primary font-semibold"
-                              )}
-                            >
-                              {dbItem?.avg_time.toFixed(2)}ms
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
+                    {sortedScalabilityData.map((item) => {
+                      const minTime = Math.min(
+                        ...databases.map((d) => (item as Record<string, number>)[d] ?? Infinity)
+                      );
+                      return (
+                        <tr
+                          key={item.top_k}
+                          className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                        >
+                          <td className="p-3 font-medium">{item.top_k}</td>
+                          {databases.map((db) => {
+                            const time = (item as Record<string, number>)[db];
+                            const isMin = time === minTime;
+                            return (
+                              <td
+                                key={db}
+                                className={cn(
+                                  "p-3 text-right font-mono",
+                                  isMin && "text-primary font-semibold"
+                                )}
+                              >
+                                {time?.toFixed(2)}ms
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -826,33 +949,78 @@ export function BenchmarkDashboard() {
             <CardHeader>
               <CardTitle className="text-lg">Per-Query Quality Analysis</CardTitle>
               <CardDescription>
-                Detailed precision, recall, and F1 scores for each query (showing first database)
+                Detailed precision, recall, and F1 scores for each query. Click columns to sort.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-auto max-h-[400px]">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-card/95 backdrop-blur">
+                  <thead className="sticky top-0 bg-card/95 backdrop-blur z-10">
                     <tr className="border-b">
-                      <th className="text-left p-3 font-medium text-muted-foreground">
-                        Query
+                      <th
+                        className="text-left p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                        onClick={() => requestQualitySort("query")}
+                      >
+                        <div className="flex items-center gap-1">
+                          <SortIcon
+                            active={qualitySortConfig?.key === "query"}
+                            direction={qualitySortConfig?.direction}
+                          />
+                          <span>Query</span>
+                        </div>
                       </th>
-                      <th className="text-right p-3 font-medium text-muted-foreground">
-                        Precision
+                      <th
+                        className="text-right p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                        onClick={() => requestQualitySort("precision")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          <SortIcon
+                            active={qualitySortConfig?.key === "precision"}
+                            direction={qualitySortConfig?.direction}
+                          />
+                          <span>Precision</span>
+                        </div>
                       </th>
-                      <th className="text-right p-3 font-medium text-muted-foreground">
-                        Recall
+                      <th
+                        className="text-right p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                        onClick={() => requestQualitySort("recall")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          <SortIcon
+                            active={qualitySortConfig?.key === "recall"}
+                            direction={qualitySortConfig?.direction}
+                          />
+                          <span>Recall</span>
+                        </div>
                       </th>
-                      <th className="text-right p-3 font-medium text-muted-foreground">
-                        F1 Score
+                      <th
+                        className="text-right p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                        onClick={() => requestQualitySort("f1_score")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          <SortIcon
+                            active={qualitySortConfig?.key === "f1_score"}
+                            direction={qualitySortConfig?.direction}
+                          />
+                          <span>F1 Score</span>
+                        </div>
                       </th>
-                      <th className="text-right p-3 font-medium text-muted-foreground">
-                        Retrieved
+                      <th
+                        className="text-right p-3 font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors group"
+                        onClick={() => requestQualitySort("relevant_retrieved")}
+                      >
+                        <div className="flex items-center justify-end gap-1">
+                          <SortIcon
+                            active={qualitySortConfig?.key === "relevant_retrieved"}
+                            direction={qualitySortConfig?.direction}
+                          />
+                          <span>Retrieved</span>
+                        </div>
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {qualityData[databases[0]]?.per_query.map((item, idx) => (
+                    {sortedQualityResults.map((item, idx) => (
                       <tr
                         key={idx}
                         className="border-b last:border-0 hover:bg-muted/50 transition-colors"
