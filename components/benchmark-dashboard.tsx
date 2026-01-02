@@ -199,8 +199,8 @@ const TabButton = ({
 );
 
 export function BenchmarkDashboard() {
-  const { metadata, speed_test, scalability_test, retrieval_quality } =
-    benchmarkData;
+  const { metadata, speed_test, scalability_test, retrieval_quality } = benchmarkData;
+
   const [activeTab, setActiveTab] = useState<TabType>("summary");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDb, setFilterDb] = useState<string>("all");
@@ -367,7 +367,7 @@ export function BenchmarkDashboard() {
                 })}
               </Badge>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary" className="text-xs">
                 LLM: {metadata.llm_model}
               </Badge>
@@ -660,32 +660,7 @@ export function BenchmarkDashboard() {
             </CardContent>
           </Card>
 
-          {/* Benchmark Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Benchmark Configuration</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Date</p>
-                  <p className="font-medium">{new Date(metadata.benchmark_date).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">LLM Model</p>
-                  <p className="font-medium">{metadata.llm_model}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Embedding Model</p>
-                  <p className="font-medium">{metadata.embedding_model}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Top-K</p>
-                  <p className="font-medium">{metadata.top_k}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+
         </div>
       )}
 

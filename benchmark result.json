@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "benchmark_date": "2025-12-31T09:34:57.368299",
+    "benchmark_date": "2026-01-02T22:24:26.667081",
     "llm_model": "qwen3:8b",
     "embedding_model": "mxbai-embed-large",
     "num_queries": 60,
@@ -14,1839 +14,1839 @@
   "speed_test": {
     "winner": {
       "database": "ChromaDB",
-      "avg_retrieval_ms": 20.4,
-      "speed_improvement_percent": 93.5
+      "avg_retrieval_ms": 21.61,
+      "speed_improvement_percent": 94.3
     },
     "summary": [
       {
         "database": "Pinecone",
-        "mean_total_ms": 6248.03,
-        "median_total_ms": 6289.39,
-        "std_total_ms": 1889.51,
-        "min_total_ms": 1933.77,
-        "max_total_ms": 10047.75,
-        "mean_retrieval_ms": 314.47,
-        "mean_llm_ms": 5933.56
+        "mean_total_ms": 8999.22,
+        "median_total_ms": 6123.91,
+        "std_total_ms": 19243.36,
+        "min_total_ms": 1924.14,
+        "max_total_ms": 153918.06,
+        "mean_retrieval_ms": 379.09,
+        "mean_llm_ms": 8620.13
       },
       {
         "database": "PostgreSQL",
-        "mean_total_ms": 5597.91,
-        "median_total_ms": 5519.0,
-        "std_total_ms": 1958.31,
-        "min_total_ms": 1574.53,
-        "max_total_ms": 10129.06,
-        "mean_retrieval_ms": 65.77,
-        "mean_llm_ms": 5532.13
+        "mean_total_ms": 6077.36,
+        "median_total_ms": 5464.45,
+        "std_total_ms": 3387.94,
+        "min_total_ms": 1540.51,
+        "max_total_ms": 23267.71,
+        "mean_retrieval_ms": 67.14,
+        "mean_llm_ms": 6010.22
       },
       {
         "database": "ChromaDB",
-        "mean_total_ms": 5581.03,
-        "median_total_ms": 5485.52,
-        "std_total_ms": 1932.25,
-        "min_total_ms": 1593.37,
-        "max_total_ms": 9336.22,
-        "mean_retrieval_ms": 20.4,
-        "mean_llm_ms": 5560.63
+        "mean_total_ms": 5969.34,
+        "median_total_ms": 5445.83,
+        "std_total_ms": 3031.44,
+        "min_total_ms": 1484.93,
+        "max_total_ms": 19226.56,
+        "mean_retrieval_ms": 21.61,
+        "mean_llm_ms": 5947.73
       }
     ],
     "raw_results": [
       {
         "query_num": 1,
-        "query": "Which banks are available inside ITS campus?",
+        "query": "How to register for a local bank account at Mandiri?",
         "database": "Pinecone",
-        "retrieval_time": 1868.2806491851807,
-        "llm_time": 5709.5232009887695,
-        "total_time": 7577.80385017395,
+        "retrieval_time": 1635.8189582824707,
+        "llm_time": 10276.657581329346,
+        "total_time": 11912.476539611816,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 2,
-        "query": "Apa itu VPN ITS dan bagaimana cara menggunakannya?",
+        "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
         "database": "Pinecone",
-        "retrieval_time": 279.41012382507324,
-        "llm_time": 7856.3408851623535,
-        "total_time": 8135.751008987427,
+        "retrieval_time": 282.3648452758789,
+        "llm_time": 2463.695764541626,
+        "total_time": 2746.060609817505,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 3,
-        "query": "How do I get Indonesian phone number (SIM card)?",
+        "query": "How can international students join Student Activity Units (UKM)?",
         "database": "Pinecone",
-        "retrieval_time": 364.51053619384766,
-        "llm_time": 8605.214834213257,
-        "total_time": 8969.725370407104,
+        "retrieval_time": 320.85728645324707,
+        "llm_time": 4056.180000305176,
+        "total_time": 4377.037286758423,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 4,
-        "query": "Apa itu myITS StudentConnect?",
+        "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
         "database": "Pinecone",
-        "retrieval_time": 276.3817310333252,
-        "llm_time": 5319.683790206909,
-        "total_time": 5596.065521240234,
+        "retrieval_time": 315.10400772094727,
+        "llm_time": 4510.132789611816,
+        "total_time": 4825.236797332764,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 5,
-        "query": "Bagaimana cara mengakses Google Workspace ITS?",
+        "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
         "database": "Pinecone",
-        "retrieval_time": 313.906192779541,
-        "llm_time": 3472.9068279266357,
-        "total_time": 3786.8130207061768,
+        "retrieval_time": 279.0107727050781,
+        "llm_time": 4668.913125991821,
+        "total_time": 4947.923898696899,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 6,
-        "query": "Bagaimana cara mendapatkan lisensi software gratis dari ITS?",
+        "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
         "database": "Pinecone",
-        "retrieval_time": 281.292200088501,
-        "llm_time": 7881.015062332153,
-        "total_time": 8162.307262420654,
+        "retrieval_time": 282.09424018859863,
+        "llm_time": 6339.709758758545,
+        "total_time": 6621.803998947144,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 7,
-        "query": "What are the requirements for ITAS application?",
+        "query": "What are the requirements for an Internship Visa (C22A)?",
         "database": "Pinecone",
-        "retrieval_time": 313.27223777770996,
-        "llm_time": 6317.682504653931,
-        "total_time": 6630.954742431641,
+        "retrieval_time": 278.8834571838379,
+        "llm_time": 7665.095090866089,
+        "total_time": 7943.978548049927,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 8,
-        "query": "How do I register at the local immigration office?",
+        "query": "How to use Gojek or Grab for local transportation?",
         "database": "Pinecone",
-        "retrieval_time": 329.3147087097168,
-        "llm_time": 9060.317754745483,
-        "total_time": 9389.6324634552,
+        "retrieval_time": 278.87630462646484,
+        "llm_time": 5300.781965255737,
+        "total_time": 5579.658269882202,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 9,
-        "query": "Where is the ITS Global Engagement Office located?",
+        "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
         "database": "Pinecone",
-        "retrieval_time": 277.7388095855713,
-        "llm_time": 1656.031608581543,
-        "total_time": 1933.7704181671143,
+        "retrieval_time": 280.7633876800537,
+        "llm_time": 4803.6980628967285,
+        "total_time": 5084.461450576782,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 10,
-        "query": "Apa itu myITS dan apa bedanya dengan SIAKAD?",
+        "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
         "database": "Pinecone",
-        "retrieval_time": 277.9426574707031,
-        "llm_time": 6937.135934829712,
-        "total_time": 7215.078592300415,
+        "retrieval_time": 281.3835144042969,
+        "llm_time": 5246.964454650879,
+        "total_time": 5528.347969055176,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 11,
-        "query": "Apa saja fitur yang tersedia di Microsoft Teams untuk mahasiswa?",
+        "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
         "database": "Pinecone",
-        "retrieval_time": 284.5804691314697,
-        "llm_time": 5940.923452377319,
-        "total_time": 6225.503921508789,
+        "retrieval_time": 281.3987731933594,
+        "llm_time": 3551.2912273406982,
+        "total_time": 3832.6900005340576,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 12,
-        "query": "How much does accommodation cost per month near ITS?",
+        "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
         "database": "Pinecone",
-        "retrieval_time": 277.44531631469727,
-        "llm_time": 7011.648178100586,
-        "total_time": 7289.093494415283,
+        "retrieval_time": 281.2011241912842,
+        "llm_time": 5661.05842590332,
+        "total_time": 5942.2595500946045,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 13,
-        "query": "How many types of academic VISA are available for international students?",
+        "query": "How do I register my phone's IMEI in Indonesia?",
         "database": "Pinecone",
-        "retrieval_time": 283.51354598999023,
-        "llm_time": 4157.81307220459,
-        "total_time": 4441.32661819458,
+        "retrieval_time": 293.6985492706299,
+        "llm_time": 8105.167627334595,
+        "total_time": 8398.866176605225,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 14,
-        "query": "What are the requirements for extending a study visa?",
+        "query": "Where is the Global Engagement Office located?",
         "database": "Pinecone",
-        "retrieval_time": 284.9297523498535,
-        "llm_time": 4439.967393875122,
-        "total_time": 4724.897146224976,
+        "retrieval_time": 288.22946548461914,
+        "llm_time": 1635.906457901001,
+        "total_time": 1924.1359233856201,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 15,
-        "query": "What documents do I need to bring when arriving in Surabaya?",
+        "query": "What items are on the arrival checklist for international students?",
         "database": "Pinecone",
-        "retrieval_time": 282.20605850219727,
-        "llm_time": 5568.273067474365,
-        "total_time": 5850.4791259765625,
+        "retrieval_time": 277.1015167236328,
+        "llm_time": 7075.926780700684,
+        "total_time": 7353.028297424316,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 16,
-        "query": "What is the procedure for visa on arrival?",
+        "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
         "database": "Pinecone",
-        "retrieval_time": 276.5154838562012,
-        "llm_time": 7022.316694259644,
-        "total_time": 7298.832178115845,
+        "retrieval_time": 281.7554473876953,
+        "llm_time": 6205.459117889404,
+        "total_time": 6487.2145652771,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 17,
-        "query": "Bagaimana cara mengaktivasi Multi-Factor Authentication (MFA)?",
+        "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
         "database": "Pinecone",
-        "retrieval_time": 279.1173458099365,
-        "llm_time": 7541.386365890503,
-        "total_time": 7820.503711700439,
+        "retrieval_time": 529.6847820281982,
+        "llm_time": 8184.429168701172,
+        "total_time": 8714.11395072937,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 18,
-        "query": "Apa saja jaringan WiFi yang tersedia di kampus ITS?",
+        "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
         "database": "Pinecone",
-        "retrieval_time": 279.1869640350342,
-        "llm_time": 3217.8795337677,
-        "total_time": 3497.0664978027344,
+        "retrieval_time": 324.77545738220215,
+        "llm_time": 4205.99102973938,
+        "total_time": 4530.766487121582,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 19,
-        "query": "How do I get a KITAS (temporary stay permit)?",
+        "query": "What are the estimated living costs for accommodation near ITS?",
         "database": "Pinecone",
-        "retrieval_time": 287.51373291015625,
-        "llm_time": 6922.074794769287,
-        "total_time": 7209.588527679443,
+        "retrieval_time": 544.8613166809082,
+        "llm_time": 10366.80793762207,
+        "total_time": 10911.669254302979,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 20,
-        "query": "Apa saja layanan internet yang tersedia di kampus ITS?",
+        "query": "Apa syarat pembuatan password baru untuk akun myITS?",
         "database": "Pinecone",
-        "retrieval_time": 313.183069229126,
-        "llm_time": 3769.5181369781494,
-        "total_time": 4082.7012062072754,
+        "retrieval_time": 279.28948402404785,
+        "llm_time": 5670.498371124268,
+        "total_time": 5949.787855148315,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 21,
-        "query": "Apa saja panduan keamanan akun yang disarankan DPTSI?",
+        "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
         "database": "Pinecone",
-        "retrieval_time": 280.2603244781494,
-        "llm_time": 3397.165536880493,
-        "total_time": 3677.4258613586426,
+        "retrieval_time": 468.0368900299072,
+        "llm_time": 6024.676322937012,
+        "total_time": 6492.713212966919,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 22,
-        "query": "Bagaimana cara mengunduh Microsoft Office gratis untuk mahasiswa?",
+        "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
         "database": "Pinecone",
-        "retrieval_time": 281.4462184906006,
-        "llm_time": 7484.497308731079,
-        "total_time": 7765.94352722168,
+        "retrieval_time": 280.73978424072266,
+        "llm_time": 2495.891809463501,
+        "total_time": 2776.6315937042236,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 23,
-        "query": "What health insurance options are available for international students?",
+        "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
         "database": "Pinecone",
-        "retrieval_time": 279.36339378356934,
-        "llm_time": 5190.932750701904,
-        "total_time": 5470.296144485474,
+        "retrieval_time": 283.9510440826416,
+        "llm_time": 3320.7085132598877,
+        "total_time": 3604.6595573425293,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 24,
-        "query": "Bagaimana cara menghubungi helpdesk DPTSI?",
+        "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
         "database": "Pinecone",
-        "retrieval_time": 283.33282470703125,
-        "llm_time": 3670.3169345855713,
-        "total_time": 3953.6497592926025,
+        "retrieval_time": 281.8601131439209,
+        "llm_time": 3779.747486114502,
+        "total_time": 4061.607599258423,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 25,
-        "query": "Which transportation apps can I use in Surabaya?",
+        "query": "Which hospitals are recommended near the ITS campus?",
         "database": "Pinecone",
-        "retrieval_time": 308.1796169281006,
-        "llm_time": 7320.0578689575195,
-        "total_time": 7628.23748588562,
+        "retrieval_time": 278.23758125305176,
+        "llm_time": 4619.152545928955,
+        "total_time": 4897.390127182007,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 26,
-        "query": "Bagaimana cara mengakses e-learning ITS?",
+        "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
         "database": "Pinecone",
-        "retrieval_time": 279.9198627471924,
-        "llm_time": 7402.272462844849,
-        "total_time": 7682.192325592041,
+        "retrieval_time": 282.27829933166504,
+        "llm_time": 153635.78581809998,
+        "total_time": 153918.06411743164,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 27,
-        "query": "Apa itu myITS Portal dan bagaimana cara mengaksesnya?",
+        "query": "Apa itu myITS Portal dan apa fungsinya?",
         "database": "Pinecone",
-        "retrieval_time": 281.07333183288574,
-        "llm_time": 5825.350522994995,
-        "total_time": 6106.423854827881,
+        "retrieval_time": 1639.2080783843994,
+        "llm_time": 6604.055166244507,
+        "total_time": 8243.263244628906,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 28,
-        "query": "How do I open a bank account in Indonesia?",
+        "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
         "database": "Pinecone",
-        "retrieval_time": 279.34885025024414,
-        "llm_time": 9477.792501449585,
-        "total_time": 9757.14135169983,
+        "retrieval_time": 596.2817668914795,
+        "llm_time": 18381.786108016968,
+        "total_time": 18978.067874908447,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 29,
-        "query": "Apa saja layanan cloud storage yang tersedia untuk mahasiswa?",
+        "query": "Bagaimana cara mengubah password melalui myITS Account?",
         "database": "Pinecone",
-        "retrieval_time": 352.65612602233887,
-        "llm_time": 4680.666446685791,
-        "total_time": 5033.32257270813,
+        "retrieval_time": 1892.2021389007568,
+        "llm_time": 6493.492603302002,
+        "total_time": 8385.694742202759,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 30,
-        "query": "Where can I exchange foreign currency in Surabaya?",
+        "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
         "database": "Pinecone",
-        "retrieval_time": 278.87415885925293,
-        "llm_time": 5796.053886413574,
-        "total_time": 6074.928045272827,
+        "retrieval_time": 287.2204780578613,
+        "llm_time": 7696.42448425293,
+        "total_time": 7983.644962310791,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 31,
-        "query": "Bagaimana cara mengaktifkan akun mahasiswa baru di ITS?",
+        "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
         "database": "Pinecone",
-        "retrieval_time": 282.84668922424316,
-        "llm_time": 5514.822006225586,
-        "total_time": 5797.668695449829,
+        "retrieval_time": 343.95742416381836,
+        "llm_time": 8305.441856384277,
+        "total_time": 8649.399280548096,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 32,
-        "query": "Bagaimana cara mengakses jurnal online dari perpustakaan ITS?",
+        "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
         "database": "Pinecone",
-        "retrieval_time": 279.9067497253418,
-        "llm_time": 6206.744194030762,
-        "total_time": 6486.6509437561035,
+        "retrieval_time": 287.3413562774658,
+        "llm_time": 5525.550127029419,
+        "total_time": 5812.891483306885,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 33,
-        "query": "What are the nearest hospitals to ITS?",
+        "query": "What are the emergency hotline numbers in Surabaya?",
         "database": "Pinecone",
-        "retrieval_time": 283.0789089202881,
-        "llm_time": 4795.527696609497,
-        "total_time": 5078.606605529785,
+        "retrieval_time": 315.36030769348145,
+        "llm_time": 9570.363521575928,
+        "total_time": 9885.72382926941,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 34,
-        "query": "Bagaimana cara menggunakan OneDrive ITS?",
+        "query": "Apa password default yang digunakan saat login pertama kali?",
         "database": "Pinecone",
-        "retrieval_time": 277.95863151550293,
-        "llm_time": 7349.797964096069,
-        "total_time": 7627.756595611572,
+        "retrieval_time": 287.16230392456055,
+        "llm_time": 2568.370580673218,
+        "total_time": 2855.5328845977783,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 35,
-        "query": "What sports facilities are available for students?",
+        "query": "What is the \"O-Week\" and why is it mandatory?",
         "database": "Pinecone",
-        "retrieval_time": 279.1285514831543,
-        "llm_time": 4529.1736125946045,
-        "total_time": 4808.302164077759,
+        "retrieval_time": 325.6266117095947,
+        "llm_time": 6158.784627914429,
+        "total_time": 6484.411239624023,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 36,
-        "query": "Bagaimana cara mengakses SIAKAD ITS?",
+        "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
         "database": "Pinecone",
-        "retrieval_time": 277.1179676055908,
-        "llm_time": 4627.74920463562,
-        "total_time": 4904.867172241211,
+        "retrieval_time": 288.90371322631836,
+        "llm_time": 2568.765640258789,
+        "total_time": 2857.6693534851074,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 37,
-        "query": "What are the internet package options for Tourist SIM Card?",
+        "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
         "database": "Pinecone",
-        "retrieval_time": 274.5702266693115,
-        "llm_time": 4186.036586761475,
-        "total_time": 4460.606813430786,
+        "retrieval_time": 284.531831741333,
+        "llm_time": 6790.722608566284,
+        "total_time": 7075.254440307617,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 38,
-        "query": "What faculties are available at ITS?",
+        "query": "What transport options are available from Juanda International Airport to ITS?",
         "database": "Pinecone",
-        "retrieval_time": 280.4703712463379,
-        "llm_time": 8698.573350906372,
-        "total_time": 8979.04372215271,
+        "retrieval_time": 282.71031379699707,
+        "llm_time": 9650.339126586914,
+        "total_time": 9933.049440383911,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 39,
-        "query": "What is the ITS administration fee for international students?",
+        "query": "What is the tax calculation for registering a phone worth more than $500?",
         "database": "Pinecone",
-        "retrieval_time": 313.4324550628662,
-        "llm_time": 3169.766902923584,
-        "total_time": 3483.19935798645,
+        "retrieval_time": 288.4852886199951,
+        "llm_time": 7122.152328491211,
+        "total_time": 7410.637617111206,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 40,
-        "query": "What is the process for airport pickup service?",
+        "query": "What is the meaning of the Indonesian slang \"Mager\"?",
         "database": "Pinecone",
-        "retrieval_time": 280.42006492614746,
-        "llm_time": 4609.682083129883,
-        "total_time": 4890.10214805603,
+        "retrieval_time": 323.361873626709,
+        "llm_time": 3534.717321395874,
+        "total_time": 3858.079195022583,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 41,
-        "query": "Apa saja layanan yang disediakan DPTSI untuk mahasiswa?",
+        "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
         "database": "Pinecone",
-        "retrieval_time": 295.5055236816406,
-        "llm_time": 8119.976043701172,
-        "total_time": 8415.481567382812,
+        "retrieval_time": 286.4813804626465,
+        "llm_time": 8677.317142486572,
+        "total_time": 8963.798522949219,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 42,
-        "query": "Who should I contact in case of an emergency?",
+        "query": "What is the process for extending a tourist IMEI registration?",
         "database": "Pinecone",
-        "retrieval_time": 312.9465579986572,
-        "llm_time": 3883.0883502960205,
-        "total_time": 4196.034908294678,
+        "retrieval_time": 284.2566967010498,
+        "llm_time": 6440.847158432007,
+        "total_time": 6725.103855133057,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 43,
-        "query": "What public transportation is available in Surabaya?",
+        "query": "What facilities are available at the ITS Medical Centre?",
         "database": "Pinecone",
-        "retrieval_time": 277.4045467376709,
-        "llm_time": 6814.180135726929,
-        "total_time": 7091.5846824646,
+        "retrieval_time": 283.36429595947266,
+        "llm_time": 4976.371765136719,
+        "total_time": 5259.736061096191,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 44,
-        "query": "Aplikasi apa saja yang bisa diakses melalui myITS Portal?",
+        "query": "Apa format default email mahasiswa baru ITS?",
         "database": "Pinecone",
-        "retrieval_time": 314.1162395477295,
-        "llm_time": 5922.60217666626,
-        "total_time": 6236.718416213989,
+        "retrieval_time": 313.20881843566895,
+        "llm_time": 3922.430992126465,
+        "total_time": 4235.639810562134,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 45,
-        "query": "Apa itu ITS Repository dan bagaimana cara mengaksesnya?",
+        "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
         "database": "Pinecone",
-        "retrieval_time": 281.055212020874,
-        "llm_time": 9766.696214675903,
-        "total_time": 10047.751426696777,
+        "retrieval_time": 284.9116325378418,
+        "llm_time": 10927.692651748657,
+        "total_time": 11212.604284286499,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 46,
-        "query": "What is the emergency hotline number in Surabaya?",
+        "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
         "database": "Pinecone",
-        "retrieval_time": 281.8009853363037,
-        "llm_time": 2780.1353931427,
-        "total_time": 3061.936378479004,
+        "retrieval_time": 285.250186920166,
+        "llm_time": 3740.4565811157227,
+        "total_time": 4025.7067680358887,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 47,
-        "query": "Bagaimana cara mengakses Office 365 untuk mahasiswa ITS?",
+        "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
         "database": "Pinecone",
-        "retrieval_time": 275.7747173309326,
-        "llm_time": 7982.816457748413,
-        "total_time": 8258.591175079346,
+        "retrieval_time": 288.0406379699707,
+        "llm_time": 7691.5154457092285,
+        "total_time": 7979.556083679199,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 48,
-        "query": "How do I register my phone's IMEI for a long stay in Indonesia?",
+        "query": "How much is the ITS administration fee for international students?",
         "database": "Pinecone",
-        "retrieval_time": 279.813289642334,
-        "llm_time": 7299.97444152832,
-        "total_time": 7579.787731170654,
+        "retrieval_time": 288.20300102233887,
+        "llm_time": 3515.974998474121,
+        "total_time": 3804.17799949646,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 49,
-        "query": "What are the living costs in Surabaya for students?",
+        "query": "Where can students find traditional markets near the campus?",
         "database": "Pinecone",
-        "retrieval_time": 283.61058235168457,
-        "llm_time": 7619.206666946411,
-        "total_time": 7902.817249298096,
+        "retrieval_time": 285.34603118896484,
+        "llm_time": 3457.2372436523438,
+        "total_time": 3742.5832748413086,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 50,
-        "query": "How long does the admission evaluation process take?",
+        "query": "How to use the Suroboyo Bus and what is the cost for students?",
         "database": "Pinecone",
-        "retrieval_time": 278.456449508667,
-        "llm_time": 2515.7265663146973,
-        "total_time": 2794.1830158233643,
+        "retrieval_time": 318.0546760559082,
+        "llm_time": 5049.614429473877,
+        "total_time": 5367.669105529785,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 51,
-        "query": "Bagaimana cara menyambungkan perangkat ke WiFi ITS?",
+        "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
         "database": "Pinecone",
-        "retrieval_time": 280.9755802154541,
-        "llm_time": 6061.078786849976,
-        "total_time": 6342.05436706543,
+        "retrieval_time": 288.3467674255371,
+        "llm_time": 6009.684801101685,
+        "total_time": 6298.031568527222,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 52,
-        "query": "Where is the immigration office for visa extension?",
+        "query": "Locations of places of worship (mosques and churches) around ITS.",
         "database": "Pinecone",
-        "retrieval_time": 279.35171127319336,
-        "llm_time": 4324.012756347656,
-        "total_time": 4603.36446762085,
+        "retrieval_time": 282.6676368713379,
+        "llm_time": 9826.090097427368,
+        "total_time": 10108.757734298706,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 53,
-        "query": "Bagaimana cara mengakses email ITS?",
+        "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
         "database": "Pinecone",
-        "retrieval_time": 279.6950340270996,
-        "llm_time": 6701.789379119873,
-        "total_time": 6981.484413146973,
+        "retrieval_time": 287.6925468444824,
+        "llm_time": 5140.18702507019,
+        "total_time": 5427.879571914673,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 54,
-        "query": "Bagaimana cara reset password akun ITS?",
+        "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
         "database": "Pinecone",
-        "retrieval_time": 275.16961097717285,
-        "llm_time": 7208.982706069946,
-        "total_time": 7484.152317047119,
+        "retrieval_time": 320.10889053344727,
+        "llm_time": 5544.821262359619,
+        "total_time": 5864.930152893066,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 55,
-        "query": "Apa itu ITS Single Sign-On?",
+        "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
         "database": "Pinecone",
-        "retrieval_time": 277.91285514831543,
-        "llm_time": 5513.777017593384,
-        "total_time": 5791.689872741699,
+        "retrieval_time": 287.4763011932373,
+        "llm_time": 6150.0403881073,
+        "total_time": 6437.516689300537,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 56,
-        "query": "Apa saja aplikasi yang terintegrasi dengan myITS?",
+        "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
         "database": "Pinecone",
-        "retrieval_time": 286.0846519470215,
-        "llm_time": 5669.9378490448,
-        "total_time": 5956.022500991821,
+        "retrieval_time": 286.6687774658203,
+        "llm_time": 8592.22149848938,
+        "total_time": 8878.8902759552,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 57,
-        "query": "Where can I find halal food near the campus?",
+        "query": "List of faculties available under the SCIENTICS cluster.",
         "database": "Pinecone",
-        "retrieval_time": 278.6126136779785,
-        "llm_time": 6083.0090045928955,
-        "total_time": 6361.621618270874,
+        "retrieval_time": 282.77587890625,
+        "llm_time": 9718.180418014526,
+        "total_time": 10000.956296920776,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 58,
-        "query": "Bagaimana cara mengubah password myITS Portal?",
+        "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
         "database": "Pinecone",
-        "retrieval_time": 305.30858039855957,
-        "llm_time": 6379.309415817261,
-        "total_time": 6684.61799621582,
+        "retrieval_time": 286.6988182067871,
+        "llm_time": 4879.730939865112,
+        "total_time": 5166.429758071899,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 59,
-        "query": "Apa itu myITS SSO dan bagaimana cara menggunakannya?",
+        "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
         "database": "Pinecone",
-        "retrieval_time": 279.7520160675049,
-        "llm_time": 9151.57961845398,
-        "total_time": 9431.331634521484,
+        "retrieval_time": 286.90195083618164,
+        "llm_time": 9086.917638778687,
+        "total_time": 9373.819589614868,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 60,
-        "query": "What is the fine for not having proof of residency within 14 days?",
+        "query": "What is the dress code for attending classes at ITS?",
         "database": "Pinecone",
-        "retrieval_time": 281.3253402709961,
-        "llm_time": 3875.2033710479736,
-        "total_time": 4156.52871131897,
+        "retrieval_time": 284.40308570861816,
+        "llm_time": 3019.0563201904297,
+        "total_time": 3303.459405899048,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 1,
-        "query": "Which banks are available inside ITS campus?",
+        "query": "How to register for a local bank account at Mandiri?",
         "database": "PostgreSQL",
-        "retrieval_time": 35.29620170593262,
-        "llm_time": 4262.707471847534,
-        "total_time": 4298.003673553467,
+        "retrieval_time": 29.464006423950195,
+        "llm_time": 9478.284358978271,
+        "total_time": 9507.748365402222,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 2,
-        "query": "Apa itu VPN ITS dan bagaimana cara menggunakannya?",
+        "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
         "database": "PostgreSQL",
-        "retrieval_time": 68.49861145019531,
-        "llm_time": 6147.586345672607,
-        "total_time": 6216.084957122803,
+        "retrieval_time": 69.54121589660645,
+        "llm_time": 2829.051733016968,
+        "total_time": 2898.592948913574,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 3,
-        "query": "How do I get Indonesian phone number (SIM card)?",
+        "query": "How can international students join Student Activity Units (UKM)?",
         "database": "PostgreSQL",
-        "retrieval_time": 68.76134872436523,
-        "llm_time": 7723.466873168945,
-        "total_time": 7792.228221893311,
+        "retrieval_time": 67.00801849365234,
+        "llm_time": 3774.4970321655273,
+        "total_time": 3841.5050506591797,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 4,
-        "query": "Apa itu myITS StudentConnect?",
+        "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
         "database": "PostgreSQL",
-        "retrieval_time": 66.99156761169434,
-        "llm_time": 4676.273345947266,
-        "total_time": 4743.26491355896,
+        "retrieval_time": 65.96183776855469,
+        "llm_time": 3851.398229598999,
+        "total_time": 3917.3600673675537,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 5,
-        "query": "Bagaimana cara mengakses Google Workspace ITS?",
+        "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
         "database": "PostgreSQL",
-        "retrieval_time": 69.92769241333008,
-        "llm_time": 2727.0731925964355,
-        "total_time": 2797.0008850097656,
+        "retrieval_time": 67.83390045166016,
+        "llm_time": 3888.880729675293,
+        "total_time": 3956.714630126953,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 6,
-        "query": "Bagaimana cara mendapatkan lisensi software gratis dari ITS?",
+        "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
         "database": "PostgreSQL",
-        "retrieval_time": 68.68386268615723,
-        "llm_time": 6795.11833190918,
-        "total_time": 6863.802194595337,
+        "retrieval_time": 69.16427612304688,
+        "llm_time": 5895.7459926605225,
+        "total_time": 5964.910268783569,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 7,
-        "query": "What are the requirements for ITAS application?",
+        "query": "What are the requirements for an Internship Visa (C22A)?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.25897979736328,
-        "llm_time": 4979.875087738037,
-        "total_time": 5045.1340675354,
+        "retrieval_time": 65.66905975341797,
+        "llm_time": 9340.94214439392,
+        "total_time": 9406.611204147339,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 8,
-        "query": "How do I register at the local immigration office?",
+        "query": "How to use Gojek or Grab for local transportation?",
         "database": "PostgreSQL",
-        "retrieval_time": 62.619924545288086,
-        "llm_time": 7178.72953414917,
-        "total_time": 7241.349458694458,
+        "retrieval_time": 67.04092025756836,
+        "llm_time": 5690.498828887939,
+        "total_time": 5757.539749145508,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 9,
-        "query": "Where is the ITS Global Engagement Office located?",
+        "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
         "database": "PostgreSQL",
-        "retrieval_time": 62.4082088470459,
-        "llm_time": 1512.1254920959473,
-        "total_time": 1574.5337009429932,
+        "retrieval_time": 69.17738914489746,
+        "llm_time": 5428.279876708984,
+        "total_time": 5497.457265853882,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 10,
-        "query": "Apa itu myITS dan apa bedanya dengan SIAKAD?",
+        "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
         "database": "PostgreSQL",
-        "retrieval_time": 68.79305839538574,
-        "llm_time": 5468.942880630493,
-        "total_time": 5537.735939025879,
+        "retrieval_time": 66.89882278442383,
+        "llm_time": 6418.161153793335,
+        "total_time": 6485.059976577759,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 11,
-        "query": "Apa saja fitur yang tersedia di Microsoft Teams untuk mahasiswa?",
+        "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
         "database": "PostgreSQL",
-        "retrieval_time": 63.77124786376953,
-        "llm_time": 5300.3246784210205,
-        "total_time": 5364.09592628479,
+        "retrieval_time": 70.12033462524414,
+        "llm_time": 4118.971586227417,
+        "total_time": 4189.091920852661,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 12,
-        "query": "How much does accommodation cost per month near ITS?",
+        "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
         "database": "PostgreSQL",
-        "retrieval_time": 66.77436828613281,
-        "llm_time": 8423.577785491943,
-        "total_time": 8490.352153778076,
+        "retrieval_time": 65.80686569213867,
+        "llm_time": 4479.947805404663,
+        "total_time": 4545.754671096802,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 13,
-        "query": "How many types of academic VISA are available for international students?",
+        "query": "How do I register my phone's IMEI in Indonesia?",
         "database": "PostgreSQL",
-        "retrieval_time": 64.38541412353516,
-        "llm_time": 4208.0254554748535,
-        "total_time": 4272.410869598389,
+        "retrieval_time": 66.92147254943848,
+        "llm_time": 7984.326124191284,
+        "total_time": 8051.247596740723,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 14,
-        "query": "What are the requirements for extending a study visa?",
+        "query": "Where is the Global Engagement Office located?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.22059440612793,
-        "llm_time": 2710.115671157837,
-        "total_time": 2775.336265563965,
+        "retrieval_time": 64.70870971679688,
+        "llm_time": 1475.8057594299316,
+        "total_time": 1540.5144691467285,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 15,
-        "query": "What documents do I need to bring when arriving in Surabaya?",
+        "query": "What items are on the arrival checklist for international students?",
         "database": "PostgreSQL",
-        "retrieval_time": 63.89188766479492,
-        "llm_time": 6724.709033966064,
-        "total_time": 6788.600921630859,
+        "retrieval_time": 64.26739692687988,
+        "llm_time": 4246.280670166016,
+        "total_time": 4310.5480670928955,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 16,
-        "query": "What is the procedure for visa on arrival?",
+        "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
         "database": "PostgreSQL",
-        "retrieval_time": 62.47544288635254,
-        "llm_time": 6612.862825393677,
-        "total_time": 6675.338268280029,
+        "retrieval_time": 69.65351104736328,
+        "llm_time": 5111.164808273315,
+        "total_time": 5180.818319320679,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 17,
-        "query": "Bagaimana cara mengaktivasi Multi-Factor Authentication (MFA)?",
+        "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
         "database": "PostgreSQL",
-        "retrieval_time": 66.17021560668945,
-        "llm_time": 7196.625232696533,
-        "total_time": 7262.795448303223,
+        "retrieval_time": 82.4887752532959,
+        "llm_time": 7167.959690093994,
+        "total_time": 7250.44846534729,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 18,
-        "query": "Apa saja jaringan WiFi yang tersedia di kampus ITS?",
+        "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
         "database": "PostgreSQL",
-        "retrieval_time": 66.33687019348145,
-        "llm_time": 2919.4271564483643,
-        "total_time": 2985.7640266418457,
+        "retrieval_time": 68.78376007080078,
+        "llm_time": 3808.7873458862305,
+        "total_time": 3877.5711059570312,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 19,
-        "query": "How do I get a KITAS (temporary stay permit)?",
+        "query": "What are the estimated living costs for accommodation near ITS?",
         "database": "PostgreSQL",
-        "retrieval_time": 63.98749351501465,
-        "llm_time": 9108.900547027588,
-        "total_time": 9172.888040542603,
+        "retrieval_time": 66.43128395080566,
+        "llm_time": 10597.70154953003,
+        "total_time": 10664.132833480835,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 20,
-        "query": "Apa saja layanan internet yang tersedia di kampus ITS?",
+        "query": "Apa syarat pembuatan password baru untuk akun myITS?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.97781181335449,
-        "llm_time": 3507.4892044067383,
-        "total_time": 3573.467016220093,
+        "retrieval_time": 66.44821166992188,
+        "llm_time": 5285.417556762695,
+        "total_time": 5351.865768432617,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 21,
-        "query": "Apa saja panduan keamanan akun yang disarankan DPTSI?",
+        "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
         "database": "PostgreSQL",
-        "retrieval_time": 68.99452209472656,
-        "llm_time": 3278.3708572387695,
-        "total_time": 3347.365379333496,
+        "retrieval_time": 68.8774585723877,
+        "llm_time": 4848.088264465332,
+        "total_time": 4916.96572303772,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 22,
-        "query": "Bagaimana cara mengunduh Microsoft Office gratis untuk mahasiswa?",
+        "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
         "database": "PostgreSQL",
-        "retrieval_time": 69.45157051086426,
-        "llm_time": 7669.339418411255,
-        "total_time": 7738.790988922119,
+        "retrieval_time": 67.04258918762207,
+        "llm_time": 3740.696907043457,
+        "total_time": 3807.739496231079,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 23,
-        "query": "What health insurance options are available for international students?",
+        "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.83833694458008,
-        "llm_time": 4526.697158813477,
-        "total_time": 4592.535495758057,
+        "retrieval_time": 68.11404228210449,
+        "llm_time": 3235.295057296753,
+        "total_time": 3303.4090995788574,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 24,
-        "query": "Bagaimana cara menghubungi helpdesk DPTSI?",
+        "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
         "database": "PostgreSQL",
-        "retrieval_time": 67.9011344909668,
-        "llm_time": 6150.8331298828125,
-        "total_time": 6218.734264373779,
+        "retrieval_time": 68.79043579101562,
+        "llm_time": 3458.373546600342,
+        "total_time": 3527.1639823913574,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 25,
-        "query": "Which transportation apps can I use in Surabaya?",
+        "query": "Which hospitals are recommended near the ITS campus?",
         "database": "PostgreSQL",
-        "retrieval_time": 68.42565536499023,
-        "llm_time": 5267.676830291748,
-        "total_time": 5336.102485656738,
+        "retrieval_time": 62.96253204345703,
+        "llm_time": 4913.549423217773,
+        "total_time": 4976.5119552612305,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 26,
-        "query": "Bagaimana cara mengakses e-learning ITS?",
+        "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
         "database": "PostgreSQL",
-        "retrieval_time": 63.73119354248047,
-        "llm_time": 4475.8620262146,
-        "total_time": 4539.59321975708,
+        "retrieval_time": 70.19305229187012,
+        "llm_time": 13529.703617095947,
+        "total_time": 13599.896669387817,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 27,
-        "query": "Apa itu myITS Portal dan bagaimana cara mengaksesnya?",
+        "query": "Apa itu myITS Portal dan apa fungsinya?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.25850296020508,
-        "llm_time": 5439.259052276611,
-        "total_time": 5504.517555236816,
+        "retrieval_time": 73.14324378967285,
+        "llm_time": 6405.608892440796,
+        "total_time": 6478.752136230469,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 28,
-        "query": "How do I open a bank account in Indonesia?",
+        "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
         "database": "PostgreSQL",
-        "retrieval_time": 64.15963172912598,
-        "llm_time": 8637.574195861816,
-        "total_time": 8701.733827590942,
+        "retrieval_time": 69.8554515838623,
+        "llm_time": 23197.858810424805,
+        "total_time": 23267.714262008667,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 29,
-        "query": "Apa saja layanan cloud storage yang tersedia untuk mahasiswa?",
+        "query": "Bagaimana cara mengubah password melalui myITS Account?",
         "database": "PostgreSQL",
-        "retrieval_time": 67.66819953918457,
-        "llm_time": 3406.0051441192627,
-        "total_time": 3473.6733436584473,
+        "retrieval_time": 70.93024253845215,
+        "llm_time": 6294.965028762817,
+        "total_time": 6365.8952713012695,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 30,
-        "query": "Where can I exchange foreign currency in Surabaya?",
+        "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.33806228637695,
+        "llm_time": 13838.504552841187,
+        "total_time": 13904.842615127563,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 31,
+        "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 67.68631935119629,
+        "llm_time": 7517.247915267944,
+        "total_time": 7584.934234619141,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 32,
+        "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 65.8717155456543,
+        "llm_time": 5635.1637840271,
+        "total_time": 5701.035499572754,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 33,
+        "query": "What are the emergency hotline numbers in Surabaya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.16997718811035,
+        "llm_time": 4168.970584869385,
+        "total_time": 4235.140562057495,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 34,
+        "query": "Apa password default yang digunakan saat login pertama kali?",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.94412231445312,
+        "llm_time": 1564.8345947265625,
+        "total_time": 1631.7787170410156,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 35,
+        "query": "What is the \"O-Week\" and why is it mandatory?",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.59913063049316,
+        "llm_time": 3816.2031173706055,
+        "total_time": 3882.8022480010986,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 36,
+        "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+        "database": "PostgreSQL",
+        "retrieval_time": 67.38877296447754,
+        "llm_time": 2639.054775238037,
+        "total_time": 2706.4435482025146,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 37,
+        "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 69.74196434020996,
+        "llm_time": 5992.4516677856445,
+        "total_time": 6062.1936321258545,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 38,
+        "query": "What transport options are available from Juanda International Airport to ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 70.05119323730469,
+        "llm_time": 8253.836631774902,
+        "total_time": 8323.887825012207,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 39,
+        "query": "What is the tax calculation for registering a phone worth more than $500?",
+        "database": "PostgreSQL",
+        "retrieval_time": 67.82269477844238,
+        "llm_time": 6259.440183639526,
+        "total_time": 6327.262878417969,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 40,
+        "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+        "database": "PostgreSQL",
+        "retrieval_time": 65.63401222229004,
+        "llm_time": 3288.55037689209,
+        "total_time": 3354.18438911438,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 41,
+        "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 67.33155250549316,
+        "llm_time": 7565.090656280518,
+        "total_time": 7632.422208786011,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 42,
+        "query": "What is the process for extending a tourist IMEI registration?",
+        "database": "PostgreSQL",
+        "retrieval_time": 65.80901145935059,
+        "llm_time": 5652.604818344116,
+        "total_time": 5718.413829803467,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 43,
+        "query": "What facilities are available at the ITS Medical Centre?",
+        "database": "PostgreSQL",
+        "retrieval_time": 65.06228446960449,
+        "llm_time": 4225.343942642212,
+        "total_time": 4290.406227111816,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 44,
+        "query": "Apa format default email mahasiswa baru ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 65.86456298828125,
+        "llm_time": 4951.731204986572,
+        "total_time": 5017.5957679748535,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 45,
+        "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+        "database": "PostgreSQL",
+        "retrieval_time": 69.67639923095703,
+        "llm_time": 10169.655561447144,
+        "total_time": 10239.3319606781,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 46,
+        "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 63.74955177307129,
+        "llm_time": 3465.1942253112793,
+        "total_time": 3528.9437770843506,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 47,
+        "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.76983833312988,
+        "llm_time": 8947.280406951904,
+        "total_time": 9014.050245285034,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 48,
+        "query": "How much is the ITS administration fee for international students?",
+        "database": "PostgreSQL",
+        "retrieval_time": 63.28701972961426,
+        "llm_time": 3360.31436920166,
+        "total_time": 3423.6013889312744,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 49,
+        "query": "Where can students find traditional markets near the campus?",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.83540344238281,
+        "llm_time": 3428.0765056610107,
+        "total_time": 3494.9119091033936,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 50,
+        "query": "How to use the Suroboyo Bus and what is the cost for students?",
+        "database": "PostgreSQL",
+        "retrieval_time": 67.38638877868652,
+        "llm_time": 5725.96549987793,
+        "total_time": 5793.351888656616,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 51,
+        "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 69.85926628112793,
+        "llm_time": 5841.017961502075,
+        "total_time": 5910.877227783203,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 52,
+        "query": "Locations of places of worship (mosques and churches) around ITS.",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.44129753112793,
+        "llm_time": 6964.5256996154785,
+        "total_time": 7030.966997146606,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 53,
+        "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 68.16434860229492,
+        "llm_time": 4928.699970245361,
+        "total_time": 4996.864318847656,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 54,
+        "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+        "database": "PostgreSQL",
+        "retrieval_time": 71.23041152954102,
+        "llm_time": 6446.517467498779,
+        "total_time": 6517.74787902832,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 55,
+        "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 69.54383850097656,
+        "llm_time": 5361.904859542847,
+        "total_time": 5431.448698043823,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 56,
+        "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 69.20409202575684,
+        "llm_time": 6305.826902389526,
+        "total_time": 6375.030994415283,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 57,
+        "query": "List of faculties available under the SCIENTICS cluster.",
+        "database": "PostgreSQL",
+        "retrieval_time": 66.63107872009277,
+        "llm_time": 6871.083498001099,
+        "total_time": 6937.714576721191,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 58,
+        "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
         "database": "PostgreSQL",
         "retrieval_time": 68.04585456848145,
-        "llm_time": 5134.791851043701,
-        "total_time": 5202.837705612183,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 31,
-        "query": "Bagaimana cara mengaktifkan akun mahasiswa baru di ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 71.16317749023438,
-        "llm_time": 6497.847557067871,
-        "total_time": 6569.0107345581055,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 32,
-        "query": "Bagaimana cara mengakses jurnal online dari perpustakaan ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 67.79146194458008,
-        "llm_time": 5304.922103881836,
-        "total_time": 5372.713565826416,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 33,
-        "query": "What are the nearest hospitals to ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 63.23552131652832,
-        "llm_time": 4573.274612426758,
-        "total_time": 4636.510133743286,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 34,
-        "query": "Bagaimana cara menggunakan OneDrive ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 65.17744064331055,
-        "llm_time": 8058.663606643677,
-        "total_time": 8123.841047286987,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 35,
-        "query": "What sports facilities are available for students?",
-        "database": "PostgreSQL",
-        "retrieval_time": 64.18228149414062,
-        "llm_time": 5176.740884780884,
-        "total_time": 5240.923166275024,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 36,
-        "query": "Bagaimana cara mengakses SIAKAD ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.96677207946777,
-        "llm_time": 4169.851541519165,
-        "total_time": 4236.818313598633,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 37,
-        "query": "What are the internet package options for Tourist SIM Card?",
-        "database": "PostgreSQL",
-        "retrieval_time": 65.2456283569336,
-        "llm_time": 3721.468210220337,
-        "total_time": 3786.7138385772705,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 38,
-        "query": "What faculties are available at ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 63.65227699279785,
-        "llm_time": 7729.997873306274,
-        "total_time": 7793.650150299072,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 39,
-        "query": "What is the ITS administration fee for international students?",
-        "database": "PostgreSQL",
-        "retrieval_time": 65.67955017089844,
-        "llm_time": 3026.0472297668457,
-        "total_time": 3091.726779937744,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 40,
-        "query": "What is the process for airport pickup service?",
-        "database": "PostgreSQL",
-        "retrieval_time": 65.70911407470703,
-        "llm_time": 6162.54734992981,
-        "total_time": 6228.256464004517,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 41,
-        "query": "Apa saja layanan yang disediakan DPTSI untuk mahasiswa?",
-        "database": "PostgreSQL",
-        "retrieval_time": 70.159912109375,
-        "llm_time": 6754.440069198608,
-        "total_time": 6824.599981307983,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 42,
-        "query": "Who should I contact in case of an emergency?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.64204597473145,
-        "llm_time": 3355.254650115967,
-        "total_time": 3421.8966960906982,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 43,
-        "query": "What public transportation is available in Surabaya?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.4675235748291,
-        "llm_time": 5518.961191177368,
-        "total_time": 5585.428714752197,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 44,
-        "query": "Aplikasi apa saja yang bisa diakses melalui myITS Portal?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.50519371032715,
-        "llm_time": 6167.246103286743,
-        "total_time": 6233.75129699707,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 45,
-        "query": "Apa itu ITS Repository dan bagaimana cara mengaksesnya?",
-        "database": "PostgreSQL",
-        "retrieval_time": 67.15083122253418,
-        "llm_time": 6134.51361656189,
-        "total_time": 6201.664447784424,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 46,
-        "query": "What is the emergency hotline number in Surabaya?",
-        "database": "PostgreSQL",
-        "retrieval_time": 64.96834754943848,
-        "llm_time": 2771.3027000427246,
-        "total_time": 2836.271047592163,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 47,
-        "query": "Bagaimana cara mengakses Office 365 untuk mahasiswa ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.06817245483398,
-        "llm_time": 10062.996625900269,
-        "total_time": 10129.064798355103,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 48,
-        "query": "How do I register my phone's IMEI for a long stay in Indonesia?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.63751602172852,
-        "llm_time": 5466.8450355529785,
-        "total_time": 5533.482551574707,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 49,
-        "query": "What are the living costs in Surabaya for students?",
-        "database": "PostgreSQL",
-        "retrieval_time": 63.829898834228516,
-        "llm_time": 8204.363107681274,
-        "total_time": 8268.193006515503,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 50,
-        "query": "How long does the admission evaluation process take?",
-        "database": "PostgreSQL",
-        "retrieval_time": 64.57352638244629,
-        "llm_time": 2288.212299346924,
-        "total_time": 2352.78582572937,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 51,
-        "query": "Bagaimana cara menyambungkan perangkat ke WiFi ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 68.32098960876465,
-        "llm_time": 6065.885305404663,
-        "total_time": 6134.206295013428,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 52,
-        "query": "Where is the immigration office for visa extension?",
-        "database": "PostgreSQL",
-        "retrieval_time": 68.92013549804688,
-        "llm_time": 3783.134937286377,
-        "total_time": 3852.055072784424,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 53,
-        "query": "Bagaimana cara mengakses email ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 63.98749351501465,
-        "llm_time": 7234.180212020874,
-        "total_time": 7298.167705535889,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 54,
-        "query": "Bagaimana cara reset password akun ITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 65.6442642211914,
-        "llm_time": 6799.808502197266,
-        "total_time": 6865.452766418457,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 55,
-        "query": "Apa itu ITS Single Sign-On?",
-        "database": "PostgreSQL",
-        "retrieval_time": 68.5567855834961,
-        "llm_time": 4858.865261077881,
-        "total_time": 4927.422046661377,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 56,
-        "query": "Apa saja aplikasi yang terintegrasi dengan myITS?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.12229347229004,
-        "llm_time": 5608.9372634887695,
-        "total_time": 5675.05955696106,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 57,
-        "query": "Where can I find halal food near the campus?",
-        "database": "PostgreSQL",
-        "retrieval_time": 66.93005561828613,
-        "llm_time": 3893.685817718506,
-        "total_time": 3960.615873336792,
-        "num_docs": 5,
-        "success": true
-      },
-      {
-        "query_num": 58,
-        "query": "Bagaimana cara mengubah password myITS Portal?",
-        "database": "PostgreSQL",
-        "retrieval_time": 68.64643096923828,
-        "llm_time": 8414.612293243408,
-        "total_time": 8483.258724212646,
+        "llm_time": 5191.009759902954,
+        "total_time": 5259.055614471436,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 59,
-        "query": "Apa itu myITS SSO dan bagaimana cara menggunakannya?",
+        "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.88959693908691,
-        "llm_time": 9032.665967941284,
-        "total_time": 9098.555564880371,
+        "retrieval_time": 70.69206237792969,
+        "llm_time": 9047.656297683716,
+        "total_time": 9118.348360061646,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 60,
-        "query": "What is the fine for not having proof of residency within 14 days?",
+        "query": "What is the dress code for attending classes at ITS?",
         "database": "PostgreSQL",
-        "retrieval_time": 65.92392921447754,
-        "llm_time": 2920.3104972839355,
-        "total_time": 2986.234426498413,
+        "retrieval_time": 63.088178634643555,
+        "llm_time": 2693.3510303497314,
+        "total_time": 2756.439208984375,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 1,
-        "query": "Which banks are available inside ITS campus?",
+        "query": "How to register for a local bank account at Mandiri?",
         "database": "ChromaDB",
-        "retrieval_time": 54.192304611206055,
-        "llm_time": 4213.207244873047,
-        "total_time": 4267.399549484253,
+        "retrieval_time": 62.97564506530762,
+        "llm_time": 7937.482595443726,
+        "total_time": 8000.458240509033,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 2,
-        "query": "Apa itu VPN ITS dan bagaimana cara menggunakannya?",
+        "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
         "database": "ChromaDB",
-        "retrieval_time": 20.9348201751709,
-        "llm_time": 7212.299346923828,
-        "total_time": 7233.234167098999,
+        "retrieval_time": 20.714998245239258,
+        "llm_time": 2264.3380165100098,
+        "total_time": 2285.053014755249,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 3,
-        "query": "How do I get Indonesian phone number (SIM card)?",
+        "query": "How can international students join Student Activity Units (UKM)?",
         "database": "ChromaDB",
-        "retrieval_time": 17.584800720214844,
-        "llm_time": 8443.257570266724,
-        "total_time": 8460.842370986938,
+        "retrieval_time": 17.032146453857422,
+        "llm_time": 4522.065162658691,
+        "total_time": 4539.097309112549,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 4,
-        "query": "Apa itu myITS StudentConnect?",
+        "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
         "database": "ChromaDB",
-        "retrieval_time": 16.152620315551758,
-        "llm_time": 4619.431495666504,
-        "total_time": 4635.584115982056,
+        "retrieval_time": 21.16250991821289,
+        "llm_time": 3809.6930980682373,
+        "total_time": 3830.85560798645,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 5,
-        "query": "Bagaimana cara mengakses Google Workspace ITS?",
+        "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
         "database": "ChromaDB",
-        "retrieval_time": 17.467975616455078,
-        "llm_time": 3487.1840476989746,
-        "total_time": 3504.6520233154297,
+        "retrieval_time": 20.882368087768555,
+        "llm_time": 4713.3629322052,
+        "total_time": 4734.245300292969,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 6,
-        "query": "Bagaimana cara mendapatkan lisensi software gratis dari ITS?",
+        "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
         "database": "ChromaDB",
-        "retrieval_time": 21.0418701171875,
-        "llm_time": 6274.907350540161,
-        "total_time": 6295.949220657349,
+        "retrieval_time": 22.156238555908203,
+        "llm_time": 4994.439601898193,
+        "total_time": 5016.595840454102,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 7,
-        "query": "What are the requirements for ITAS application?",
+        "query": "What are the requirements for an Internship Visa (C22A)?",
         "database": "ChromaDB",
-        "retrieval_time": 18.572330474853516,
-        "llm_time": 5968.976020812988,
-        "total_time": 5987.548351287842,
+        "retrieval_time": 19.58441734313965,
+        "llm_time": 7323.4124183654785,
+        "total_time": 7342.996835708618,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 8,
-        "query": "How do I register at the local immigration office?",
+        "query": "How to use Gojek or Grab for local transportation?",
         "database": "ChromaDB",
-        "retrieval_time": 19.26732063293457,
-        "llm_time": 5968.297243118286,
-        "total_time": 5987.564563751221,
+        "retrieval_time": 18.100500106811523,
+        "llm_time": 5782.039165496826,
+        "total_time": 5800.139665603638,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 9,
-        "query": "Where is the ITS Global Engagement Office located?",
+        "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
         "database": "ChromaDB",
-        "retrieval_time": 18.269777297973633,
-        "llm_time": 1575.099229812622,
-        "total_time": 1593.3690071105957,
+        "retrieval_time": 22.1860408782959,
+        "llm_time": 4735.476970672607,
+        "total_time": 4757.663011550903,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 10,
-        "query": "Apa itu myITS dan apa bedanya dengan SIAKAD?",
+        "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
         "database": "ChromaDB",
-        "retrieval_time": 23.16737174987793,
-        "llm_time": 5874.813556671143,
-        "total_time": 5897.9809284210205,
+        "retrieval_time": 22.479772567749023,
+        "llm_time": 6031.609296798706,
+        "total_time": 6054.089069366455,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 11,
-        "query": "Apa saja fitur yang tersedia di Microsoft Teams untuk mahasiswa?",
+        "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
         "database": "ChromaDB",
-        "retrieval_time": 20.503997802734375,
-        "llm_time": 4631.068229675293,
-        "total_time": 4651.572227478027,
+        "retrieval_time": 20.254135131835938,
+        "llm_time": 3821.0368156433105,
+        "total_time": 3841.2909507751465,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 12,
-        "query": "How much does accommodation cost per month near ITS?",
+        "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
         "database": "ChromaDB",
-        "retrieval_time": 19.14191246032715,
-        "llm_time": 8721.368789672852,
-        "total_time": 8740.510702133179,
+        "retrieval_time": 22.216796875,
+        "llm_time": 6386.376857757568,
+        "total_time": 6408.593654632568,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 13,
-        "query": "How many types of academic VISA are available for international students?",
+        "query": "How do I register my phone's IMEI in Indonesia?",
         "database": "ChromaDB",
-        "retrieval_time": 21.113157272338867,
-        "llm_time": 3705.326795578003,
-        "total_time": 3726.439952850342,
+        "retrieval_time": 19.31905746459961,
+        "llm_time": 8180.93204498291,
+        "total_time": 8200.25110244751,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 14,
-        "query": "What are the requirements for extending a study visa?",
+        "query": "Where is the Global Engagement Office located?",
         "database": "ChromaDB",
-        "retrieval_time": 18.556833267211914,
-        "llm_time": 5358.404159545898,
-        "total_time": 5376.96099281311,
+        "retrieval_time": 17.976760864257812,
+        "llm_time": 1466.9559001922607,
+        "total_time": 1484.9326610565186,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 15,
-        "query": "What documents do I need to bring when arriving in Surabaya?",
+        "query": "What items are on the arrival checklist for international students?",
         "database": "ChromaDB",
-        "retrieval_time": 19.6075439453125,
-        "llm_time": 7013.932228088379,
-        "total_time": 7033.539772033691,
+        "retrieval_time": 18.13960075378418,
+        "llm_time": 6791.506767272949,
+        "total_time": 6809.646368026733,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 16,
-        "query": "What is the procedure for visa on arrival?",
+        "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
         "database": "ChromaDB",
-        "retrieval_time": 20.137786865234375,
-        "llm_time": 7182.607650756836,
-        "total_time": 7202.74543762207,
+        "retrieval_time": 21.404504776000977,
+        "llm_time": 5119.215488433838,
+        "total_time": 5140.619993209839,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 17,
-        "query": "Bagaimana cara mengaktivasi Multi-Factor Authentication (MFA)?",
+        "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
         "database": "ChromaDB",
-        "retrieval_time": 20.561695098876953,
-        "llm_time": 7544.2492961883545,
-        "total_time": 7564.810991287231,
+        "retrieval_time": 21.25406265258789,
+        "llm_time": 8243.085861206055,
+        "total_time": 8264.339923858643,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 18,
-        "query": "Apa saja jaringan WiFi yang tersedia di kampus ITS?",
+        "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
         "database": "ChromaDB",
-        "retrieval_time": 19.727230072021484,
-        "llm_time": 3061.5527629852295,
-        "total_time": 3081.279993057251,
+        "retrieval_time": 20.682096481323242,
+        "llm_time": 4012.948751449585,
+        "total_time": 4033.630847930908,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 19,
-        "query": "How do I get a KITAS (temporary stay permit)?",
+        "query": "What are the estimated living costs for accommodation near ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 19.41680908203125,
-        "llm_time": 7453.9759159088135,
-        "total_time": 7473.392724990845,
+        "retrieval_time": 20.138025283813477,
+        "llm_time": 8121.188640594482,
+        "total_time": 8141.326665878296,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 20,
-        "query": "Apa saja layanan internet yang tersedia di kampus ITS?",
+        "query": "Apa syarat pembuatan password baru untuk akun myITS?",
         "database": "ChromaDB",
-        "retrieval_time": 20.36428451538086,
-        "llm_time": 3899.623155593872,
-        "total_time": 3919.987440109253,
+        "retrieval_time": 22.107362747192383,
+        "llm_time": 5241.264343261719,
+        "total_time": 5263.371706008911,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 21,
-        "query": "Apa saja panduan keamanan akun yang disarankan DPTSI?",
+        "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
         "database": "ChromaDB",
-        "retrieval_time": 20.10941505432129,
-        "llm_time": 3367.945432662964,
-        "total_time": 3388.054847717285,
+        "retrieval_time": 19.587039947509766,
+        "llm_time": 4614.019155502319,
+        "total_time": 4633.606195449829,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 22,
-        "query": "Bagaimana cara mengunduh Microsoft Office gratis untuk mahasiswa?",
+        "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 22.25518226623535,
-        "llm_time": 7363.769292831421,
-        "total_time": 7386.024475097656,
+        "retrieval_time": 20.175933837890625,
+        "llm_time": 3369.3578243255615,
+        "total_time": 3389.533758163452,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 23,
-        "query": "What health insurance options are available for international students?",
+        "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
         "database": "ChromaDB",
-        "retrieval_time": 16.683101654052734,
-        "llm_time": 5851.77755355835,
-        "total_time": 5868.460655212402,
+        "retrieval_time": 19.661903381347656,
+        "llm_time": 3307.260751724243,
+        "total_time": 3326.922655105591,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 24,
-        "query": "Bagaimana cara menghubungi helpdesk DPTSI?",
+        "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
         "database": "ChromaDB",
-        "retrieval_time": 19.994735717773438,
-        "llm_time": 3966.2041664123535,
-        "total_time": 3986.198902130127,
+        "retrieval_time": 21.2552547454834,
+        "llm_time": 3310.680150985718,
+        "total_time": 3331.935405731201,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 25,
-        "query": "Which transportation apps can I use in Surabaya?",
+        "query": "Which hospitals are recommended near the ITS campus?",
         "database": "ChromaDB",
-        "retrieval_time": 17.94719696044922,
-        "llm_time": 5330.551385879517,
-        "total_time": 5348.498582839966,
+        "retrieval_time": 18.37778091430664,
+        "llm_time": 4658.456087112427,
+        "total_time": 4676.833868026733,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 26,
-        "query": "Bagaimana cara mengakses e-learning ITS?",
+        "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
         "database": "ChromaDB",
-        "retrieval_time": 22.916078567504883,
-        "llm_time": 4581.59327507019,
-        "total_time": 4604.509353637695,
+        "retrieval_time": 27.704238891601562,
+        "llm_time": 16308.715105056763,
+        "total_time": 16336.419343948364,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 27,
-        "query": "Apa itu myITS Portal dan bagaimana cara mengaksesnya?",
+        "query": "Apa itu myITS Portal dan apa fungsinya?",
         "database": "ChromaDB",
-        "retrieval_time": 20.574331283569336,
-        "llm_time": 5936.283349990845,
-        "total_time": 5956.857681274414,
+        "retrieval_time": 21.3315486907959,
+        "llm_time": 6322.194337844849,
+        "total_time": 6343.5258865356445,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 28,
-        "query": "How do I open a bank account in Indonesia?",
+        "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
         "database": "ChromaDB",
-        "retrieval_time": 18.27096939086914,
-        "llm_time": 9197.11446762085,
-        "total_time": 9215.385437011719,
+        "retrieval_time": 22.663593292236328,
+        "llm_time": 19203.892469406128,
+        "total_time": 19226.556062698364,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 29,
-        "query": "Apa saja layanan cloud storage yang tersedia untuk mahasiswa?",
+        "query": "Bagaimana cara mengubah password melalui myITS Account?",
         "database": "ChromaDB",
-        "retrieval_time": 20.10965347290039,
-        "llm_time": 3037.88161277771,
-        "total_time": 3057.9912662506104,
+        "retrieval_time": 23.75197410583496,
+        "llm_time": 7147.162199020386,
+        "total_time": 7170.914173126221,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 30,
-        "query": "Where can I exchange foreign currency in Surabaya?",
+        "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
         "database": "ChromaDB",
-        "retrieval_time": 19.12713050842285,
-        "llm_time": 5831.582546234131,
-        "total_time": 5850.709676742554,
+        "retrieval_time": 21.117448806762695,
+        "llm_time": 7716.415882110596,
+        "total_time": 7737.533330917358,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 31,
-        "query": "Bagaimana cara mengaktifkan akun mahasiswa baru di ITS?",
+        "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 21.707534790039062,
-        "llm_time": 4249.899864196777,
-        "total_time": 4271.607398986816,
+        "retrieval_time": 22.280454635620117,
+        "llm_time": 7219.051837921143,
+        "total_time": 7241.332292556763,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 32,
-        "query": "Bagaimana cara mengakses jurnal online dari perpustakaan ITS?",
+        "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
         "database": "ChromaDB",
-        "retrieval_time": 21.275043487548828,
-        "llm_time": 5226.319074630737,
-        "total_time": 5247.594118118286,
+        "retrieval_time": 23.96678924560547,
+        "llm_time": 5035.094261169434,
+        "total_time": 5059.061050415039,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 33,
-        "query": "What are the nearest hospitals to ITS?",
+        "query": "What are the emergency hotline numbers in Surabaya?",
         "database": "ChromaDB",
-        "retrieval_time": 20.118236541748047,
-        "llm_time": 4175.3740310668945,
-        "total_time": 4195.492267608643,
+        "retrieval_time": 19.54054832458496,
+        "llm_time": 3510.7197761535645,
+        "total_time": 3530.2603244781494,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 34,
-        "query": "Bagaimana cara menggunakan OneDrive ITS?",
+        "query": "Apa password default yang digunakan saat login pertama kali?",
         "database": "ChromaDB",
-        "retrieval_time": 19.123077392578125,
-        "llm_time": 8926.79738998413,
-        "total_time": 8945.920467376709,
+        "retrieval_time": 21.517276763916016,
+        "llm_time": 3336.367130279541,
+        "total_time": 3357.884407043457,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 35,
-        "query": "What sports facilities are available for students?",
+        "query": "What is the \"O-Week\" and why is it mandatory?",
         "database": "ChromaDB",
-        "retrieval_time": 18.668174743652344,
-        "llm_time": 5170.393943786621,
-        "total_time": 5189.062118530273,
+        "retrieval_time": 19.57559585571289,
+        "llm_time": 5495.71418762207,
+        "total_time": 5515.289783477783,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 36,
-        "query": "Bagaimana cara mengakses SIAKAD ITS?",
+        "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
         "database": "ChromaDB",
-        "retrieval_time": 17.920970916748047,
-        "llm_time": 3303.237199783325,
-        "total_time": 3321.1581707000732,
+        "retrieval_time": 20.6301212310791,
+        "llm_time": 2320.561170578003,
+        "total_time": 2341.191291809082,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 37,
-        "query": "What are the internet package options for Tourist SIM Card?",
+        "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
         "database": "ChromaDB",
-        "retrieval_time": 19.699573516845703,
-        "llm_time": 3880.002021789551,
-        "total_time": 3899.7015953063965,
+        "retrieval_time": 21.840572357177734,
+        "llm_time": 6387.937545776367,
+        "total_time": 6409.778118133545,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 38,
-        "query": "What faculties are available at ITS?",
+        "query": "What transport options are available from Juanda International Airport to ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 23.047685623168945,
-        "llm_time": 7029.840469360352,
-        "total_time": 7052.8881549835205,
+        "retrieval_time": 19.367456436157227,
+        "llm_time": 7029.982328414917,
+        "total_time": 7049.349784851074,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 39,
-        "query": "What is the ITS administration fee for international students?",
+        "query": "What is the tax calculation for registering a phone worth more than $500?",
         "database": "ChromaDB",
-        "retrieval_time": 18.642187118530273,
-        "llm_time": 3033.9207649230957,
-        "total_time": 3052.562952041626,
+        "retrieval_time": 21.06618881225586,
+        "llm_time": 11921.386003494263,
+        "total_time": 11942.452192306519,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 40,
-        "query": "What is the process for airport pickup service?",
+        "query": "What is the meaning of the Indonesian slang \"Mager\"?",
         "database": "ChromaDB",
-        "retrieval_time": 19.639968872070312,
-        "llm_time": 6576.684236526489,
-        "total_time": 6596.32420539856,
+        "retrieval_time": 17.87400245666504,
+        "llm_time": 3249.7947216033936,
+        "total_time": 3267.6687240600586,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 41,
-        "query": "Apa saja layanan yang disediakan DPTSI untuk mahasiswa?",
+        "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
         "database": "ChromaDB",
-        "retrieval_time": 23.319005966186523,
-        "llm_time": 7686.599969863892,
-        "total_time": 7709.918975830078,
+        "retrieval_time": 22.248029708862305,
+        "llm_time": 6167.998313903809,
+        "total_time": 6190.246343612671,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 42,
-        "query": "Who should I contact in case of an emergency?",
+        "query": "What is the process for extending a tourist IMEI registration?",
         "database": "ChromaDB",
-        "retrieval_time": 18.7375545501709,
-        "llm_time": 3949.8159885406494,
-        "total_time": 3968.5535430908203,
+        "retrieval_time": 19.184350967407227,
+        "llm_time": 5806.0712814331055,
+        "total_time": 5825.255632400513,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 43,
-        "query": "What public transportation is available in Surabaya?",
+        "query": "What facilities are available at the ITS Medical Centre?",
         "database": "ChromaDB",
-        "retrieval_time": 18.536806106567383,
-        "llm_time": 8812.080144882202,
-        "total_time": 8830.61695098877,
+        "retrieval_time": 18.475055694580078,
+        "llm_time": 4628.192663192749,
+        "total_time": 4646.667718887329,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 44,
-        "query": "Aplikasi apa saja yang bisa diakses melalui myITS Portal?",
+        "query": "Apa format default email mahasiswa baru ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 23.044824600219727,
-        "llm_time": 6554.666519165039,
-        "total_time": 6577.711343765259,
+        "retrieval_time": 18.10932159423828,
+        "llm_time": 4596.822261810303,
+        "total_time": 4614.931583404541,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 45,
-        "query": "Apa itu ITS Repository dan bagaimana cara mengaksesnya?",
+        "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
         "database": "ChromaDB",
-        "retrieval_time": 20.437240600585938,
-        "llm_time": 5728.3337116241455,
-        "total_time": 5748.770952224731,
+        "retrieval_time": 24.263620376586914,
+        "llm_time": 10485.019207000732,
+        "total_time": 10509.28282737732,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 46,
-        "query": "What is the emergency hotline number in Surabaya?",
+        "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
         "database": "ChromaDB",
-        "retrieval_time": 18.917322158813477,
-        "llm_time": 1977.121353149414,
-        "total_time": 1996.0386753082275,
+        "retrieval_time": 19.407987594604492,
+        "llm_time": 3648.134708404541,
+        "total_time": 3667.5426959991455,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 47,
-        "query": "Bagaimana cara mengakses Office 365 untuk mahasiswa ITS?",
+        "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
         "database": "ChromaDB",
-        "retrieval_time": 20.054101943969727,
-        "llm_time": 9316.170454025269,
-        "total_time": 9336.224555969238,
+        "retrieval_time": 25.822877883911133,
+        "llm_time": 7447.72744178772,
+        "total_time": 7473.550319671631,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 48,
-        "query": "How do I register my phone's IMEI for a long stay in Indonesia?",
+        "query": "How much is the ITS administration fee for international students?",
         "database": "ChromaDB",
-        "retrieval_time": 22.099018096923828,
-        "llm_time": 5497.134685516357,
-        "total_time": 5519.233703613281,
+        "retrieval_time": 18.593788146972656,
+        "llm_time": 3346.0757732391357,
+        "total_time": 3364.6695613861084,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 49,
-        "query": "What are the living costs in Surabaya for students?",
+        "query": "Where can students find traditional markets near the campus?",
         "database": "ChromaDB",
-        "retrieval_time": 17.181873321533203,
-        "llm_time": 8320.807218551636,
-        "total_time": 8337.989091873169,
+        "retrieval_time": 20.873546600341797,
+        "llm_time": 2842.4417972564697,
+        "total_time": 2863.3153438568115,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 50,
-        "query": "How long does the admission evaluation process take?",
+        "query": "How to use the Suroboyo Bus and what is the cost for students?",
         "database": "ChromaDB",
-        "retrieval_time": 18.085718154907227,
-        "llm_time": 2377.4592876434326,
-        "total_time": 2395.54500579834,
+        "retrieval_time": 20.78557014465332,
+        "llm_time": 5327.8608322143555,
+        "total_time": 5348.646402359009,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 51,
-        "query": "Bagaimana cara menyambungkan perangkat ke WiFi ITS?",
+        "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
         "database": "ChromaDB",
-        "retrieval_time": 24.022817611694336,
-        "llm_time": 5427.788257598877,
-        "total_time": 5451.811075210571,
+        "retrieval_time": 23.185253143310547,
+        "llm_time": 7475.874900817871,
+        "total_time": 7499.060153961182,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 52,
-        "query": "Where is the immigration office for visa extension?",
+        "query": "Locations of places of worship (mosques and churches) around ITS.",
         "database": "ChromaDB",
-        "retrieval_time": 19.07944679260254,
-        "llm_time": 3666.5289402008057,
-        "total_time": 3685.608386993408,
+        "retrieval_time": 18.585205078125,
+        "llm_time": 6671.023845672607,
+        "total_time": 6689.609050750732,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 53,
-        "query": "Bagaimana cara mengakses email ITS?",
+        "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
         "database": "ChromaDB",
-        "retrieval_time": 19.47307586669922,
-        "llm_time": 6888.083457946777,
-        "total_time": 6907.556533813477,
+        "retrieval_time": 20.890474319458008,
+        "llm_time": 4311.084747314453,
+        "total_time": 4331.975221633911,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 54,
-        "query": "Bagaimana cara reset password akun ITS?",
+        "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
         "database": "ChromaDB",
-        "retrieval_time": 19.19841766357422,
-        "llm_time": 7458.889484405518,
-        "total_time": 7478.087902069092,
+        "retrieval_time": 21.030187606811523,
+        "llm_time": 5392.024517059326,
+        "total_time": 5413.054704666138,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 55,
-        "query": "Apa itu ITS Single Sign-On?",
+        "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 19.059419631958008,
-        "llm_time": 4340.9459590911865,
-        "total_time": 4360.0053787231445,
+        "retrieval_time": 21.739959716796875,
+        "llm_time": 5745.534896850586,
+        "total_time": 5767.274856567383,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 56,
-        "query": "Apa saja aplikasi yang terintegrasi dengan myITS?",
+        "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 22.806644439697266,
-        "llm_time": 5001.835584640503,
-        "total_time": 5024.6422290802,
+        "retrieval_time": 23.35524559020996,
+        "llm_time": 9019.9716091156,
+        "total_time": 9043.32685470581,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 57,
-        "query": "Where can I find halal food near the campus?",
+        "query": "List of faculties available under the SCIENTICS cluster.",
         "database": "ChromaDB",
-        "retrieval_time": 17.518997192382812,
-        "llm_time": 4240.001916885376,
-        "total_time": 4257.520914077759,
+        "retrieval_time": 18.077850341796875,
+        "llm_time": 5916.423797607422,
+        "total_time": 5934.501647949219,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 58,
-        "query": "Bagaimana cara mengubah password myITS Portal?",
+        "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
         "database": "ChromaDB",
-        "retrieval_time": 18.695354461669922,
-        "llm_time": 5829.935073852539,
-        "total_time": 5848.630428314209,
+        "retrieval_time": 26.58677101135254,
+        "llm_time": 5452.016830444336,
+        "total_time": 5478.6036014556885,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 59,
-        "query": "Apa itu myITS SSO dan bagaimana cara menggunakannya?",
+        "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
         "database": "ChromaDB",
-        "retrieval_time": 22.008419036865234,
-        "llm_time": 8270.073175430298,
-        "total_time": 8292.081594467163,
+        "retrieval_time": 21.112918853759766,
+        "llm_time": 8762.808561325073,
+        "total_time": 8783.921480178833,
         "num_docs": 5,
         "success": true
       },
       {
         "query_num": 60,
-        "query": "What is the fine for not having proof of residency within 14 days?",
+        "query": "What is the dress code for attending classes at ITS?",
         "database": "ChromaDB",
-        "retrieval_time": 18.340587615966797,
-        "llm_time": 4046.6468334198,
-        "total_time": 4064.9874210357666,
+        "retrieval_time": 20.307302474975586,
+        "llm_time": 2857.6338291168213,
+        "total_time": 2877.941131591797,
         "num_docs": 5,
         "success": true
       }
@@ -1856,186 +1856,186 @@
     "Pinecone": [
       {
         "top_k": 1,
-        "avg_time": 276.7752170562744,
-        "std_time": 1.8944163119225057,
-        "min_time": 273.7138271331787,
-        "max_time": 280.029296875
+        "avg_time": 293.9033508300781,
+        "std_time": 21.55804487490314,
+        "min_time": 281.9852828979492,
+        "max_time": 348.2503890991211
       },
       {
         "top_k": 2,
-        "avg_time": 276.5697479248047,
-        "std_time": 2.4954933032261764,
-        "min_time": 273.64659309387207,
-        "max_time": 283.0526828765869
+        "avg_time": 284.8628520965576,
+        "std_time": 3.2843688544999914,
+        "min_time": 280.93409538269043,
+        "max_time": 293.4613227844238
       },
       {
         "top_k": 3,
-        "avg_time": 277.59196758270264,
-        "std_time": 2.842390359950657,
-        "min_time": 273.75102043151855,
-        "max_time": 283.45227241516113
+        "avg_time": 283.5379362106323,
+        "std_time": 2.6904583531899218,
+        "min_time": 279.5095443725586,
+        "max_time": 289.60609436035156
       },
       {
         "top_k": 5,
-        "avg_time": 278.64413261413574,
-        "std_time": 2.21179356044719,
-        "min_time": 274.79028701782227,
-        "max_time": 281.97264671325684
+        "avg_time": 285.1130247116089,
+        "std_time": 1.6852624036721875,
+        "min_time": 281.97169303894043,
+        "max_time": 287.25409507751465
       },
       {
         "top_k": 8,
-        "avg_time": 279.3066740036011,
-        "std_time": 2.81819633775443,
-        "min_time": 276.2279510498047,
-        "max_time": 284.512996673584
+        "avg_time": 289.1753911972046,
+        "std_time": 6.494824518895762,
+        "min_time": 282.18960762023926,
+        "max_time": 302.45089530944824
       },
       {
         "top_k": 10,
-        "avg_time": 278.92167568206787,
-        "std_time": 2.386229018765687,
-        "min_time": 275.72011947631836,
-        "max_time": 284.48486328125
+        "avg_time": 286.8370532989502,
+        "std_time": 1.6335534968638907,
+        "min_time": 284.40308570861816,
+        "max_time": 289.4265651702881
       },
       {
         "top_k": 15,
-        "avg_time": 282.1845054626465,
-        "std_time": 6.946909897883604,
-        "min_time": 276.91078186035156,
-        "max_time": 301.8839359283447
+        "avg_time": 305.0408363342285,
+        "std_time": 48.39581033642989,
+        "min_time": 285.9344482421875,
+        "max_time": 449.9788284301758
       },
       {
         "top_k": 20,
-        "avg_time": 318.01955699920654,
-        "std_time": 78.88578812931833,
-        "min_time": 278.28240394592285,
-        "max_time": 525.9146690368652
+        "avg_time": 287.8528356552124,
+        "std_time": 2.4898225545028723,
+        "min_time": 284.1465473175049,
+        "max_time": 293.87736320495605
       }
     ],
     "PostgreSQL": [
       {
         "top_k": 1,
-        "avg_time": 67.0722246170044,
-        "std_time": 6.571537548000693,
-        "min_time": 63.24625015258789,
-        "max_time": 86.04097366333008
+        "avg_time": 66.65043830871582,
+        "std_time": 2.103170215639025,
+        "min_time": 63.07196617126465,
+        "max_time": 69.03409957885742
       },
       {
         "top_k": 2,
-        "avg_time": 65.4639720916748,
-        "std_time": 1.8240270534443581,
-        "min_time": 63.34090232849121,
-        "max_time": 68.328857421875
+        "avg_time": 66.34440422058105,
+        "std_time": 2.0988248230644024,
+        "min_time": 63.045501708984375,
+        "max_time": 68.51840019226074
       },
       {
         "top_k": 3,
-        "avg_time": 65.73350429534912,
-        "std_time": 2.5940561112941145,
-        "min_time": 62.76082992553711,
-        "max_time": 70.91212272644043
+        "avg_time": 67.64163970947266,
+        "std_time": 2.456381535516682,
+        "min_time": 63.263893127441406,
+        "max_time": 72.9379653930664
       },
       {
         "top_k": 5,
-        "avg_time": 65.58291912078857,
-        "std_time": 2.1375876373323623,
-        "min_time": 63.27986717224121,
-        "max_time": 70.38474082946777
+        "avg_time": 67.63274669647217,
+        "std_time": 1.2481803982505506,
+        "min_time": 64.11266326904297,
+        "max_time": 68.70818138122559
       },
       {
         "top_k": 8,
-        "avg_time": 66.04132652282715,
-        "std_time": 2.9907615837597503,
-        "min_time": 62.6218318939209,
-        "max_time": 73.272705078125
+        "avg_time": 67.16995239257812,
+        "std_time": 2.167306516073054,
+        "min_time": 63.94457817077637,
+        "max_time": 71.22492790222168
       },
       {
         "top_k": 10,
-        "avg_time": 66.50702953338623,
-        "std_time": 2.2734892713726125,
-        "min_time": 63.40980529785156,
-        "max_time": 70.25337219238281
+        "avg_time": 69.67620849609375,
+        "std_time": 3.1216667133479947,
+        "min_time": 65.13500213623047,
+        "max_time": 75.31213760375977
       },
       {
         "top_k": 15,
-        "avg_time": 68.89045238494873,
-        "std_time": 1.9097217050209945,
-        "min_time": 66.89000129699707,
-        "max_time": 73.06575775146484
+        "avg_time": 69.8228120803833,
+        "std_time": 2.123261238687465,
+        "min_time": 67.11745262145996,
+        "max_time": 73.93670082092285
       },
       {
         "top_k": 20,
-        "avg_time": 69.26097869873047,
-        "std_time": 2.162476233021274,
-        "min_time": 67.01135635375977,
-        "max_time": 72.94726371765137
+        "avg_time": 71.32010459899902,
+        "std_time": 2.310945700696917,
+        "min_time": 67.60287284851074,
+        "max_time": 75.84524154663086
       }
     ],
     "ChromaDB": [
       {
         "top_k": 1,
-        "avg_time": 18.469548225402832,
-        "std_time": 1.2937756304358037,
-        "min_time": 16.681671142578125,
-        "max_time": 20.62225341796875
+        "avg_time": 21.58668041229248,
+        "std_time": 1.9235928026755515,
+        "min_time": 17.449140548706055,
+        "max_time": 24.7952938079834
       },
       {
         "top_k": 2,
-        "avg_time": 18.60482692718506,
-        "std_time": 1.2670577857589589,
-        "min_time": 16.66259765625,
-        "max_time": 20.078420639038086
+        "avg_time": 20.473957061767578,
+        "std_time": 2.030921496098612,
+        "min_time": 17.882585525512695,
+        "max_time": 24.66440200805664
       },
       {
         "top_k": 3,
-        "avg_time": 18.711304664611816,
-        "std_time": 1.6460453250073546,
-        "min_time": 16.72649383544922,
-        "max_time": 21.379947662353516
+        "avg_time": 20.456385612487793,
+        "std_time": 1.2077815009138688,
+        "min_time": 18.506526947021484,
+        "max_time": 22.396326065063477
       },
       {
         "top_k": 5,
-        "avg_time": 20.2286958694458,
-        "std_time": 2.3750173067022406,
-        "min_time": 17.22860336303711,
-        "max_time": 25.90346336364746
+        "avg_time": 21.908140182495117,
+        "std_time": 1.394009227845936,
+        "min_time": 19.182920455932617,
+        "max_time": 24.041175842285156
       },
       {
         "top_k": 8,
-        "avg_time": 19.482064247131348,
-        "std_time": 1.4689280834094245,
-        "min_time": 16.716718673706055,
-        "max_time": 21.836042404174805
+        "avg_time": 21.289706230163574,
+        "std_time": 1.0541428134130184,
+        "min_time": 19.019365310668945,
+        "max_time": 22.60613441467285
       },
       {
         "top_k": 10,
-        "avg_time": 21.723556518554688,
-        "std_time": 1.80340669885615,
-        "min_time": 18.67222785949707,
-        "max_time": 25.591611862182617
+        "avg_time": 20.50502300262451,
+        "std_time": 1.64784902626373,
+        "min_time": 17.555952072143555,
+        "max_time": 22.097349166870117
       },
       {
         "top_k": 15,
-        "avg_time": 20.998024940490723,
-        "std_time": 1.3600449135476154,
-        "min_time": 18.889427185058594,
-        "max_time": 23.22530746459961
+        "avg_time": 21.364426612854004,
+        "std_time": 1.8594897458214767,
+        "min_time": 18.33486557006836,
+        "max_time": 24.811506271362305
       },
       {
         "top_k": 20,
-        "avg_time": 19.948506355285645,
-        "std_time": 1.3773234691278429,
-        "min_time": 17.820358276367188,
-        "max_time": 21.790742874145508
+        "avg_time": 22.026777267456055,
+        "std_time": 1.1261494773341956,
+        "min_time": 19.676923751831055,
+        "max_time": 23.384809494018555
       }
     ]
   },
   "retrieval_quality": {
     "Pinecone": {
-      "avg_precision": 0.8567,
+      "avg_precision": 0.8467,
       "avg_recall": 0.9833,
-      "avg_f1_score": 0.8982,
+      "avg_f1_score": 0.8952,
       "per_query": [
         {
-          "query": "Which banks are available inside ITS campus?",
+          "query": "How to register for a local bank account at Mandiri?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2043,135 +2043,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu VPN ITS dan bagaimana cara menggunakannya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I get Indonesian phone number (SIM card)?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu myITS StudentConnect?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses Google Workspace ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mendapatkan lisensi software gratis dari ITS?",
-          "precision": 0.2,
-          "recall": 1.0,
-          "f1_score": 0.33333333333333337,
-          "relevant_retrieved": 1,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the requirements for ITAS application?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I register at the local immigration office?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Where is the ITS Global Engagement Office located?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu myITS dan apa bedanya dengan SIAKAD?",
-          "precision": 0.8,
-          "recall": 1.0,
-          "f1_score": 0.888888888888889,
-          "relevant_retrieved": 4,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja fitur yang tersedia di Microsoft Teams untuk mahasiswa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How much does accommodation cost per month near ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How many types of academic VISA are available for international students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the requirements for extending a study visa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What documents do I need to bring when arriving in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What is the procedure for visa on arrival?",
-          "precision": 0.8,
-          "recall": 1.0,
-          "f1_score": 0.888888888888889,
-          "relevant_retrieved": 4,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengaktivasi Multi-Factor Authentication (MFA)?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja jaringan WiFi yang tersedia di kampus ITS?",
+          "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
           "precision": 0.4,
           "recall": 1.0,
           "f1_score": 0.5714285714285715,
@@ -2179,31 +2051,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "How do I get a KITAS (temporary stay permit)?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja layanan internet yang tersedia di kampus ITS?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja panduan keamanan akun yang disarankan DPTSI?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengunduh Microsoft Office gratis untuk mahasiswa?",
+          "query": "How can international students join Student Activity Units (UKM)?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2211,15 +2059,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What health insurance options are available for international students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara menghubungi helpdesk DPTSI?",
+          "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
           "precision": 0.4,
           "recall": 1.0,
           "f1_score": 0.5714285714285715,
@@ -2227,7 +2067,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Which transportation apps can I use in Surabaya?",
+          "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2235,31 +2075,47 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara mengakses e-learning ITS?",
-          "precision": 1.0,
+          "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu myITS Portal dan bagaimana cara mengaksesnya?",
-          "precision": 1.0,
+          "query": "What are the requirements for an Internship Visa (C22A)?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "How do I open a bank account in Indonesia?",
-          "precision": 1.0,
+          "query": "How to use Gojek or Grab for local transportation?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja layanan cloud storage yang tersedia untuk mahasiswa?",
+          "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
           "precision": 0.0,
           "recall": 0.0,
           "f1_score": 0.0,
@@ -2267,23 +2123,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Where can I exchange foreign currency in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengaktifkan akun mahasiswa baru di ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses jurnal online dari perpustakaan ITS?",
+          "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2291,7 +2131,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What are the nearest hospitals to ITS?",
+          "query": "How do I register my phone's IMEI in Indonesia?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2299,7 +2139,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara menggunakan OneDrive ITS?",
+          "query": "Where is the Global Engagement Office located?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2307,7 +2147,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What sports facilities are available for students?",
+          "query": "What items are on the arrival checklist for international students?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2315,7 +2155,199 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara mengakses SIAKAD ITS?",
+          "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the estimated living costs for accommodation near ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Which hospitals are recommended near the ITS campus?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Portal dan apa fungsinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengubah password melalui myITS Account?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the emergency hotline numbers in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa password default yang digunakan saat login pertama kali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the \"O-Week\" and why is it mandatory?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What transport options are available from Juanda International Airport to ITS?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the tax calculation for registering a phone worth more than $500?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the meaning of the Indonesian slang \"Mager\"?",
           "precision": 0.2,
           "recall": 1.0,
           "f1_score": 0.33333333333333337,
@@ -2323,7 +2355,71 @@
           "total_retrieved": 5
         },
         {
-          "query": "What are the internet package options for Tourist SIM Card?",
+          "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the process for extending a tourist IMEI registration?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What facilities are available at the ITS Medical Centre?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa format default email mahasiswa baru ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How much is the ITS administration fee for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where can students find traditional markets near the campus?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2331,7 +2427,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What faculties are available at ITS?",
+          "query": "How to use the Suroboyo Bus and what is the cost for students?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2339,7 +2435,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the ITS administration fee for international students?",
+          "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2347,7 +2443,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the process for airport pickup service?",
+          "query": "Locations of places of worship (mosques and churches) around ITS.",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2355,15 +2451,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja layanan yang disediakan DPTSI untuk mahasiswa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Who should I contact in case of an emergency?",
+          "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -2371,7 +2459,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What public transportation is available in Surabaya?",
+          "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2379,7 +2467,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Aplikasi apa saja yang bisa diakses melalui myITS Portal?",
+          "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2387,87 +2475,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu ITS Repository dan bagaimana cara mengaksesnya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What is the emergency hotline number in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses Office 365 untuk mahasiswa ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I register my phone's IMEI for a long stay in Indonesia?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the living costs in Surabaya for students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How long does the admission evaluation process take?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara menyambungkan perangkat ke WiFi ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Where is the immigration office for visa extension?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses email ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara reset password akun ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu ITS Single Sign-On?",
+          "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2475,7 +2483,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja aplikasi yang terintegrasi dengan myITS?",
+          "query": "List of faculties available under the SCIENTICS cluster.",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2483,15 +2491,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Where can I find halal food near the campus?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengubah password myITS Portal?",
+          "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2499,7 +2499,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu myITS SSO dan bagaimana cara menggunakannya?",
+          "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -2507,7 +2507,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the fine for not having proof of residency within 14 days?",
+          "query": "What is the dress code for attending classes at ITS?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -2517,12 +2517,12 @@
       ]
     },
     "PostgreSQL": {
-      "avg_precision": 0.8567,
+      "avg_precision": 0.8467,
       "avg_recall": 0.9833,
-      "avg_f1_score": 0.8982,
+      "avg_f1_score": 0.8952,
       "per_query": [
         {
-          "query": "Which banks are available inside ITS campus?",
+          "query": "How to register for a local bank account at Mandiri?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2530,135 +2530,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu VPN ITS dan bagaimana cara menggunakannya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I get Indonesian phone number (SIM card)?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu myITS StudentConnect?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses Google Workspace ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mendapatkan lisensi software gratis dari ITS?",
-          "precision": 0.2,
-          "recall": 1.0,
-          "f1_score": 0.33333333333333337,
-          "relevant_retrieved": 1,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the requirements for ITAS application?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I register at the local immigration office?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Where is the ITS Global Engagement Office located?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu myITS dan apa bedanya dengan SIAKAD?",
-          "precision": 0.8,
-          "recall": 1.0,
-          "f1_score": 0.888888888888889,
-          "relevant_retrieved": 4,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja fitur yang tersedia di Microsoft Teams untuk mahasiswa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How much does accommodation cost per month near ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How many types of academic VISA are available for international students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the requirements for extending a study visa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What documents do I need to bring when arriving in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What is the procedure for visa on arrival?",
-          "precision": 0.8,
-          "recall": 1.0,
-          "f1_score": 0.888888888888889,
-          "relevant_retrieved": 4,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengaktivasi Multi-Factor Authentication (MFA)?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja jaringan WiFi yang tersedia di kampus ITS?",
+          "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
           "precision": 0.4,
           "recall": 1.0,
           "f1_score": 0.5714285714285715,
@@ -2666,31 +2538,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "How do I get a KITAS (temporary stay permit)?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja layanan internet yang tersedia di kampus ITS?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja panduan keamanan akun yang disarankan DPTSI?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengunduh Microsoft Office gratis untuk mahasiswa?",
+          "query": "How can international students join Student Activity Units (UKM)?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2698,15 +2546,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What health insurance options are available for international students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara menghubungi helpdesk DPTSI?",
+          "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
           "precision": 0.4,
           "recall": 1.0,
           "f1_score": 0.5714285714285715,
@@ -2714,7 +2554,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Which transportation apps can I use in Surabaya?",
+          "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2722,31 +2562,47 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara mengakses e-learning ITS?",
-          "precision": 1.0,
+          "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu myITS Portal dan bagaimana cara mengaksesnya?",
-          "precision": 1.0,
+          "query": "What are the requirements for an Internship Visa (C22A)?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "How do I open a bank account in Indonesia?",
-          "precision": 1.0,
+          "query": "How to use Gojek or Grab for local transportation?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja layanan cloud storage yang tersedia untuk mahasiswa?",
+          "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
           "precision": 0.0,
           "recall": 0.0,
           "f1_score": 0.0,
@@ -2754,23 +2610,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Where can I exchange foreign currency in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengaktifkan akun mahasiswa baru di ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses jurnal online dari perpustakaan ITS?",
+          "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2778,7 +2618,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What are the nearest hospitals to ITS?",
+          "query": "How do I register my phone's IMEI in Indonesia?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2786,7 +2626,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara menggunakan OneDrive ITS?",
+          "query": "Where is the Global Engagement Office located?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2794,7 +2634,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What sports facilities are available for students?",
+          "query": "What items are on the arrival checklist for international students?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2802,7 +2642,199 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara mengakses SIAKAD ITS?",
+          "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the estimated living costs for accommodation near ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Which hospitals are recommended near the ITS campus?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Portal dan apa fungsinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengubah password melalui myITS Account?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the emergency hotline numbers in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa password default yang digunakan saat login pertama kali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the \"O-Week\" and why is it mandatory?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What transport options are available from Juanda International Airport to ITS?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the tax calculation for registering a phone worth more than $500?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the meaning of the Indonesian slang \"Mager\"?",
           "precision": 0.2,
           "recall": 1.0,
           "f1_score": 0.33333333333333337,
@@ -2810,7 +2842,71 @@
           "total_retrieved": 5
         },
         {
-          "query": "What are the internet package options for Tourist SIM Card?",
+          "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the process for extending a tourist IMEI registration?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What facilities are available at the ITS Medical Centre?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa format default email mahasiswa baru ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How much is the ITS administration fee for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where can students find traditional markets near the campus?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2818,7 +2914,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What faculties are available at ITS?",
+          "query": "How to use the Suroboyo Bus and what is the cost for students?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2826,7 +2922,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the ITS administration fee for international students?",
+          "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2834,7 +2930,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the process for airport pickup service?",
+          "query": "Locations of places of worship (mosques and churches) around ITS.",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2842,15 +2938,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja layanan yang disediakan DPTSI untuk mahasiswa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Who should I contact in case of an emergency?",
+          "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -2858,7 +2946,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What public transportation is available in Surabaya?",
+          "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2866,7 +2954,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Aplikasi apa saja yang bisa diakses melalui myITS Portal?",
+          "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2874,87 +2962,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu ITS Repository dan bagaimana cara mengaksesnya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What is the emergency hotline number in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses Office 365 untuk mahasiswa ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I register my phone's IMEI for a long stay in Indonesia?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the living costs in Surabaya for students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How long does the admission evaluation process take?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara menyambungkan perangkat ke WiFi ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Where is the immigration office for visa extension?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses email ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara reset password akun ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu ITS Single Sign-On?",
+          "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -2962,7 +2970,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja aplikasi yang terintegrasi dengan myITS?",
+          "query": "List of faculties available under the SCIENTICS cluster.",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2970,15 +2978,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Where can I find halal food near the campus?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengubah password myITS Portal?",
+          "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -2986,7 +2986,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu myITS SSO dan bagaimana cara menggunakannya?",
+          "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -2994,7 +2994,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the fine for not having proof of residency within 14 days?",
+          "query": "What is the dress code for attending classes at ITS?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -3004,12 +3004,12 @@
       ]
     },
     "ChromaDB": {
-      "avg_precision": 0.8567,
+      "avg_precision": 0.8467,
       "avg_recall": 0.9833,
-      "avg_f1_score": 0.8982,
+      "avg_f1_score": 0.8952,
       "per_query": [
         {
-          "query": "Which banks are available inside ITS campus?",
+          "query": "How to register for a local bank account at Mandiri?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3017,135 +3017,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu VPN ITS dan bagaimana cara menggunakannya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I get Indonesian phone number (SIM card)?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu myITS StudentConnect?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses Google Workspace ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mendapatkan lisensi software gratis dari ITS?",
-          "precision": 0.2,
-          "recall": 1.0,
-          "f1_score": 0.33333333333333337,
-          "relevant_retrieved": 1,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the requirements for ITAS application?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I register at the local immigration office?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Where is the ITS Global Engagement Office located?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu myITS dan apa bedanya dengan SIAKAD?",
-          "precision": 0.8,
-          "recall": 1.0,
-          "f1_score": 0.888888888888889,
-          "relevant_retrieved": 4,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja fitur yang tersedia di Microsoft Teams untuk mahasiswa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How much does accommodation cost per month near ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How many types of academic VISA are available for international students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the requirements for extending a study visa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What documents do I need to bring when arriving in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What is the procedure for visa on arrival?",
-          "precision": 0.8,
-          "recall": 1.0,
-          "f1_score": 0.888888888888889,
-          "relevant_retrieved": 4,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengaktivasi Multi-Factor Authentication (MFA)?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja jaringan WiFi yang tersedia di kampus ITS?",
+          "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
           "precision": 0.4,
           "recall": 1.0,
           "f1_score": 0.5714285714285715,
@@ -3153,31 +3025,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "How do I get a KITAS (temporary stay permit)?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja layanan internet yang tersedia di kampus ITS?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa saja panduan keamanan akun yang disarankan DPTSI?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengunduh Microsoft Office gratis untuk mahasiswa?",
+          "query": "How can international students join Student Activity Units (UKM)?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3185,15 +3033,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What health insurance options are available for international students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara menghubungi helpdesk DPTSI?",
+          "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
           "precision": 0.4,
           "recall": 1.0,
           "f1_score": 0.5714285714285715,
@@ -3201,7 +3041,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Which transportation apps can I use in Surabaya?",
+          "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3209,31 +3049,47 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara mengakses e-learning ITS?",
-          "precision": 1.0,
+          "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu myITS Portal dan bagaimana cara mengaksesnya?",
-          "precision": 1.0,
+          "query": "What are the requirements for an Internship Visa (C22A)?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "How do I open a bank account in Indonesia?",
-          "precision": 1.0,
+          "query": "How to use Gojek or Grab for local transportation?",
+          "precision": 0.8,
           "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja layanan cloud storage yang tersedia untuk mahasiswa?",
+          "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
           "precision": 0.0,
           "recall": 0.0,
           "f1_score": 0.0,
@@ -3241,23 +3097,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Where can I exchange foreign currency in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengaktifkan akun mahasiswa baru di ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses jurnal online dari perpustakaan ITS?",
+          "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -3265,7 +3105,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What are the nearest hospitals to ITS?",
+          "query": "How do I register my phone's IMEI in Indonesia?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3273,7 +3113,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara menggunakan OneDrive ITS?",
+          "query": "Where is the Global Engagement Office located?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3281,7 +3121,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What sports facilities are available for students?",
+          "query": "What items are on the arrival checklist for international students?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3289,7 +3129,199 @@
           "total_retrieved": 5
         },
         {
-          "query": "Bagaimana cara mengakses SIAKAD ITS?",
+          "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the estimated living costs for accommodation near ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Which hospitals are recommended near the ITS campus?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Portal dan apa fungsinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengubah password melalui myITS Account?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the emergency hotline numbers in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa password default yang digunakan saat login pertama kali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the \"O-Week\" and why is it mandatory?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What transport options are available from Juanda International Airport to ITS?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the tax calculation for registering a phone worth more than $500?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the meaning of the Indonesian slang \"Mager\"?",
           "precision": 0.2,
           "recall": 1.0,
           "f1_score": 0.33333333333333337,
@@ -3297,7 +3329,71 @@
           "total_retrieved": 5
         },
         {
-          "query": "What are the internet package options for Tourist SIM Card?",
+          "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the process for extending a tourist IMEI registration?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What facilities are available at the ITS Medical Centre?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa format default email mahasiswa baru ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How much is the ITS administration fee for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where can students find traditional markets near the campus?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -3305,7 +3401,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What faculties are available at ITS?",
+          "query": "How to use the Suroboyo Bus and what is the cost for students?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3313,7 +3409,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the ITS administration fee for international students?",
+          "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3321,7 +3417,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the process for airport pickup service?",
+          "query": "Locations of places of worship (mosques and churches) around ITS.",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -3329,15 +3425,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja layanan yang disediakan DPTSI untuk mahasiswa?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Who should I contact in case of an emergency?",
+          "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -3345,7 +3433,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What public transportation is available in Surabaya?",
+          "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3353,7 +3441,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Aplikasi apa saja yang bisa diakses melalui myITS Portal?",
+          "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3361,87 +3449,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu ITS Repository dan bagaimana cara mengaksesnya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What is the emergency hotline number in Surabaya?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses Office 365 untuk mahasiswa ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How do I register my phone's IMEI for a long stay in Indonesia?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "What are the living costs in Surabaya for students?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "How long does the admission evaluation process take?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara menyambungkan perangkat ke WiFi ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Where is the immigration office for visa extension?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengakses email ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara reset password akun ITS?",
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1_score": 1.0,
-          "relevant_retrieved": 5,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Apa itu ITS Single Sign-On?",
+          "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
           "precision": 0.8,
           "recall": 1.0,
           "f1_score": 0.888888888888889,
@@ -3449,7 +3457,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa saja aplikasi yang terintegrasi dengan myITS?",
+          "query": "List of faculties available under the SCIENTICS cluster.",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3457,15 +3465,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Where can I find halal food near the campus?",
-          "precision": 0.6,
-          "recall": 1.0,
-          "f1_score": 0.7499999999999999,
-          "relevant_retrieved": 3,
-          "total_retrieved": 5
-        },
-        {
-          "query": "Bagaimana cara mengubah password myITS Portal?",
+          "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
           "precision": 1.0,
           "recall": 1.0,
           "f1_score": 1.0,
@@ -3473,7 +3473,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "Apa itu myITS SSO dan bagaimana cara menggunakannya?",
+          "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
@@ -3481,7 +3481,7 @@
           "total_retrieved": 5
         },
         {
-          "query": "What is the fine for not having proof of residency within 14 days?",
+          "query": "What is the dress code for attending classes at ITS?",
           "precision": 0.6,
           "recall": 1.0,
           "f1_score": 0.7499999999999999,
