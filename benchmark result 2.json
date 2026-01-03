@@ -1,0 +1,5654 @@
+{
+  "metadata": {
+    "benchmark_date": "2026-01-03T20:47:26.220200",
+    "llm_model": "qwen3:8b",
+    "embedding_model": "qwen3-embedding:latest",
+    "num_queries": 100,
+    "top_k": 5,
+    "databases_tested": [
+      "Pinecone",
+      "PostgreSQL",
+      "ChromaDB"
+    ]
+  },
+  "speed_test": {
+    "winner": {
+      "database": "ChromaDB",
+      "avg_retrieval_ms": 1897.36,
+      "speed_improvement_percent": 58.3
+    },
+    "summary": [
+      {
+        "database": "Pinecone",
+        "mean_total_ms": 11768.1,
+        "median_total_ms": 9189.01,
+        "std_total_ms": 23691.39,
+        "min_total_ms": 6179.56,
+        "max_total_ms": 245112.43,
+        "mean_retrieval_ms": 4553.64,
+        "mean_llm_ms": 7214.46
+      },
+      {
+        "database": "PostgreSQL",
+        "mean_total_ms": 18663.06,
+        "median_total_ms": 8810.23,
+        "std_total_ms": 67202.24,
+        "min_total_ms": 5856.76,
+        "max_total_ms": 486982.82,
+        "mean_retrieval_ms": 1915.78,
+        "mean_llm_ms": 16747.28
+      },
+      {
+        "database": "ChromaDB",
+        "mean_total_ms": 9350.26,
+        "median_total_ms": 8907.03,
+        "std_total_ms": 2863.23,
+        "min_total_ms": 5854.09,
+        "max_total_ms": 22800.44,
+        "mean_retrieval_ms": 1897.36,
+        "mean_llm_ms": 7452.9
+      }
+    ],
+    "raw_results": [
+      {
+        "query_num": 1,
+        "query": "What transport options are available from Juanda International Airport to ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 234639.40048217773,
+        "llm_time": 10473.024845123291,
+        "total_time": 245112.42532730103,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 2,
+        "query": "Which hospitals are recommended near the ITS campus?",
+        "database": "Pinecone",
+        "retrieval_time": 2208.24933052063,
+        "llm_time": 6990.020513534546,
+        "total_time": 9198.269844055176,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 3,
+        "query": "Kapan jam sibuk di mana sepeda non-lipat dilarang masuk ke kereta?",
+        "database": "Pinecone",
+        "retrieval_time": 2194.6096420288086,
+        "llm_time": 4807.742118835449,
+        "total_time": 7002.351760864258,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 4,
+        "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
+        "database": "Pinecone",
+        "retrieval_time": 2161.897897720337,
+        "llm_time": 9529.21724319458,
+        "total_time": 11691.115140914917,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 5,
+        "query": "Apa saja jenis alat pembayaran yang sah untuk naik MRT Jakarta?",
+        "database": "Pinecone",
+        "retrieval_time": 2210.700273513794,
+        "llm_time": 8224.879264831543,
+        "total_time": 10435.579538345337,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 6,
+        "query": "What are the estimated living costs for accommodation near ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2216.4885997772217,
+        "llm_time": 13876.754999160767,
+        "total_time": 16093.243598937988,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 7,
+        "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
+        "database": "Pinecone",
+        "retrieval_time": 2162.1053218841553,
+        "llm_time": 5849.268674850464,
+        "total_time": 8011.373996734619,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 8,
+        "query": "Apakah satu tiket bisa digunakan oleh dua orang secara bersamaan?",
+        "database": "Pinecone",
+        "retrieval_time": 2185.556650161743,
+        "llm_time": 4996.171951293945,
+        "total_time": 7181.7286014556885,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 9,
+        "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2213.6006355285645,
+        "llm_time": 7465.275287628174,
+        "total_time": 9678.875923156738,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 10,
+        "query": "Berapa lama masa berlaku Single Trip Ticket (STT) setelah diisi ulang?",
+        "database": "Pinecone",
+        "retrieval_time": 2194.546937942505,
+        "llm_time": 7160.371541976929,
+        "total_time": 9354.918479919434,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 11,
+        "query": "Apakah uang elektronik bank (seperti e-money/flazz) bisa diisi ulang di loket stasiun MRT?",
+        "database": "Pinecone",
+        "retrieval_time": 2176.032304763794,
+        "llm_time": 8361.061811447144,
+        "total_time": 10537.094116210938,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 12,
+        "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2190.1700496673584,
+        "llm_time": 4653.3849239349365,
+        "total_time": 6843.554973602295,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 13,
+        "query": "What are the requirements for an Internship Visa (C22A)?",
+        "database": "Pinecone",
+        "retrieval_time": 2206.907033920288,
+        "llm_time": 8227.926969528198,
+        "total_time": 10434.834003448486,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 14,
+        "query": "Locations of places of worship (mosques and churches) around ITS.",
+        "database": "Pinecone",
+        "retrieval_time": 2175.6246089935303,
+        "llm_time": 7994.893789291382,
+        "total_time": 10170.518398284912,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 15,
+        "query": "Berapa harga pembelian kartu perdana untuk MTT dan STT?",
+        "database": "Pinecone",
+        "retrieval_time": 2177.5856018066406,
+        "llm_time": 8310.42218208313,
+        "total_time": 10488.00778388977,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 16,
+        "query": "Where is the Global Engagement Office located?",
+        "database": "Pinecone",
+        "retrieval_time": 2149.343252182007,
+        "llm_time": 4213.282823562622,
+        "total_time": 6362.626075744629,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 17,
+        "query": "What is the \"O-Week\" and why is it mandatory?",
+        "database": "Pinecone",
+        "retrieval_time": 2155.111312866211,
+        "llm_time": 5374.688386917114,
+        "total_time": 7529.799699783325,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 18,
+        "query": "Di gerbong mana penumpang dengan sepeda non-lipat harus naik?",
+        "database": "Pinecone",
+        "retrieval_time": 2415.3223037719727,
+        "llm_time": 15615.022420883179,
+        "total_time": 18030.34472465515,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 19,
+        "query": "Bagaimana jika kartu MTT saya rusak dan tidak terbaca mesin, apakah saldo bisa kembali?",
+        "database": "Pinecone",
+        "retrieval_time": 4397.226572036743,
+        "llm_time": 14565.401792526245,
+        "total_time": 18962.62836456299,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 20,
+        "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+        "database": "Pinecone",
+        "retrieval_time": 2193.828821182251,
+        "llm_time": 7439.2406940460205,
+        "total_time": 9633.069515228271,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 21,
+        "query": "What items are on the arrival checklist for international students?",
+        "database": "Pinecone",
+        "retrieval_time": 2180.795907974243,
+        "llm_time": 8042.92631149292,
+        "total_time": 10223.722219467163,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 22,
+        "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+        "database": "Pinecone",
+        "retrieval_time": 2225.714683532715,
+        "llm_time": 7572.314500808716,
+        "total_time": 9798.02918434143,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 23,
+        "query": "What is the tax calculation for registering a phone worth more than $500?",
+        "database": "Pinecone",
+        "retrieval_time": 2215.0449752807617,
+        "llm_time": 9534.209966659546,
+        "total_time": 11749.254941940308,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 24,
+        "query": "Apakah gunting atau pisau boleh dibawa masuk ke dalam stasiun?",
+        "database": "Pinecone",
+        "retrieval_time": 2212.09454536438,
+        "llm_time": 6144.661664962769,
+        "total_time": 8356.756210327148,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 25,
+        "query": "Berapa denda jika ketahuan makan atau minum di dalam kereta?",
+        "database": "Pinecone",
+        "retrieval_time": 2181.1280250549316,
+        "llm_time": 9263.087272644043,
+        "total_time": 11444.215297698975,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 26,
+        "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+        "database": "Pinecone",
+        "retrieval_time": 2197.2246170043945,
+        "llm_time": 7927.269458770752,
+        "total_time": 10124.494075775146,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 27,
+        "query": "Apa sanksi bagi penumpang yang menyalahgunakan alat keselamatan darurat tanpa alasan jelas?",
+        "database": "Pinecone",
+        "retrieval_time": 2191.28155708313,
+        "llm_time": 5689.795732498169,
+        "total_time": 7881.077289581299,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 28,
+        "query": "Apa password default yang digunakan saat login pertama kali?",
+        "database": "Pinecone",
+        "retrieval_time": 2172.8618144989014,
+        "llm_time": 4815.485715866089,
+        "total_time": 6988.34753036499,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 29,
+        "query": "Apakah boleh melakukan kampanye politik atau orasi di dalam stasiun?",
+        "database": "Pinecone",
+        "retrieval_time": 2195.128917694092,
+        "llm_time": 5362.419843673706,
+        "total_time": 7557.548761367798,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 30,
+        "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+        "database": "Pinecone",
+        "retrieval_time": 2163.2983684539795,
+        "llm_time": 17008.309602737427,
+        "total_time": 19171.607971191406,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 31,
+        "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+        "database": "Pinecone",
+        "retrieval_time": 4011.970043182373,
+        "llm_time": 6119.636535644531,
+        "total_time": 10131.606578826904,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 32,
+        "query": "List of faculties available under the SCIENTICS cluster.",
+        "database": "Pinecone",
+        "retrieval_time": 2213.1171226501465,
+        "llm_time": 6784.847736358643,
+        "total_time": 8997.964859008789,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 33,
+        "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+        "database": "Pinecone",
+        "retrieval_time": 2227.9765605926514,
+        "llm_time": 5073.040008544922,
+        "total_time": 7301.016569137573,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 34,
+        "query": "Apa saja fasilitas yang tersedia di area berbayar stasiun?",
+        "database": "Pinecone",
+        "retrieval_time": 2169.092893600464,
+        "llm_time": 8600.291728973389,
+        "total_time": 10769.384622573853,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 35,
+        "query": "Berapa batas maksimum saldo yang boleh disimpan dalam kartu MTT?",
+        "database": "Pinecone",
+        "retrieval_time": 2152.6331901550293,
+        "llm_time": 4813.843488693237,
+        "total_time": 6966.476678848267,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 36,
+        "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+        "database": "Pinecone",
+        "retrieval_time": 2171.8404293060303,
+        "llm_time": 8485.150814056396,
+        "total_time": 10656.991243362427,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 37,
+        "query": "Berapa lama barang temuan disimpan oleh MRT sebelum menjadi milik perusahaan?",
+        "database": "Pinecone",
+        "retrieval_time": 2172.3506450653076,
+        "llm_time": 5932.210922241211,
+        "total_time": 8104.561567306519,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 38,
+        "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+        "database": "Pinecone",
+        "retrieval_time": 2215.1589393615723,
+        "llm_time": 8212.80026435852,
+        "total_time": 10427.959203720093,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 39,
+        "query": "Apakah boleh mengambil foto atau video untuk tujuan komersial di stasiun?",
+        "database": "Pinecone",
+        "retrieval_time": 2168.738603591919,
+        "llm_time": 5004.63604927063,
+        "total_time": 7173.374652862549,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 40,
+        "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+        "database": "Pinecone",
+        "retrieval_time": 2210.228443145752,
+        "llm_time": 4371.298789978027,
+        "total_time": 6581.527233123779,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 41,
+        "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
+        "database": "Pinecone",
+        "retrieval_time": 2157.524824142456,
+        "llm_time": 7166.81981086731,
+        "total_time": 9324.344635009766,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 42,
+        "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2182.9538345336914,
+        "llm_time": 4358.266353607178,
+        "total_time": 6541.220188140869,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 43,
+        "query": "What are the emergency hotline numbers in Surabaya?",
+        "database": "Pinecone",
+        "retrieval_time": 2167.52552986145,
+        "llm_time": 4981.130123138428,
+        "total_time": 7148.655652999878,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 44,
+        "query": "What is the dress code for attending classes at ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2182.048797607422,
+        "llm_time": 5730.4487228393555,
+        "total_time": 7912.497520446777,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 45,
+        "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2158.5633754730225,
+        "llm_time": 6894.08278465271,
+        "total_time": 9052.646160125732,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 46,
+        "query": "Bagaimana aturan penggunaan tiket Single Trip Ticket (STT)?",
+        "database": "Pinecone",
+        "retrieval_time": 2213.685989379883,
+        "llm_time": 9541.64433479309,
+        "total_time": 11755.330324172974,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 47,
+        "query": "Jam berapa stasiun MRT Jakarta mulai dibuka dan ditutup setiap harinya?",
+        "database": "Pinecone",
+        "retrieval_time": 2202.5012969970703,
+        "llm_time": 7696.441888809204,
+        "total_time": 9898.943185806274,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 48,
+        "query": "Apa definisi 'Penumpang' menurut peraturan MRT Jakarta?",
+        "database": "Pinecone",
+        "retrieval_time": 2168.501377105713,
+        "llm_time": 4424.51286315918,
+        "total_time": 6593.014240264893,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 49,
+        "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
+        "database": "Pinecone",
+        "retrieval_time": 2192.335367202759,
+        "llm_time": 9702.543020248413,
+        "total_time": 11894.878387451172,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 50,
+        "query": "How much is the ITS administration fee for international students?",
+        "database": "Pinecone",
+        "retrieval_time": 2168.3928966522217,
+        "llm_time": 4111.212491989136,
+        "total_time": 6279.605388641357,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 51,
+        "query": "Apakah satpam berhak memeriksa tas atau barang bawaan penumpang?",
+        "database": "Pinecone",
+        "retrieval_time": 2233.159065246582,
+        "llm_time": 6877.771615982056,
+        "total_time": 9110.930681228638,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 52,
+        "query": "What is the process for extending a tourist IMEI registration?",
+        "database": "Pinecone",
+        "retrieval_time": 2185.4612827301025,
+        "llm_time": 6604.193449020386,
+        "total_time": 8789.654731750488,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 53,
+        "query": "Apa format default email mahasiswa baru ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2160.6366634368896,
+        "llm_time": 4049.264669418335,
+        "total_time": 6209.901332855225,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 54,
+        "query": "Where can students find traditional markets near the campus?",
+        "database": "Pinecone",
+        "retrieval_time": 2199.773073196411,
+        "llm_time": 3979.783058166504,
+        "total_time": 6179.556131362915,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 55,
+        "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
+        "database": "Pinecone",
+        "retrieval_time": 2166.85152053833,
+        "llm_time": 5343.070268630981,
+        "total_time": 7509.9217891693115,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 56,
+        "query": "How to register for a local bank account at Mandiri?",
+        "database": "Pinecone",
+        "retrieval_time": 2198.02188873291,
+        "llm_time": 9829.49423789978,
+        "total_time": 12027.51612663269,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 57,
+        "query": "How to use Gojek or Grab for local transportation?",
+        "database": "Pinecone",
+        "retrieval_time": 2198.9691257476807,
+        "llm_time": 6943.247556686401,
+        "total_time": 9142.216682434082,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 58,
+        "query": "Apakah tiket STT bisa di-refund atau dikembalikan depositnya?",
+        "database": "Pinecone",
+        "retrieval_time": 2167.9329872131348,
+        "llm_time": 6489.427328109741,
+        "total_time": 8657.360315322876,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 59,
+        "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+        "database": "Pinecone",
+        "retrieval_time": 2187.962532043457,
+        "llm_time": 6568.853855133057,
+        "total_time": 8756.816387176514,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 60,
+        "query": "Apakah MRT Jakarta menyediakan kereta khusus wanita dan kapan jadwalnya?",
+        "database": "Pinecone",
+        "retrieval_time": 2148.1661796569824,
+        "llm_time": 4928.041458129883,
+        "total_time": 7076.207637786865,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 61,
+        "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+        "database": "Pinecone",
+        "retrieval_time": 2169.7583198547363,
+        "llm_time": 5977.802276611328,
+        "total_time": 8147.560596466064,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 62,
+        "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2156.686305999756,
+        "llm_time": 10419.382572174072,
+        "total_time": 12576.068878173828,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 63,
+        "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+        "database": "Pinecone",
+        "retrieval_time": 2159.2626571655273,
+        "llm_time": 6941.657066345215,
+        "total_time": 9100.919723510742,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 64,
+        "query": "Berapa saldo minimum yang harus ada di Multi Trip Ticket (MTT) agar bisa digunakan?",
+        "database": "Pinecone",
+        "retrieval_time": 2180.407762527466,
+        "llm_time": 6510.0579261779785,
+        "total_time": 8690.465688705444,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 65,
+        "query": "Berapa denda yang dikenakan jika membuang sampah sembarangan di area MRT?",
+        "database": "Pinecone",
+        "retrieval_time": 2172.464609146118,
+        "llm_time": 4979.721307754517,
+        "total_time": 7152.185916900635,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 66,
+        "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+        "database": "Pinecone",
+        "retrieval_time": 2174.934148788452,
+        "llm_time": 7784.104108810425,
+        "total_time": 9959.038257598877,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 67,
+        "query": "Apakah tiket kode QR yang sudah dibeli bisa dibatalkan atau di-refund?",
+        "database": "Pinecone",
+        "retrieval_time": 2180.4511547088623,
+        "llm_time": 8790.228128433228,
+        "total_time": 10970.67928314209,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 68,
+        "query": "How to use the Suroboyo Bus and what is the cost for students?",
+        "database": "Pinecone",
+        "retrieval_time": 2169.767379760742,
+        "llm_time": 6695.738792419434,
+        "total_time": 8865.506172180176,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 69,
+        "query": "Apa syarat membawa sepeda non-lipat masuk ke dalam MRT Jakarta?",
+        "database": "Pinecone",
+        "retrieval_time": 2150.778293609619,
+        "llm_time": 8821.723937988281,
+        "total_time": 10972.5022315979,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 70,
+        "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+        "database": "Pinecone",
+        "retrieval_time": 2173.5332012176514,
+        "llm_time": 7019.339561462402,
+        "total_time": 9192.872762680054,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 71,
+        "query": "Apa itu myITS Portal dan apa fungsinya?",
+        "database": "Pinecone",
+        "retrieval_time": 2163.0101203918457,
+        "llm_time": 5817.068099975586,
+        "total_time": 7980.078220367432,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 72,
+        "query": "Bagaimana aturan membawa alat musik besar seperti gitar atau keyboard?",
+        "database": "Pinecone",
+        "retrieval_time": 2266.984701156616,
+        "llm_time": 7744.913816452026,
+        "total_time": 10011.898517608643,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 73,
+        "query": "What facilities are available at the ITS Medical Centre?",
+        "database": "Pinecone",
+        "retrieval_time": 2149.329900741577,
+        "llm_time": 7366.52135848999,
+        "total_time": 9515.851259231567,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 74,
+        "query": "Apakah boleh membawa durian atau makanan berbau menyengat ke dalam kereta?",
+        "database": "Pinecone",
+        "retrieval_time": 2162.5423431396484,
+        "llm_time": 5964.821338653564,
+        "total_time": 8127.363681793213,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 75,
+        "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+        "database": "Pinecone",
+        "retrieval_time": 2166.278123855591,
+        "llm_time": 4559.551239013672,
+        "total_time": 6725.829362869263,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 76,
+        "query": "Berapa ukuran dimensi maksimal barang bawaan yang boleh dibawa penumpang?",
+        "database": "Pinecone",
+        "retrieval_time": 2163.0563735961914,
+        "llm_time": 5811.835527420044,
+        "total_time": 7974.891901016235,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 77,
+        "query": "Bagaimana cara mengubah password melalui myITS Account?",
+        "database": "Pinecone",
+        "retrieval_time": 2188.894748687744,
+        "llm_time": 6466.789722442627,
+        "total_time": 8655.684471130371,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 78,
+        "query": "Apa yang harus dilakukan jika saldo MTT kurang saat berada di stasiun tujuan?",
+        "database": "Pinecone",
+        "retrieval_time": 2172.1487045288086,
+        "llm_time": 6646.974802017212,
+        "total_time": 8819.12350654602,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 79,
+        "query": "Berapa denda jika penumpang bersandar pada pintu tepi peron (PSD)?",
+        "database": "Pinecone",
+        "retrieval_time": 2175.905466079712,
+        "llm_time": 4866.199016571045,
+        "total_time": 7042.104482650757,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 80,
+        "query": "Apa sanksi jika penumpang tidak melakukan tap-out di gerbang keluar?",
+        "database": "Pinecone",
+        "retrieval_time": 2160.867214202881,
+        "llm_time": 7695.356130599976,
+        "total_time": 9856.223344802856,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 81,
+        "query": "Apa kompensasi yang diberikan MRT Jakarta jika gagal memenuhi Standar Pelayanan Minimum?",
+        "database": "Pinecone",
+        "retrieval_time": 2149.1143703460693,
+        "llm_time": 6459.720611572266,
+        "total_time": 8608.834981918335,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 82,
+        "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+        "database": "Pinecone",
+        "retrieval_time": 2187.1097087860107,
+        "llm_time": 6193.495512008667,
+        "total_time": 8380.605220794678,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 83,
+        "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+        "database": "Pinecone",
+        "retrieval_time": 2193.8400268554688,
+        "llm_time": 9192.675828933716,
+        "total_time": 11386.515855789185,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 84,
+        "query": "Apakah hewan peliharaan boleh dibawa masuk ke dalam kereta MRT?",
+        "database": "Pinecone",
+        "retrieval_time": 2200.185775756836,
+        "llm_time": 5384.595632553101,
+        "total_time": 7584.7814083099365,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 85,
+        "query": "Apa prosedur Lost & Found jika barang saya tertinggal di kereta?",
+        "database": "Pinecone",
+        "retrieval_time": 2149.71661567688,
+        "llm_time": 7347.262859344482,
+        "total_time": 9496.979475021362,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 86,
+        "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2213.4649753570557,
+        "llm_time": 7007.9505443573,
+        "total_time": 9221.415519714355,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 87,
+        "query": "How can international students join Student Activity Units (UKM)?",
+        "database": "Pinecone",
+        "retrieval_time": 2167.6485538482666,
+        "llm_time": 5727.060556411743,
+        "total_time": 7894.70911026001,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 88,
+        "query": "Apa yang terjadi jika saya masuk dan keluar di stasiun yang sama (tidak jadi naik kereta)?",
+        "database": "Pinecone",
+        "retrieval_time": 2170.7191467285156,
+        "llm_time": 7171.221733093262,
+        "total_time": 9341.940879821777,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 89,
+        "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
+        "database": "Pinecone",
+        "retrieval_time": 2166.654586791992,
+        "llm_time": 7018.485069274902,
+        "total_time": 9185.139656066895,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 90,
+        "query": "Bagaimana cara menghitung tarif untuk penumpang anak-anak?",
+        "database": "Pinecone",
+        "retrieval_time": 2158.6287021636963,
+        "llm_time": 9155.55739402771,
+        "total_time": 11314.186096191406,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 91,
+        "query": "Apa sanksi untuk penumpang yang melakukan pelecehan seksual atau asusila?",
+        "database": "Pinecone",
+        "retrieval_time": 2164.6339893341064,
+        "llm_time": 7615.195274353027,
+        "total_time": 9779.829263687134,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 92,
+        "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+        "database": "Pinecone",
+        "retrieval_time": 2161.604404449463,
+        "llm_time": 7738.004922866821,
+        "total_time": 9899.609327316284,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 93,
+        "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+        "database": "Pinecone",
+        "retrieval_time": 2152.0984172821045,
+        "llm_time": 8876.97172164917,
+        "total_time": 11029.070138931274,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 94,
+        "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+        "database": "Pinecone",
+        "retrieval_time": 2191.434860229492,
+        "llm_time": 8352.538347244263,
+        "total_time": 10543.973207473755,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 95,
+        "query": "How do I register my phone's IMEI in Indonesia?",
+        "database": "Pinecone",
+        "retrieval_time": 2215.8992290496826,
+        "llm_time": 9415.73715209961,
+        "total_time": 11631.636381149292,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 96,
+        "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+        "database": "Pinecone",
+        "retrieval_time": 2406.2516689300537,
+        "llm_time": 7446.472644805908,
+        "total_time": 9852.724313735962,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 97,
+        "query": "Apakah skuter listrik atau skateboard boleh digunakan di dalam stasiun?",
+        "database": "Pinecone",
+        "retrieval_time": 2416.8572425842285,
+        "llm_time": 6486.755132675171,
+        "total_time": 8903.6123752594,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 98,
+        "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+        "database": "Pinecone",
+        "retrieval_time": 2205.3120136260986,
+        "llm_time": 10141.327619552612,
+        "total_time": 12346.639633178711,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 99,
+        "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+        "database": "Pinecone",
+        "retrieval_time": 2157.165050506592,
+        "llm_time": 7797.108888626099,
+        "total_time": 9954.27393913269,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 100,
+        "query": "Apakah penumpang boleh merokok atau menggunakan vape di area stasiun?",
+        "database": "Pinecone",
+        "retrieval_time": 2166.0401821136475,
+        "llm_time": 4931.385517120361,
+        "total_time": 7097.425699234009,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 1,
+        "query": "What transport options are available from Juanda International Airport to ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1892.5585746765137,
+        "llm_time": 9925.42052268982,
+        "total_time": 11817.979097366333,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 2,
+        "query": "Which hospitals are recommended near the ITS campus?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1888.3028030395508,
+        "llm_time": 6958.564043045044,
+        "total_time": 8846.866846084595,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 3,
+        "query": "Kapan jam sibuk di mana sepeda non-lipat dilarang masuk ke kereta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1894.6218490600586,
+        "llm_time": 6622.780323028564,
+        "total_time": 8517.402172088623,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 4,
+        "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1891.322374343872,
+        "llm_time": 7922.157049179077,
+        "total_time": 9813.47942352295,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 5,
+        "query": "Apa saja jenis alat pembayaran yang sah untuk naik MRT Jakarta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1930.3112030029297,
+        "llm_time": 8290.09985923767,
+        "total_time": 10220.4110622406,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 6,
+        "query": "What are the estimated living costs for accommodation near ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1884.7150802612305,
+        "llm_time": 13595.078468322754,
+        "total_time": 15479.793548583984,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 7,
+        "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1899.953842163086,
+        "llm_time": 5467.395544052124,
+        "total_time": 7367.34938621521,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 8,
+        "query": "Apakah satu tiket bisa digunakan oleh dua orang secara bersamaan?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1905.0374031066895,
+        "llm_time": 4912.821054458618,
+        "total_time": 6817.858457565308,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 9,
+        "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1903.3002853393555,
+        "llm_time": 7271.5113162994385,
+        "total_time": 9174.811601638794,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 10,
+        "query": "Berapa lama masa berlaku Single Trip Ticket (STT) setelah diisi ulang?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1906.8264961242676,
+        "llm_time": 7086.373805999756,
+        "total_time": 8993.200302124023,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 11,
+        "query": "Apakah uang elektronik bank (seperti e-money/flazz) bisa diisi ulang di loket stasiun MRT?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1891.0210132598877,
+        "llm_time": 9155.690908432007,
+        "total_time": 11046.711921691895,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 12,
+        "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1917.6292419433594,
+        "llm_time": 5028.085708618164,
+        "total_time": 6945.714950561523,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 13,
+        "query": "What are the requirements for an Internship Visa (C22A)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1916.1229133605957,
+        "llm_time": 11055.497407913208,
+        "total_time": 12971.620321273804,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 14,
+        "query": "Locations of places of worship (mosques and churches) around ITS.",
+        "database": "PostgreSQL",
+        "retrieval_time": 1917.3564910888672,
+        "llm_time": 7816.380500793457,
+        "total_time": 9733.736991882324,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 15,
+        "query": "Berapa harga pembelian kartu perdana untuk MTT dan STT?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1909.2159271240234,
+        "llm_time": 8955.658435821533,
+        "total_time": 10864.874362945557,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 16,
+        "query": "Where is the Global Engagement Office located?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1891.9556140899658,
+        "llm_time": 4721.208333969116,
+        "total_time": 6613.163948059082,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 17,
+        "query": "What is the \"O-Week\" and why is it mandatory?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1915.3594970703125,
+        "llm_time": 4872.985124588013,
+        "total_time": 6788.344621658325,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 18,
+        "query": "Di gerbong mana penumpang dengan sepeda non-lipat harus naik?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1949.2273330688477,
+        "llm_time": 485033.59031677246,
+        "total_time": 486982.8176498413,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 19,
+        "query": "Bagaimana jika kartu MTT saya rusak dan tidak terbaca mesin, apakah saldo bisa kembali?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1906.6522121429443,
+        "llm_time": 12454.30874824524,
+        "total_time": 14360.960960388184,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 20,
+        "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1905.4009914398193,
+        "llm_time": 7823.156833648682,
+        "total_time": 9728.557825088501,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 21,
+        "query": "What items are on the arrival checklist for international students?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1912.459373474121,
+        "llm_time": 10192.012310028076,
+        "total_time": 12104.471683502197,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 22,
+        "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1925.8909225463867,
+        "llm_time": 7879.295349121094,
+        "total_time": 9805.18627166748,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 23,
+        "query": "What is the tax calculation for registering a phone worth more than $500?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1937.7424716949463,
+        "llm_time": 8368.12686920166,
+        "total_time": 10305.869340896606,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 24,
+        "query": "Apakah gunting atau pisau boleh dibawa masuk ke dalam stasiun?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1888.519048690796,
+        "llm_time": 6701.765060424805,
+        "total_time": 8590.2841091156,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 25,
+        "query": "Berapa denda jika ketahuan makan atau minum di dalam kereta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1900.9902477264404,
+        "llm_time": 10120.566368103027,
+        "total_time": 12021.556615829468,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 26,
+        "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1907.0029258728027,
+        "llm_time": 7794.272661209106,
+        "total_time": 9701.27558708191,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 27,
+        "query": "Apa sanksi bagi penumpang yang menyalahgunakan alat keselamatan darurat tanpa alasan jelas?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1907.5047969818115,
+        "llm_time": 4962.581634521484,
+        "total_time": 6870.086431503296,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 28,
+        "query": "Apa password default yang digunakan saat login pertama kali?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1895.3914642333984,
+        "llm_time": 4225.090503692627,
+        "total_time": 6120.481967926025,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 29,
+        "query": "Apakah boleh melakukan kampanye politik atau orasi di dalam stasiun?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1898.0319499969482,
+        "llm_time": 5736.640691757202,
+        "total_time": 7634.67264175415,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 30,
+        "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1907.2291851043701,
+        "llm_time": 484065.5429363251,
+        "total_time": 485972.77212142944,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 31,
+        "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1884.509801864624,
+        "llm_time": 6163.182973861694,
+        "total_time": 8047.692775726318,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 32,
+        "query": "List of faculties available under the SCIENTICS cluster.",
+        "database": "PostgreSQL",
+        "retrieval_time": 1913.684368133545,
+        "llm_time": 8527.473449707031,
+        "total_time": 10441.157817840576,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 33,
+        "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1893.1262493133545,
+        "llm_time": 5197.723388671875,
+        "total_time": 7090.8496379852295,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 34,
+        "query": "Apa saja fasilitas yang tersedia di area berbayar stasiun?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1887.4554634094238,
+        "llm_time": 7306.501865386963,
+        "total_time": 9193.957328796387,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 35,
+        "query": "Berapa batas maksimum saldo yang boleh disimpan dalam kartu MTT?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1887.9995346069336,
+        "llm_time": 4631.22820854187,
+        "total_time": 6519.227743148804,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 36,
+        "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1902.8842449188232,
+        "llm_time": 11203.894853591919,
+        "total_time": 13106.779098510742,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 37,
+        "query": "Berapa lama barang temuan disimpan oleh MRT sebelum menjadi milik perusahaan?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1887.868881225586,
+        "llm_time": 7038.108825683594,
+        "total_time": 8925.97770690918,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 38,
+        "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1905.261516571045,
+        "llm_time": 13574.217319488525,
+        "total_time": 15479.47883605957,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 39,
+        "query": "Apakah boleh mengambil foto atau video untuk tujuan komersial di stasiun?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1905.1237106323242,
+        "llm_time": 4512.6097202301025,
+        "total_time": 6417.733430862427,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 40,
+        "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1888.3888721466064,
+        "llm_time": 4609.057426452637,
+        "total_time": 6497.446298599243,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 41,
+        "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1898.3280658721924,
+        "llm_time": 6304.291009902954,
+        "total_time": 8202.619075775146,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 42,
+        "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1900.2225399017334,
+        "llm_time": 4337.883472442627,
+        "total_time": 6238.10601234436,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 43,
+        "query": "What are the emergency hotline numbers in Surabaya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1894.930362701416,
+        "llm_time": 4964.720964431763,
+        "total_time": 6859.651327133179,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 44,
+        "query": "What is the dress code for attending classes at ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1887.3991966247559,
+        "llm_time": 5485.950469970703,
+        "total_time": 7373.349666595459,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 45,
+        "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1921.9331741333008,
+        "llm_time": 7996.989965438843,
+        "total_time": 9918.923139572144,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 46,
+        "query": "Bagaimana aturan penggunaan tiket Single Trip Ticket (STT)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 3085.857152938843,
+        "llm_time": 11330.126285552979,
+        "total_time": 14415.983438491821,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 47,
+        "query": "Jam berapa stasiun MRT Jakarta mulai dibuka dan ditutup setiap harinya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1887.9420757293701,
+        "llm_time": 6181.821346282959,
+        "total_time": 8069.763422012329,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 48,
+        "query": "Apa definisi 'Penumpang' menurut peraturan MRT Jakarta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1903.6409854888916,
+        "llm_time": 5345.700979232788,
+        "total_time": 7249.34196472168,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 49,
+        "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1915.6732559204102,
+        "llm_time": 8314.851522445679,
+        "total_time": 10230.524778366089,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 50,
+        "query": "How much is the ITS administration fee for international students?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1899.3663787841797,
+        "llm_time": 4106.503009796143,
+        "total_time": 6005.869388580322,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 51,
+        "query": "Apakah satpam berhak memeriksa tas atau barang bawaan penumpang?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1907.834529876709,
+        "llm_time": 6772.452831268311,
+        "total_time": 8680.28736114502,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 52,
+        "query": "What is the process for extending a tourist IMEI registration?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1893.554925918579,
+        "llm_time": 5856.226921081543,
+        "total_time": 7749.781847000122,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 53,
+        "query": "Apa format default email mahasiswa baru ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1922.518014907837,
+        "llm_time": 4277.452707290649,
+        "total_time": 6199.970722198486,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 54,
+        "query": "Where can students find traditional markets near the campus?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1898.6754417419434,
+        "llm_time": 3958.0836296081543,
+        "total_time": 5856.759071350098,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 55,
+        "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1915.2653217315674,
+        "llm_time": 6301.573276519775,
+        "total_time": 8216.838598251343,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 56,
+        "query": "How to register for a local bank account at Mandiri?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1913.6910438537598,
+        "llm_time": 10374.168634414673,
+        "total_time": 12287.859678268433,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 57,
+        "query": "How to use Gojek or Grab for local transportation?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1904.052972793579,
+        "llm_time": 7726.019859313965,
+        "total_time": 9630.072832107544,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 58,
+        "query": "Apakah tiket STT bisa di-refund atau dikembalikan depositnya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1901.474952697754,
+        "llm_time": 6486.600399017334,
+        "total_time": 8388.075351715088,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 59,
+        "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1892.7817344665527,
+        "llm_time": 6635.857582092285,
+        "total_time": 8528.639316558838,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 60,
+        "query": "Apakah MRT Jakarta menyediakan kereta khusus wanita dan kapan jadwalnya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1906.5845012664795,
+        "llm_time": 5496.977090835571,
+        "total_time": 7403.561592102051,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 61,
+        "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1911.9467735290527,
+        "llm_time": 5456.753969192505,
+        "total_time": 7368.700742721558,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 62,
+        "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1903.7744998931885,
+        "llm_time": 12146.072626113892,
+        "total_time": 14049.84712600708,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 63,
+        "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1909.292459487915,
+        "llm_time": 5887.132406234741,
+        "total_time": 7796.424865722656,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 64,
+        "query": "Berapa saldo minimum yang harus ada di Multi Trip Ticket (MTT) agar bisa digunakan?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1898.926019668579,
+        "llm_time": 5061.373472213745,
+        "total_time": 6960.299491882324,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 65,
+        "query": "Berapa denda yang dikenakan jika membuang sampah sembarangan di area MRT?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1898.2410430908203,
+        "llm_time": 4983.446359634399,
+        "total_time": 6881.68740272522,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 66,
+        "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1932.0847988128662,
+        "llm_time": 9643.903732299805,
+        "total_time": 11575.98853111267,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 67,
+        "query": "Apakah tiket kode QR yang sudah dibeli bisa dibatalkan atau di-refund?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1895.4815864562988,
+        "llm_time": 8063.806056976318,
+        "total_time": 9959.287643432617,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 68,
+        "query": "How to use the Suroboyo Bus and what is the cost for students?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1918.6582565307617,
+        "llm_time": 7159.295320510864,
+        "total_time": 9077.953577041626,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 69,
+        "query": "Apa syarat membawa sepeda non-lipat masuk ke dalam MRT Jakarta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1895.522117614746,
+        "llm_time": 8710.185766220093,
+        "total_time": 10605.707883834839,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 70,
+        "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1900.4409313201904,
+        "llm_time": 7449.470281600952,
+        "total_time": 9349.911212921143,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 71,
+        "query": "Apa itu myITS Portal dan apa fungsinya?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1902.7175903320312,
+        "llm_time": 6264.611721038818,
+        "total_time": 8167.32931137085,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 72,
+        "query": "Bagaimana aturan membawa alat musik besar seperti gitar atau keyboard?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1911.916971206665,
+        "llm_time": 6872.386932373047,
+        "total_time": 8784.303903579712,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 73,
+        "query": "What facilities are available at the ITS Medical Centre?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1882.1563720703125,
+        "llm_time": 6915.200471878052,
+        "total_time": 8797.356843948364,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 74,
+        "query": "Apakah boleh membawa durian atau makanan berbau menyengat ke dalam kereta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1919.7871685028076,
+        "llm_time": 7204.254865646362,
+        "total_time": 9124.04203414917,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 75,
+        "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1897.6144790649414,
+        "llm_time": 4421.982765197754,
+        "total_time": 6319.597244262695,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 76,
+        "query": "Berapa ukuran dimensi maksimal barang bawaan yang boleh dibawa penumpang?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1890.9053802490234,
+        "llm_time": 5863.37947845459,
+        "total_time": 7754.284858703613,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 77,
+        "query": "Bagaimana cara mengubah password melalui myITS Account?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1893.7456607818604,
+        "llm_time": 6585.286617279053,
+        "total_time": 8479.032278060913,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 78,
+        "query": "Apa yang harus dilakukan jika saldo MTT kurang saat berada di stasiun tujuan?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1889.3823623657227,
+        "llm_time": 6402.507781982422,
+        "total_time": 8291.890144348145,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 79,
+        "query": "Berapa denda jika penumpang bersandar pada pintu tepi peron (PSD)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1912.6310348510742,
+        "llm_time": 4959.918022155762,
+        "total_time": 6872.549057006836,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 80,
+        "query": "Apa sanksi jika penumpang tidak melakukan tap-out di gerbang keluar?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1891.852855682373,
+        "llm_time": 7414.130687713623,
+        "total_time": 9305.983543395996,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 81,
+        "query": "Apa kompensasi yang diberikan MRT Jakarta jika gagal memenuhi Standar Pelayanan Minimum?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1912.480115890503,
+        "llm_time": 6576.6026973724365,
+        "total_time": 8489.08281326294,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 82,
+        "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1909.4884395599365,
+        "llm_time": 6759.499549865723,
+        "total_time": 8668.98798942566,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 83,
+        "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1910.9210968017578,
+        "llm_time": 7563.816547393799,
+        "total_time": 9474.737644195557,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 84,
+        "query": "Apakah hewan peliharaan boleh dibawa masuk ke dalam kereta MRT?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1914.6838188171387,
+        "llm_time": 5367.521286010742,
+        "total_time": 7282.205104827881,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 85,
+        "query": "Apa prosedur Lost & Found jika barang saya tertinggal di kereta?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1918.212890625,
+        "llm_time": 8823.643922805786,
+        "total_time": 10741.856813430786,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 86,
+        "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1919.7590351104736,
+        "llm_time": 5551.552295684814,
+        "total_time": 7471.311330795288,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 87,
+        "query": "How can international students join Student Activity Units (UKM)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1904.6056270599365,
+        "llm_time": 6454.906702041626,
+        "total_time": 8359.512329101562,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 88,
+        "query": "Apa yang terjadi jika saya masuk dan keluar di stasiun yang sama (tidak jadi naik kereta)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1914.602518081665,
+        "llm_time": 7229.17366027832,
+        "total_time": 9143.776178359985,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 89,
+        "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1893.8701152801514,
+        "llm_time": 6739.570379257202,
+        "total_time": 8633.440494537354,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 90,
+        "query": "Bagaimana cara menghitung tarif untuk penumpang anak-anak?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1908.975601196289,
+        "llm_time": 9860.444784164429,
+        "total_time": 11769.420385360718,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 91,
+        "query": "Apa sanksi untuk penumpang yang melakukan pelecehan seksual atau asusila?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1905.559778213501,
+        "llm_time": 6917.541742324829,
+        "total_time": 8823.10152053833,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 92,
+        "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1916.691780090332,
+        "llm_time": 7771.269798278809,
+        "total_time": 9687.96157836914,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 93,
+        "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1889.5347118377686,
+        "llm_time": 9373.776912689209,
+        "total_time": 11263.311624526978,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 94,
+        "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1897.4123001098633,
+        "llm_time": 6013.976812362671,
+        "total_time": 7911.389112472534,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 95,
+        "query": "How do I register my phone's IMEI in Indonesia?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1895.5321311950684,
+        "llm_time": 9556.575059890747,
+        "total_time": 11452.107191085815,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 96,
+        "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1907.24515914917,
+        "llm_time": 10864.605903625488,
+        "total_time": 12771.851062774658,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 97,
+        "query": "Apakah skuter listrik atau skateboard boleh digunakan di dalam stasiun?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1894.3772315979004,
+        "llm_time": 7660.0329875946045,
+        "total_time": 9554.410219192505,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 98,
+        "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1897.4387645721436,
+        "llm_time": 10109.294176101685,
+        "total_time": 12006.732940673828,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 99,
+        "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+        "database": "PostgreSQL",
+        "retrieval_time": 1908.277988433838,
+        "llm_time": 7038.822889328003,
+        "total_time": 8947.10087776184,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 100,
+        "query": "Apakah penumpang boleh merokok atau menggunakan vape di area stasiun?",
+        "database": "PostgreSQL",
+        "retrieval_time": 1895.7056999206543,
+        "llm_time": 4997.370719909668,
+        "total_time": 6893.076419830322,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 1,
+        "query": "What transport options are available from Juanda International Airport to ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1880.7897567749023,
+        "llm_time": 9969.95496749878,
+        "total_time": 11850.744724273682,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 2,
+        "query": "Which hospitals are recommended near the ITS campus?",
+        "database": "ChromaDB",
+        "retrieval_time": 1880.2261352539062,
+        "llm_time": 7081.326246261597,
+        "total_time": 8961.552381515503,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 3,
+        "query": "Kapan jam sibuk di mana sepeda non-lipat dilarang masuk ke kereta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1899.399757385254,
+        "llm_time": 5156.418085098267,
+        "total_time": 7055.8178424835205,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 4,
+        "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
+        "database": "ChromaDB",
+        "retrieval_time": 1884.3967914581299,
+        "llm_time": 9474.997520446777,
+        "total_time": 11359.394311904907,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 5,
+        "query": "Apa saja jenis alat pembayaran yang sah untuk naik MRT Jakarta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1885.4925632476807,
+        "llm_time": 8245.62954902649,
+        "total_time": 10131.12211227417,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 6,
+        "query": "What are the estimated living costs for accommodation near ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1908.5068702697754,
+        "llm_time": 10965.28434753418,
+        "total_time": 12873.791217803955,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 7,
+        "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
+        "database": "ChromaDB",
+        "retrieval_time": 1887.55464553833,
+        "llm_time": 5439.113616943359,
+        "total_time": 7326.668262481689,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 8,
+        "query": "Apakah satu tiket bisa digunakan oleh dua orang secara bersamaan?",
+        "database": "ChromaDB",
+        "retrieval_time": 1877.307415008545,
+        "llm_time": 5828.072547912598,
+        "total_time": 7705.379962921143,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 9,
+        "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1896.165370941162,
+        "llm_time": 6818.312406539917,
+        "total_time": 8714.47777748108,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 10,
+        "query": "Berapa lama masa berlaku Single Trip Ticket (STT) setelah diisi ulang?",
+        "database": "ChromaDB",
+        "retrieval_time": 1888.2579803466797,
+        "llm_time": 8078.404426574707,
+        "total_time": 9966.662406921387,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 11,
+        "query": "Apakah uang elektronik bank (seperti e-money/flazz) bisa diisi ulang di loket stasiun MRT?",
+        "database": "ChromaDB",
+        "retrieval_time": 1907.2015285491943,
+        "llm_time": 8094.935655593872,
+        "total_time": 10002.137184143066,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 12,
+        "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1890.8958435058594,
+        "llm_time": 4906.522274017334,
+        "total_time": 6797.418117523193,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 13,
+        "query": "What are the requirements for an Internship Visa (C22A)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1904.4709205627441,
+        "llm_time": 8128.230571746826,
+        "total_time": 10032.70149230957,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 14,
+        "query": "Locations of places of worship (mosques and churches) around ITS.",
+        "database": "ChromaDB",
+        "retrieval_time": 1903.6040306091309,
+        "llm_time": 7651.21865272522,
+        "total_time": 9554.82268333435,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 15,
+        "query": "Berapa harga pembelian kartu perdana untuk MTT dan STT?",
+        "database": "ChromaDB",
+        "retrieval_time": 1907.9408645629883,
+        "llm_time": 9445.343971252441,
+        "total_time": 11353.28483581543,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 16,
+        "query": "Where is the Global Engagement Office located?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.0420970916748,
+        "llm_time": 4207.427263259888,
+        "total_time": 6090.4693603515625,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 17,
+        "query": "What is the \"O-Week\" and why is it mandatory?",
+        "database": "ChromaDB",
+        "retrieval_time": 1896.4183330535889,
+        "llm_time": 5377.073526382446,
+        "total_time": 7273.491859436035,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 18,
+        "query": "Di gerbong mana penumpang dengan sepeda non-lipat harus naik?",
+        "database": "ChromaDB",
+        "retrieval_time": 1948.211908340454,
+        "llm_time": 13174.913883209229,
+        "total_time": 15123.125791549683,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 19,
+        "query": "Bagaimana jika kartu MTT saya rusak dan tidak terbaca mesin, apakah saldo bisa kembali?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.7053775787354,
+        "llm_time": 10191.924333572388,
+        "total_time": 12075.629711151123,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 20,
+        "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1896.2829113006592,
+        "llm_time": 7702.152252197266,
+        "total_time": 9598.435163497925,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 21,
+        "query": "What items are on the arrival checklist for international students?",
+        "database": "ChromaDB",
+        "retrieval_time": 1896.113634109497,
+        "llm_time": 8306.828022003174,
+        "total_time": 10202.94165611267,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 22,
+        "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+        "database": "ChromaDB",
+        "retrieval_time": 1925.9374141693115,
+        "llm_time": 7798.553705215454,
+        "total_time": 9724.491119384766,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 23,
+        "query": "What is the tax calculation for registering a phone worth more than $500?",
+        "database": "ChromaDB",
+        "retrieval_time": 1902.111291885376,
+        "llm_time": 9796.739101409912,
+        "total_time": 11698.850393295288,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 24,
+        "query": "Apakah gunting atau pisau boleh dibawa masuk ke dalam stasiun?",
+        "database": "ChromaDB",
+        "retrieval_time": 1895.202875137329,
+        "llm_time": 6656.62956237793,
+        "total_time": 8551.832437515259,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 25,
+        "query": "Berapa denda jika ketahuan makan atau minum di dalam kereta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1887.1269226074219,
+        "llm_time": 8333.855390548706,
+        "total_time": 10220.982313156128,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 26,
+        "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+        "database": "ChromaDB",
+        "retrieval_time": 1875.0834465026855,
+        "llm_time": 7768.261432647705,
+        "total_time": 9643.34487915039,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 27,
+        "query": "Apa sanksi bagi penumpang yang menyalahgunakan alat keselamatan darurat tanpa alasan jelas?",
+        "database": "ChromaDB",
+        "retrieval_time": 1911.5006923675537,
+        "llm_time": 5207.188367843628,
+        "total_time": 7118.689060211182,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 28,
+        "query": "Apa password default yang digunakan saat login pertama kali?",
+        "database": "ChromaDB",
+        "retrieval_time": 1910.7871055603027,
+        "llm_time": 4521.438837051392,
+        "total_time": 6432.225942611694,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 29,
+        "query": "Apakah boleh melakukan kampanye politik atau orasi di dalam stasiun?",
+        "database": "ChromaDB",
+        "retrieval_time": 1907.2356224060059,
+        "llm_time": 5164.175510406494,
+        "total_time": 7071.4111328125,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 30,
+        "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+        "database": "ChromaDB",
+        "retrieval_time": 1897.9766368865967,
+        "llm_time": 20634.94825363159,
+        "total_time": 22532.92489051819,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 31,
+        "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1887.969970703125,
+        "llm_time": 6605.18741607666,
+        "total_time": 8493.157386779785,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 32,
+        "query": "List of faculties available under the SCIENTICS cluster.",
+        "database": "ChromaDB",
+        "retrieval_time": 1897.9957103729248,
+        "llm_time": 8926.960945129395,
+        "total_time": 10824.95665550232,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 33,
+        "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+        "database": "ChromaDB",
+        "retrieval_time": 1885.5881690979004,
+        "llm_time": 4560.253858566284,
+        "total_time": 6445.842027664185,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 34,
+        "query": "Apa saja fasilitas yang tersedia di area berbayar stasiun?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.2740783691406,
+        "llm_time": 5550.053119659424,
+        "total_time": 7433.327198028564,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 35,
+        "query": "Berapa batas maksimum saldo yang boleh disimpan dalam kartu MTT?",
+        "database": "ChromaDB",
+        "retrieval_time": 1911.8194580078125,
+        "llm_time": 4847.080230712891,
+        "total_time": 6758.899688720703,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 36,
+        "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+        "database": "ChromaDB",
+        "retrieval_time": 1885.0560188293457,
+        "llm_time": 20915.380477905273,
+        "total_time": 22800.43649673462,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 37,
+        "query": "Berapa lama barang temuan disimpan oleh MRT sebelum menjadi milik perusahaan?",
+        "database": "ChromaDB",
+        "retrieval_time": 1890.2249336242676,
+        "llm_time": 6465.729236602783,
+        "total_time": 8355.95417022705,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 38,
+        "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+        "database": "ChromaDB",
+        "retrieval_time": 1899.3546962738037,
+        "llm_time": 12244.224309921265,
+        "total_time": 14143.579006195068,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 39,
+        "query": "Apakah boleh mengambil foto atau video untuk tujuan komersial di stasiun?",
+        "database": "ChromaDB",
+        "retrieval_time": 1899.3818759918213,
+        "llm_time": 4377.861499786377,
+        "total_time": 6277.243375778198,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 40,
+        "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+        "database": "ChromaDB",
+        "retrieval_time": 1886.9845867156982,
+        "llm_time": 4322.8440284729,
+        "total_time": 6209.828615188599,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 41,
+        "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
+        "database": "ChromaDB",
+        "retrieval_time": 1888.7875080108643,
+        "llm_time": 7187.680006027222,
+        "total_time": 9076.467514038086,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 42,
+        "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1910.84623336792,
+        "llm_time": 4766.005277633667,
+        "total_time": 6676.851511001587,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 43,
+        "query": "What are the emergency hotline numbers in Surabaya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1900.2094268798828,
+        "llm_time": 5101.676940917969,
+        "total_time": 7001.886367797852,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 44,
+        "query": "What is the dress code for attending classes at ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.4099769592285,
+        "llm_time": 8626.030445098877,
+        "total_time": 10509.440422058105,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 45,
+        "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 2161.501169204712,
+        "llm_time": 7122.596740722656,
+        "total_time": 9284.097909927368,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 46,
+        "query": "Bagaimana aturan penggunaan tiket Single Trip Ticket (STT)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1878.9989948272705,
+        "llm_time": 9107.90205001831,
+        "total_time": 10986.901044845581,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 47,
+        "query": "Jam berapa stasiun MRT Jakarta mulai dibuka dan ditutup setiap harinya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1890.3074264526367,
+        "llm_time": 6185.219049453735,
+        "total_time": 8075.526475906372,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 48,
+        "query": "Apa definisi 'Penumpang' menurut peraturan MRT Jakarta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.4693431854248,
+        "llm_time": 4164.986610412598,
+        "total_time": 6048.4559535980225,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 49,
+        "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
+        "database": "ChromaDB",
+        "retrieval_time": 1907.423734664917,
+        "llm_time": 9084.304809570312,
+        "total_time": 10991.72854423523,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 50,
+        "query": "How much is the ITS administration fee for international students?",
+        "database": "ChromaDB",
+        "retrieval_time": 1904.11376953125,
+        "llm_time": 4084.246873855591,
+        "total_time": 5988.360643386841,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 51,
+        "query": "Apakah satpam berhak memeriksa tas atau barang bawaan penumpang?",
+        "database": "ChromaDB",
+        "retrieval_time": 1892.16947555542,
+        "llm_time": 6907.164812088013,
+        "total_time": 8799.334287643433,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 52,
+        "query": "What is the process for extending a tourist IMEI registration?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.1725120544434,
+        "llm_time": 7267.085790634155,
+        "total_time": 9150.258302688599,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 53,
+        "query": "Apa format default email mahasiswa baru ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1898.0143070220947,
+        "llm_time": 4226.500511169434,
+        "total_time": 6124.514818191528,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 54,
+        "query": "Where can students find traditional markets near the campus?",
+        "database": "ChromaDB",
+        "retrieval_time": 1899.1835117340088,
+        "llm_time": 3954.907178878784,
+        "total_time": 5854.090690612793,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 55,
+        "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
+        "database": "ChromaDB",
+        "retrieval_time": 1895.115852355957,
+        "llm_time": 5514.865159988403,
+        "total_time": 7409.98101234436,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 56,
+        "query": "How to register for a local bank account at Mandiri?",
+        "database": "ChromaDB",
+        "retrieval_time": 1882.5609683990479,
+        "llm_time": 9997.295141220093,
+        "total_time": 11879.85610961914,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 57,
+        "query": "How to use Gojek or Grab for local transportation?",
+        "database": "ChromaDB",
+        "retrieval_time": 1889.9102210998535,
+        "llm_time": 6602.166652679443,
+        "total_time": 8492.076873779297,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 58,
+        "query": "Apakah tiket STT bisa di-refund atau dikembalikan depositnya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1899.7862339019775,
+        "llm_time": 6443.793773651123,
+        "total_time": 8343.5800075531,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 59,
+        "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+        "database": "ChromaDB",
+        "retrieval_time": 1891.495943069458,
+        "llm_time": 7036.857604980469,
+        "total_time": 8928.353548049927,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 60,
+        "query": "Apakah MRT Jakarta menyediakan kereta khusus wanita dan kapan jadwalnya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1892.3876285552979,
+        "llm_time": 5581.961870193481,
+        "total_time": 7474.349498748779,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 61,
+        "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1880.4957866668701,
+        "llm_time": 4968.51110458374,
+        "total_time": 6849.00689125061,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 62,
+        "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1892.0013904571533,
+        "llm_time": 15080.276489257812,
+        "total_time": 16972.277879714966,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 63,
+        "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1903.4876823425293,
+        "llm_time": 6937.851667404175,
+        "total_time": 8841.339349746704,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 64,
+        "query": "Berapa saldo minimum yang harus ada di Multi Trip Ticket (MTT) agar bisa digunakan?",
+        "database": "ChromaDB",
+        "retrieval_time": 1880.7976245880127,
+        "llm_time": 5029.716491699219,
+        "total_time": 6910.514116287231,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 65,
+        "query": "Berapa denda yang dikenakan jika membuang sampah sembarangan di area MRT?",
+        "database": "ChromaDB",
+        "retrieval_time": 1894.1824436187744,
+        "llm_time": 4939.882516860962,
+        "total_time": 6834.064960479736,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 66,
+        "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1892.608404159546,
+        "llm_time": 8459.52320098877,
+        "total_time": 10352.131605148315,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 67,
+        "query": "Apakah tiket kode QR yang sudah dibeli bisa dibatalkan atau di-refund?",
+        "database": "ChromaDB",
+        "retrieval_time": 1879.4372081756592,
+        "llm_time": 8797.33920097351,
+        "total_time": 10676.77640914917,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 68,
+        "query": "How to use the Suroboyo Bus and what is the cost for students?",
+        "database": "ChromaDB",
+        "retrieval_time": 1888.69309425354,
+        "llm_time": 6937.096357345581,
+        "total_time": 8825.789451599121,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 69,
+        "query": "Apa syarat membawa sepeda non-lipat masuk ke dalam MRT Jakarta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1900.9130001068115,
+        "llm_time": 8949.893236160278,
+        "total_time": 10850.80623626709,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 70,
+        "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+        "database": "ChromaDB",
+        "retrieval_time": 1889.0626430511475,
+        "llm_time": 6689.570188522339,
+        "total_time": 8578.632831573486,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 71,
+        "query": "Apa itu myITS Portal dan apa fungsinya?",
+        "database": "ChromaDB",
+        "retrieval_time": 1880.1636695861816,
+        "llm_time": 6141.067743301392,
+        "total_time": 8021.231412887573,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 72,
+        "query": "Bagaimana aturan membawa alat musik besar seperti gitar atau keyboard?",
+        "database": "ChromaDB",
+        "retrieval_time": 1884.7243785858154,
+        "llm_time": 7442.331552505493,
+        "total_time": 9327.055931091309,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 73,
+        "query": "What facilities are available at the ITS Medical Centre?",
+        "database": "ChromaDB",
+        "retrieval_time": 1894.6669101715088,
+        "llm_time": 6991.047143936157,
+        "total_time": 8885.714054107666,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 74,
+        "query": "Apakah boleh membawa durian atau makanan berbau menyengat ke dalam kereta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1903.38134765625,
+        "llm_time": 11824.337482452393,
+        "total_time": 13727.718830108643,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 75,
+        "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+        "database": "ChromaDB",
+        "retrieval_time": 1899.4665145874023,
+        "llm_time": 4907.160997390747,
+        "total_time": 6806.627511978149,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 76,
+        "query": "Berapa ukuran dimensi maksimal barang bawaan yang boleh dibawa penumpang?",
+        "database": "ChromaDB",
+        "retrieval_time": 1907.7832698822021,
+        "llm_time": 5697.7598667144775,
+        "total_time": 7605.54313659668,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 77,
+        "query": "Bagaimana cara mengubah password melalui myITS Account?",
+        "database": "ChromaDB",
+        "retrieval_time": 1891.21413230896,
+        "llm_time": 6260.279417037964,
+        "total_time": 8151.493549346924,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 78,
+        "query": "Apa yang harus dilakukan jika saldo MTT kurang saat berada di stasiun tujuan?",
+        "database": "ChromaDB",
+        "retrieval_time": 1902.3785591125488,
+        "llm_time": 8638.005495071411,
+        "total_time": 10540.38405418396,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 79,
+        "query": "Berapa denda jika penumpang bersandar pada pintu tepi peron (PSD)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1897.2864151000977,
+        "llm_time": 4911.863803863525,
+        "total_time": 6809.150218963623,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 80,
+        "query": "Apa sanksi jika penumpang tidak melakukan tap-out di gerbang keluar?",
+        "database": "ChromaDB",
+        "retrieval_time": 1900.101900100708,
+        "llm_time": 7442.218065261841,
+        "total_time": 9342.319965362549,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 81,
+        "query": "Apa kompensasi yang diberikan MRT Jakarta jika gagal memenuhi Standar Pelayanan Minimum?",
+        "database": "ChromaDB",
+        "retrieval_time": 1882.3201656341553,
+        "llm_time": 6587.087869644165,
+        "total_time": 8469.40803527832,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 82,
+        "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+        "database": "ChromaDB",
+        "retrieval_time": 1914.2498970031738,
+        "llm_time": 7416.813135147095,
+        "total_time": 9331.063032150269,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 83,
+        "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+        "database": "ChromaDB",
+        "retrieval_time": 1904.679536819458,
+        "llm_time": 6315.526485443115,
+        "total_time": 8220.206022262573,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 84,
+        "query": "Apakah hewan peliharaan boleh dibawa masuk ke dalam kereta MRT?",
+        "database": "ChromaDB",
+        "retrieval_time": 1904.0496349334717,
+        "llm_time": 5341.255903244019,
+        "total_time": 7245.30553817749,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 85,
+        "query": "Apa prosedur Lost & Found jika barang saya tertinggal di kereta?",
+        "database": "ChromaDB",
+        "retrieval_time": 1904.7009944915771,
+        "llm_time": 9490.318298339844,
+        "total_time": 11395.01929283142,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 86,
+        "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1879.051685333252,
+        "llm_time": 5646.923780441284,
+        "total_time": 7525.975465774536,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 87,
+        "query": "How can international students join Student Activity Units (UKM)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1901.5223979949951,
+        "llm_time": 5699.288845062256,
+        "total_time": 7600.811243057251,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 88,
+        "query": "Apa yang terjadi jika saya masuk dan keluar di stasiun yang sama (tidak jadi naik kereta)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1897.2320556640625,
+        "llm_time": 7323.198080062866,
+        "total_time": 9220.430135726929,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 89,
+        "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
+        "database": "ChromaDB",
+        "retrieval_time": 1883.7831020355225,
+        "llm_time": 6966.327905654907,
+        "total_time": 8850.11100769043,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 90,
+        "query": "Bagaimana cara menghitung tarif untuk penumpang anak-anak?",
+        "database": "ChromaDB",
+        "retrieval_time": 1909.1079235076904,
+        "llm_time": 11248.49534034729,
+        "total_time": 13157.60326385498,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 91,
+        "query": "Apa sanksi untuk penumpang yang melakukan pelecehan seksual atau asusila?",
+        "database": "ChromaDB",
+        "retrieval_time": 1887.169599533081,
+        "llm_time": 5512.618541717529,
+        "total_time": 7399.78814125061,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 92,
+        "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+        "database": "ChromaDB",
+        "retrieval_time": 1898.7822532653809,
+        "llm_time": 7773.2415199279785,
+        "total_time": 9672.02377319336,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 93,
+        "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+        "database": "ChromaDB",
+        "retrieval_time": 1889.5282745361328,
+        "llm_time": 8537.341833114624,
+        "total_time": 10426.870107650757,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 94,
+        "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+        "database": "ChromaDB",
+        "retrieval_time": 1876.537561416626,
+        "llm_time": 7053.72166633606,
+        "total_time": 8930.259227752686,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 95,
+        "query": "How do I register my phone's IMEI in Indonesia?",
+        "database": "ChromaDB",
+        "retrieval_time": 1887.030839920044,
+        "llm_time": 9772.368907928467,
+        "total_time": 11659.39974784851,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 96,
+        "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1891.0467624664307,
+        "llm_time": 8217.273712158203,
+        "total_time": 10108.320474624634,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 97,
+        "query": "Apakah skuter listrik atau skateboard boleh digunakan di dalam stasiun?",
+        "database": "ChromaDB",
+        "retrieval_time": 1881.0505867004395,
+        "llm_time": 7512.139320373535,
+        "total_time": 9393.189907073975,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 98,
+        "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+        "database": "ChromaDB",
+        "retrieval_time": 1887.8800868988037,
+        "llm_time": 9429.06928062439,
+        "total_time": 11316.949367523193,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 99,
+        "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+        "database": "ChromaDB",
+        "retrieval_time": 1908.4508419036865,
+        "llm_time": 9516.74199104309,
+        "total_time": 11425.192832946777,
+        "num_docs": 5,
+        "success": true
+      },
+      {
+        "query_num": 100,
+        "query": "Apakah penumpang boleh merokok atau menggunakan vape di area stasiun?",
+        "database": "ChromaDB",
+        "retrieval_time": 1905.5845737457275,
+        "llm_time": 4980.193376541138,
+        "total_time": 6885.777950286865,
+        "num_docs": 5,
+        "success": true
+      }
+    ]
+  },
+  "scalability_test": {
+    "Pinecone": [
+      {
+        "top_k": 1,
+        "avg_time": 532.3394298553467,
+        "std_time": 544.9769663871004,
+        "min_time": 342.5304889678955,
+        "max_time": 2166.940927505493
+      },
+      {
+        "top_k": 2,
+        "avg_time": 349.89843368530273,
+        "std_time": 12.134212188510688,
+        "min_time": 341.10140800476074,
+        "max_time": 380.92041015625
+      },
+      {
+        "top_k": 3,
+        "avg_time": 346.5742588043213,
+        "std_time": 4.224441636623264,
+        "min_time": 340.8195972442627,
+        "max_time": 356.1570644378662
+      },
+      {
+        "top_k": 5,
+        "avg_time": 346.92301750183105,
+        "std_time": 6.392742713280702,
+        "min_time": 338.38772773742676,
+        "max_time": 363.07430267333984
+      },
+      {
+        "top_k": 8,
+        "avg_time": 349.08530712127686,
+        "std_time": 5.427504966865917,
+        "min_time": 342.35644340515137,
+        "max_time": 362.0431423187256
+      },
+      {
+        "top_k": 10,
+        "avg_time": 367.94421672821045,
+        "std_time": 21.53088214359725,
+        "min_time": 341.9008255004883,
+        "max_time": 408.2150459289551
+      },
+      {
+        "top_k": 15,
+        "avg_time": 364.60468769073486,
+        "std_time": 27.182311770097886,
+        "min_time": 345.29638290405273,
+        "max_time": 443.3319568634033
+      },
+      {
+        "top_k": 20,
+        "avg_time": 363.97039890289307,
+        "std_time": 17.922375183272617,
+        "min_time": 346.97818756103516,
+        "max_time": 408.4296226501465
+      }
+    ],
+    "PostgreSQL": [
+      {
+        "top_k": 1,
+        "avg_time": 74.3816614151001,
+        "std_time": 1.425971492324828,
+        "min_time": 72.16048240661621,
+        "max_time": 76.78413391113281
+      },
+      {
+        "top_k": 2,
+        "avg_time": 75.10931491851807,
+        "std_time": 2.663196159298435,
+        "min_time": 71.75564765930176,
+        "max_time": 80.16443252563477
+      },
+      {
+        "top_k": 3,
+        "avg_time": 76.15983486175537,
+        "std_time": 2.4352138823630645,
+        "min_time": 70.40905952453613,
+        "max_time": 79.0703296661377
+      },
+      {
+        "top_k": 5,
+        "avg_time": 77.88777351379395,
+        "std_time": 1.8391381002201832,
+        "min_time": 75.05226135253906,
+        "max_time": 81.39872550964355
+      },
+      {
+        "top_k": 8,
+        "avg_time": 80.44159412384033,
+        "std_time": 1.4772589597001522,
+        "min_time": 78.17482948303223,
+        "max_time": 82.51214027404785
+      },
+      {
+        "top_k": 10,
+        "avg_time": 80.70943355560303,
+        "std_time": 1.3256418205215723,
+        "min_time": 78.3843994140625,
+        "max_time": 82.78465270996094
+      },
+      {
+        "top_k": 15,
+        "avg_time": 85.9565258026123,
+        "std_time": 2.6645707542204335,
+        "min_time": 81.90727233886719,
+        "max_time": 90.96050262451172
+      },
+      {
+        "top_k": 20,
+        "avg_time": 87.83397674560547,
+        "std_time": 1.470181702420705,
+        "min_time": 85.48688888549805,
+        "max_time": 90.05546569824219
+      }
+    ],
+    "ChromaDB": [
+      {
+        "top_k": 1,
+        "avg_time": 68.14405918121338,
+        "std_time": 1.537440969489292,
+        "min_time": 65.77825546264648,
+        "max_time": 70.59311866760254
+      },
+      {
+        "top_k": 2,
+        "avg_time": 67.53714084625244,
+        "std_time": 1.6079106931445064,
+        "min_time": 63.980817794799805,
+        "max_time": 70.44601440429688
+      },
+      {
+        "top_k": 3,
+        "avg_time": 67.8901195526123,
+        "std_time": 1.935100725794435,
+        "min_time": 64.79954719543457,
+        "max_time": 70.43313980102539
+      },
+      {
+        "top_k": 5,
+        "avg_time": 68.53570938110352,
+        "std_time": 1.9412563461474672,
+        "min_time": 65.07754325866699,
+        "max_time": 71.53201103210449
+      },
+      {
+        "top_k": 8,
+        "avg_time": 68.3297872543335,
+        "std_time": 1.7715713190239046,
+        "min_time": 64.41402435302734,
+        "max_time": 71.12550735473633
+      },
+      {
+        "top_k": 10,
+        "avg_time": 68.10028553009033,
+        "std_time": 2.074333989208612,
+        "min_time": 64.12911415100098,
+        "max_time": 71.75254821777344
+      },
+      {
+        "top_k": 15,
+        "avg_time": 69.65000629425049,
+        "std_time": 2.9494026978532615,
+        "min_time": 67.43240356445312,
+        "max_time": 77.92282104492188
+      },
+      {
+        "top_k": 20,
+        "avg_time": 68.6608076095581,
+        "std_time": 2.56754379446138,
+        "min_time": 65.12308120727539,
+        "max_time": 72.86357879638672
+      }
+    ]
+  },
+  "retrieval_quality": {
+    "Pinecone": {
+      "avg_precision": 0.884,
+      "avg_recall": 1.0,
+      "avg_f1_score": 0.9266,
+      "per_query": [
+        {
+          "query": "What transport options are available from Juanda International Airport to ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Which hospitals are recommended near the ITS campus?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Kapan jam sibuk di mana sepeda non-lipat dilarang masuk ke kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja jenis alat pembayaran yang sah untuk naik MRT Jakarta?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the estimated living costs for accommodation near ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah satu tiket bisa digunakan oleh dua orang secara bersamaan?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa lama masa berlaku Single Trip Ticket (STT) setelah diisi ulang?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah uang elektronik bank (seperti e-money/flazz) bisa diisi ulang di loket stasiun MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the requirements for an Internship Visa (C22A)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Locations of places of worship (mosques and churches) around ITS.",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa harga pembelian kartu perdana untuk MTT dan STT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where is the Global Engagement Office located?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the \"O-Week\" and why is it mandatory?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di gerbong mana penumpang dengan sepeda non-lipat harus naik?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana jika kartu MTT saya rusak dan tidak terbaca mesin, apakah saldo bisa kembali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What items are on the arrival checklist for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the tax calculation for registering a phone worth more than $500?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah gunting atau pisau boleh dibawa masuk ke dalam stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda jika ketahuan makan atau minum di dalam kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi bagi penumpang yang menyalahgunakan alat keselamatan darurat tanpa alasan jelas?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa password default yang digunakan saat login pertama kali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh melakukan kampanye politik atau orasi di dalam stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "List of faculties available under the SCIENTICS cluster.",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang tersedia di area berbayar stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa batas maksimum saldo yang boleh disimpan dalam kartu MTT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa lama barang temuan disimpan oleh MRT sebelum menjadi milik perusahaan?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh mengambil foto atau video untuk tujuan komersial di stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the emergency hotline numbers in Surabaya?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the dress code for attending classes at ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana aturan penggunaan tiket Single Trip Ticket (STT)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Jam berapa stasiun MRT Jakarta mulai dibuka dan ditutup setiap harinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa definisi 'Penumpang' menurut peraturan MRT Jakarta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How much is the ITS administration fee for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah satpam berhak memeriksa tas atau barang bawaan penumpang?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the process for extending a tourist IMEI registration?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa format default email mahasiswa baru ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where can students find traditional markets near the campus?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to register for a local bank account at Mandiri?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to use Gojek or Grab for local transportation?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah tiket STT bisa di-refund atau dikembalikan depositnya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah MRT Jakarta menyediakan kereta khusus wanita dan kapan jadwalnya?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa saldo minimum yang harus ada di Multi Trip Ticket (MTT) agar bisa digunakan?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda yang dikenakan jika membuang sampah sembarangan di area MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah tiket kode QR yang sudah dibeli bisa dibatalkan atau di-refund?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to use the Suroboyo Bus and what is the cost for students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat membawa sepeda non-lipat masuk ke dalam MRT Jakarta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Portal dan apa fungsinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana aturan membawa alat musik besar seperti gitar atau keyboard?",
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1_score": 0.33333333333333337,
+          "relevant_retrieved": 1,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What facilities are available at the ITS Medical Centre?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh membawa durian atau makanan berbau menyengat ke dalam kereta?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa ukuran dimensi maksimal barang bawaan yang boleh dibawa penumpang?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengubah password melalui myITS Account?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa yang harus dilakukan jika saldo MTT kurang saat berada di stasiun tujuan?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda jika penumpang bersandar pada pintu tepi peron (PSD)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi jika penumpang tidak melakukan tap-out di gerbang keluar?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa kompensasi yang diberikan MRT Jakarta jika gagal memenuhi Standar Pelayanan Minimum?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah hewan peliharaan boleh dibawa masuk ke dalam kereta MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa prosedur Lost & Found jika barang saya tertinggal di kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How can international students join Student Activity Units (UKM)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa yang terjadi jika saya masuk dan keluar di stasiun yang sama (tidak jadi naik kereta)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menghitung tarif untuk penumpang anak-anak?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi untuk penumpang yang melakukan pelecehan seksual atau asusila?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How do I register my phone's IMEI in Indonesia?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah skuter listrik atau skateboard boleh digunakan di dalam stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah penumpang boleh merokok atau menggunakan vape di area stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        }
+      ]
+    },
+    "PostgreSQL": {
+      "avg_precision": 0.884,
+      "avg_recall": 1.0,
+      "avg_f1_score": 0.9266,
+      "per_query": [
+        {
+          "query": "What transport options are available from Juanda International Airport to ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Which hospitals are recommended near the ITS campus?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Kapan jam sibuk di mana sepeda non-lipat dilarang masuk ke kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja jenis alat pembayaran yang sah untuk naik MRT Jakarta?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the estimated living costs for accommodation near ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah satu tiket bisa digunakan oleh dua orang secara bersamaan?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa lama masa berlaku Single Trip Ticket (STT) setelah diisi ulang?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah uang elektronik bank (seperti e-money/flazz) bisa diisi ulang di loket stasiun MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the requirements for an Internship Visa (C22A)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Locations of places of worship (mosques and churches) around ITS.",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa harga pembelian kartu perdana untuk MTT dan STT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where is the Global Engagement Office located?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the \"O-Week\" and why is it mandatory?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di gerbong mana penumpang dengan sepeda non-lipat harus naik?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana jika kartu MTT saya rusak dan tidak terbaca mesin, apakah saldo bisa kembali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What items are on the arrival checklist for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the tax calculation for registering a phone worth more than $500?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah gunting atau pisau boleh dibawa masuk ke dalam stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda jika ketahuan makan atau minum di dalam kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi bagi penumpang yang menyalahgunakan alat keselamatan darurat tanpa alasan jelas?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa password default yang digunakan saat login pertama kali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh melakukan kampanye politik atau orasi di dalam stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "List of faculties available under the SCIENTICS cluster.",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang tersedia di area berbayar stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa batas maksimum saldo yang boleh disimpan dalam kartu MTT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa lama barang temuan disimpan oleh MRT sebelum menjadi milik perusahaan?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh mengambil foto atau video untuk tujuan komersial di stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the emergency hotline numbers in Surabaya?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the dress code for attending classes at ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana aturan penggunaan tiket Single Trip Ticket (STT)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Jam berapa stasiun MRT Jakarta mulai dibuka dan ditutup setiap harinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa definisi 'Penumpang' menurut peraturan MRT Jakarta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How much is the ITS administration fee for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah satpam berhak memeriksa tas atau barang bawaan penumpang?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the process for extending a tourist IMEI registration?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa format default email mahasiswa baru ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where can students find traditional markets near the campus?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to register for a local bank account at Mandiri?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to use Gojek or Grab for local transportation?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah tiket STT bisa di-refund atau dikembalikan depositnya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah MRT Jakarta menyediakan kereta khusus wanita dan kapan jadwalnya?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa saldo minimum yang harus ada di Multi Trip Ticket (MTT) agar bisa digunakan?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda yang dikenakan jika membuang sampah sembarangan di area MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah tiket kode QR yang sudah dibeli bisa dibatalkan atau di-refund?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to use the Suroboyo Bus and what is the cost for students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat membawa sepeda non-lipat masuk ke dalam MRT Jakarta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Portal dan apa fungsinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana aturan membawa alat musik besar seperti gitar atau keyboard?",
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1_score": 0.33333333333333337,
+          "relevant_retrieved": 1,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What facilities are available at the ITS Medical Centre?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh membawa durian atau makanan berbau menyengat ke dalam kereta?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa ukuran dimensi maksimal barang bawaan yang boleh dibawa penumpang?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengubah password melalui myITS Account?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa yang harus dilakukan jika saldo MTT kurang saat berada di stasiun tujuan?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda jika penumpang bersandar pada pintu tepi peron (PSD)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi jika penumpang tidak melakukan tap-out di gerbang keluar?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa kompensasi yang diberikan MRT Jakarta jika gagal memenuhi Standar Pelayanan Minimum?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah hewan peliharaan boleh dibawa masuk ke dalam kereta MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa prosedur Lost & Found jika barang saya tertinggal di kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How can international students join Student Activity Units (UKM)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa yang terjadi jika saya masuk dan keluar di stasiun yang sama (tidak jadi naik kereta)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menghitung tarif untuk penumpang anak-anak?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi untuk penumpang yang melakukan pelecehan seksual atau asusila?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How do I register my phone's IMEI in Indonesia?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah skuter listrik atau skateboard boleh digunakan di dalam stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah penumpang boleh merokok atau menggunakan vape di area stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        }
+      ]
+    },
+    "ChromaDB": {
+      "avg_precision": 0.884,
+      "avg_recall": 1.0,
+      "avg_f1_score": 0.9266,
+      "per_query": [
+        {
+          "query": "What transport options are available from Juanda International Airport to ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Which hospitals are recommended near the ITS campus?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Kapan jam sibuk di mana sepeda non-lipat dilarang masuk ke kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana prosedur presensi kuliah menggunakan myITS Presensi?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja jenis alat pembayaran yang sah untuk naik MRT Jakarta?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the estimated living costs for accommodation near ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana langkah-langkah login pertama kali ke myITS Portal?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah satu tiket bisa digunakan oleh dua orang secara bersamaan?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses aplikasi Zoom berlisensi dari ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa lama masa berlaku Single Trip Ticket (STT) setelah diisi ulang?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah uang elektronik bank (seperti e-money/flazz) bisa diisi ulang di loket stasiun MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja layanan internet yang tersedia di lingkungan kampus ITS?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the requirements for an Internship Visa (C22A)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Locations of places of worship (mosques and churches) around ITS.",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa harga pembelian kartu perdana untuk MTT dan STT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where is the Global Engagement Office located?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the \"O-Week\" and why is it mandatory?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di gerbong mana penumpang dengan sepeda non-lipat harus naik?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana jika kartu MTT saya rusak dan tidak terbaca mesin, apakah saldo bisa kembali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the recommended mobile apps for finding accommodation in Surabaya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What items are on the arrival checklist for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu SIMPel ITS dan kegunaannya untuk penelitian?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the tax calculation for registering a phone worth more than $500?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah gunting atau pisau boleh dibawa masuk ke dalam stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda jika ketahuan makan atau minum di dalam kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to activate the \"Livin by Mandiri\" mobile banking app?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi bagi penumpang yang menyalahgunakan alat keselamatan darurat tanpa alasan jelas?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa password default yang digunakan saat login pertama kali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh melakukan kampanye politik atau orasi di dalam stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What documents are required to apply for a Bachelor Degree (E30B) Visa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Classroom dan bagaimana cara mengaksesnya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "List of faculties available under the SCIENTICS cluster.",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the penalty for failing to obtain Proof of Residency within 14 days?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang tersedia di area berbayar stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa batas maksimum saldo yang boleh disimpan dalam kartu MTT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the \"Dos and Don'ts\" regarding etiquette in Indonesia?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa lama barang temuan disimpan oleh MRT sebelum menjadi milik perusahaan?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What steps should be taken during an earthquake according to the disaster mitigation guide?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh mengambil foto atau video untuk tujuan komersial di stasiun?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Aplikasi apa yang wajib diunduh untuk keperluan MFA?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How do I get a Proof of Residency (SKTT) and what is the deadline?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja provider seluler yang tidak bisa digunakan untuk verifikasi nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What are the emergency hotline numbers in Surabaya?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the dress code for attending classes at ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja fasilitas yang disediakan oleh Perpustakaan ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana aturan penggunaan tiket Single Trip Ticket (STT)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Jam berapa stasiun MRT Jakarta mulai dibuka dan ditutup setiap harinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa definisi 'Penumpang' menurut peraturan MRT Jakarta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara orang tua mahasiswa mengakses myITS Wali?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How much is the ITS administration fee for international students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah satpam berhak memeriksa tas atau barang bawaan penumpang?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the process for extending a tourist IMEI registration?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa format default email mahasiswa baru ITS?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Where can students find traditional markets near the campus?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa kegunaan layanan VPN ITS bagi mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to register for a local bank account at Mandiri?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to use Gojek or Grab for local transportation?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah tiket STT bisa di-refund atau dikembalikan depositnya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Di mana mahasiswa bisa mendapatkan informasi layanan untuk penyandang disabilitas?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah MRT Jakarta menyediakan kereta khusus wanita dan kapan jadwalnya?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Ke mana mahasiswa harus menghubungi jika mengalami kendala layanan IT (Service Desk)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara verifikasi email alternatif dan nomor ponsel di myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa fungsi dari aplikasi SIAKAD (Sistem Informasi Akademik)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa saldo minimum yang harus ada di Multi Trip Ticket (MTT) agar bisa digunakan?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda yang dikenakan jika membuang sampah sembarangan di area MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mahasiswa melakukan peminjaman buku secara online (OBOR)?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah tiket kode QR yang sudah dibeli bisa dibatalkan atau di-refund?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How to use the Suroboyo Bus and what is the cost for students?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat membawa sepeda non-lipat masuk ke dalam MRT Jakarta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa peran Direktorat Riset dan Pengabdian kepada Masyarakat (DRPM) bagi mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa itu myITS Portal dan apa fungsinya?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana aturan membawa alat musik besar seperti gitar atau keyboard?",
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1_score": 0.33333333333333337,
+          "relevant_retrieved": 1,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What facilities are available at the ITS Medical Centre?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah boleh membawa durian atau makanan berbau menyengat ke dalam kereta?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the meaning of the Indonesian slang \"Mager\"?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa ukuran dimensi maksimal barang bawaan yang boleh dibawa penumpang?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengubah password melalui myITS Account?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa yang harus dilakukan jika saldo MTT kurang saat berada di stasiun tujuan?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Berapa denda jika penumpang bersandar pada pintu tepi peron (PSD)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi jika penumpang tidak melakukan tap-out di gerbang keluar?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa kompensasi yang diberikan MRT Jakarta jika gagal memenuhi Standar Pelayanan Minimum?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengecek status verifikasi email alternatif?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara mengakses email ITS menggunakan Microsoft Outlook?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah hewan peliharaan boleh dibawa masuk ke dalam kereta MRT?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa prosedur Lost & Found jika barang saya tertinggal di kereta?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa syarat pembuatan password baru untuk akun myITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How can international students join Student Activity Units (UKM)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa yang terjadi jika saya masuk dan keluar di stasiun yang sama (tidak jadi naik kereta)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menghubungkan perangkat ke jaringan Eduroam?",
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1_score": 0.7499999999999999,
+          "relevant_retrieved": 3,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menghitung tarif untuk penumpang anak-anak?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa sanksi untuk penumpang yang melakukan pelecehan seksual atau asusila?",
+          "precision": 0.4,
+          "recall": 1.0,
+          "f1_score": 0.5714285714285715,
+          "relevant_retrieved": 2,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara menginstal Office 365 versi desktop untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara setting OpenVPN Connect Client untuk VPN ITS?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apa saja aplikasi yang tergabung dalam layanan Office 365 untuk mahasiswa?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "How do I register my phone's IMEI in Indonesia?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "What is the procedure for obtaining a Police Notification Report (STM)?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah skuter listrik atau skateboard boleh digunakan di dalam stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Bagaimana cara melakukan aktivasi Multi-Factor Authentication (MFA)?",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Langkah-langkah aktivasi lisensi Office 365 menggunakan akun ITS.",
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1_score": 1.0,
+          "relevant_retrieved": 5,
+          "total_retrieved": 5
+        },
+        {
+          "query": "Apakah penumpang boleh merokok atau menggunakan vape di area stasiun?",
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1_score": 0.888888888888889,
+          "relevant_retrieved": 4,
+          "total_retrieved": 5
+        }
+      ]
+    }
+  }
+}

@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import benchmarkData from "../benchmark result.json";
+import benchmarkData1 from "../benchmark result.json";
+import benchmarkData2 from "../benchmark result 2.json";
+
+const benchmarkDatasets = [benchmarkData1, benchmarkData2];
+
 import {
   Card,
   CardContent,
@@ -236,6 +240,8 @@ const TabButton = ({
 );
 
 export function BenchmarkDashboard() {
+  const [selectedDataset, setSelectedDataset] = useState(3); // 1-4, default to 3 (latest)
+  const benchmarkData = benchmarkDatasets[selectedDataset - 1];
   const { metadata, speed_test, scalability_test, retrieval_quality } = benchmarkData;
 
   const [activeTab, setActiveTab] = useState<TabType>("summary");
@@ -410,6 +416,22 @@ export function BenchmarkDashboard() {
           </div>
           <div className="flex flex-col items-start lg:items-end gap-3">
             <div className="flex items-center gap-3">
+              <div className="flex items-center rounded-md border bg-muted p-0.5">
+                {[1, 2].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setSelectedDataset(num)}
+                    className={cn(
+                      "px-3 py-1 text-sm font-medium rounded transition-all",
+                      selectedDataset === num
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
               <ModeToggle />
               <Badge variant="outline" className="px-3 py-1.5 text-sm">
                 {new Date(metadata.benchmark_date).toLocaleDateString("en-US", {
@@ -898,12 +920,7 @@ export function BenchmarkDashboard() {
                             db.database === "ChromaDB" && "bg-gradient-to-r from-emerald-500 to-emerald-400"
                           )}
                           style={{
-                            width: `${Math.min(
-                              (db.mean_total_ms /
-                                Math.max(...speedSummary.map((s) => s.mean_total_ms))) *
-                              100,
-                              100
-                            )}%`,
+                            width: `${(Math.min(...speedSummary.map((s) => s.mean_total_ms)) / db.mean_total_ms) * 100}%`,
                           }}
                         />
                       </div>
