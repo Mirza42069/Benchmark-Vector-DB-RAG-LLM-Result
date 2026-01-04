@@ -240,7 +240,7 @@ const TabButton = ({
 );
 
 export function BenchmarkDashboard() {
-  const [selectedDataset, setSelectedDataset] = useState(3); // 1-4, default to 3 (latest)
+  const [selectedDataset, setSelectedDataset] = useState(2); // 1-2, default to 2 (latest)
   const benchmarkData = benchmarkDatasets[selectedDataset - 1];
   const { metadata, speed_test, scalability_test, retrieval_quality } = benchmarkData;
 
