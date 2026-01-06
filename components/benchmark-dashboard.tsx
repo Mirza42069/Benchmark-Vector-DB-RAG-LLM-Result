@@ -282,16 +282,22 @@ export function BenchmarkDashboard() {
         dataset1: {
           avgRetrieval: speed1?.mean_retrieval_ms ?? 0,
           avgTotal: speed1?.mean_total_ms ?? 0,
+          precision: quality1?.avg_precision ?? 0,
+          recall: quality1?.avg_recall ?? 0,
           f1Score: quality1?.avg_f1_score ?? 0,
         },
         dataset2: {
           avgRetrieval: speed2?.mean_retrieval_ms ?? 0,
           avgTotal: speed2?.mean_total_ms ?? 0,
+          precision: quality2?.avg_precision ?? 0,
+          recall: quality2?.avg_recall ?? 0,
           f1Score: quality2?.avg_f1_score ?? 0,
         },
         deltas: {
           avgRetrieval: calcDelta(speed1?.mean_retrieval_ms ?? 0, speed2?.mean_retrieval_ms ?? 0),
           avgTotal: calcDelta(speed1?.mean_total_ms ?? 0, speed2?.mean_total_ms ?? 0),
+          precision: calcDelta(quality1?.avg_precision ?? 0, quality2?.avg_precision ?? 0),
+          recall: calcDelta(quality1?.avg_recall ?? 0, quality2?.avg_recall ?? 0),
           f1Score: calcDelta(quality1?.avg_f1_score ?? 0, quality2?.avg_f1_score ?? 0),
         },
       };
@@ -812,8 +818,8 @@ export function BenchmarkDashboard() {
                       </div>
                       <div className="space-y-3 text-sm">
                         <div className="flex justify-between items-center" title="Avg Retrieval">
-                          <span className="text-muted-foreground">
-                            <Clock className="w-4 h-4" />
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-4 h-4" /> Avg Retrieval
                           </span>
                           <div className="flex items-center">
                             {comparisonMode && compItem ? (
@@ -829,8 +835,8 @@ export function BenchmarkDashboard() {
                           </div>
                         </div>
                         <div className="flex justify-between items-center" title="Avg Total">
-                          <span className="text-muted-foreground">
-                            <Gauge className="w-4 h-4" />
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Gauge className="w-4 h-4" /> Avg Total
                           </span>
                           <div className="flex items-center">
                             {comparisonMode && compItem ? (
@@ -847,20 +853,42 @@ export function BenchmarkDashboard() {
                         </div>
                         <Separator />
                         <div className="flex justify-between items-center" title="Precision">
-                          <span className="text-muted-foreground">
-                            <CheckCircle className="w-4 h-4" />
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <CheckCircle className="w-4 h-4" /> Precision
                           </span>
-                          <span className="font-mono font-medium">{(quality.avg_precision * 100).toFixed(1)}%</span>
+                          <div className="flex items-center">
+                            {comparisonMode && compItem ? (
+                              <>
+                                <span className="font-mono font-medium">
+                                  {(compItem.dataset1.precision * 100).toFixed(1)} → {(compItem.dataset2.precision * 100).toFixed(1)}%
+                                </span>
+                                <DeltaBadge value={compItem.deltas.precision} />
+                              </>
+                            ) : (
+                              <span className="font-mono font-medium">{(quality.avg_precision * 100).toFixed(1)}%</span>
+                            )}
+                          </div>
                         </div>
                         <div className="flex justify-between items-center" title="Recall">
-                          <span className="text-muted-foreground">
-                            <Target className="w-4 h-4" />
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Target className="w-4 h-4" /> Recall
                           </span>
-                          <span className="font-mono font-medium">{(quality.avg_recall * 100).toFixed(1)}%</span>
+                          <div className="flex items-center">
+                            {comparisonMode && compItem ? (
+                              <>
+                                <span className="font-mono font-medium">
+                                  {(compItem.dataset1.recall * 100).toFixed(1)} → {(compItem.dataset2.recall * 100).toFixed(1)}%
+                                </span>
+                                <DeltaBadge value={compItem.deltas.recall} />
+                              </>
+                            ) : (
+                              <span className="font-mono font-medium">{(quality.avg_recall * 100).toFixed(1)}%</span>
+                            )}
+                          </div>
                         </div>
                         <div className="flex justify-between items-center" title="F1 Score">
-                          <span className="text-muted-foreground">
-                            <Activity className="w-4 h-4" />
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Activity className="w-4 h-4" /> F1 Score
                           </span>
                           <div className="flex items-center">
                             {comparisonMode && compItem ? (
