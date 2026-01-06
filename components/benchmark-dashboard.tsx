@@ -227,26 +227,28 @@ const TabButton = ({
 }: TabButtonProps) => (
   <button
     onClick={() => setActiveTab(tab)}
+    title={label}
     className={cn(
-      "flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
+      "flex items-center justify-center p-2.5 rounded-lg transition-all duration-200",
       activeTab === tab
         ? "bg-primary text-primary-foreground shadow-md"
         : "text-muted-foreground hover:text-foreground hover:bg-muted"
     )}
   >
-    <Icon className="w-4 h-4" />
-    {label}
+    <Icon className="w-5 h-5" />
   </button>
 );
 
 export function BenchmarkDashboard() {
-  const [selectedDataset, setSelectedDataset] = useState(2); // 1-2, default to 2 (latest)
+  const [selectedDataset, setSelectedDataset] = useState(1); // 1-2, default to 1 (first)
+  const [comparisonMode, setComparisonMode] = useState(false);
   const benchmarkData = benchmarkDatasets[selectedDataset - 1];
   const { metadata, speed_test, scalability_test, retrieval_quality } = benchmarkData;
 
   const [activeTab, setActiveTab] = useState<TabType>("summary");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDb, setFilterDb] = useState<string>("all");
+  const [isLoading, setIsLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -259,6 +261,42 @@ export function BenchmarkDashboard() {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
+
+  // Comparison mode data
+  const comparisonData = useMemo(() => {
+    if (!comparisonMode) return null;
+    const data1 = benchmarkDatasets[0];
+    const data2 = benchmarkDatasets[1];
+    const databases = data1.metadata.databases_tested;
+
+    return databases.map((db) => {
+      const speed1 = (data1.speed_test.summary as SpeedTestSummary[]).find(s => s.database === db);
+      const speed2 = (data2.speed_test.summary as SpeedTestSummary[]).find(s => s.database === db);
+      const quality1 = (data1.retrieval_quality as Record<string, QualityMetrics>)[db];
+      const quality2 = (data2.retrieval_quality as Record<string, QualityMetrics>)[db];
+
+      const calcDelta = (v1: number, v2: number) => v1 !== 0 ? ((v2 - v1) / v1) * 100 : 0;
+
+      return {
+        database: db,
+        dataset1: {
+          avgRetrieval: speed1?.mean_retrieval_ms ?? 0,
+          avgTotal: speed1?.mean_total_ms ?? 0,
+          f1Score: quality1?.avg_f1_score ?? 0,
+        },
+        dataset2: {
+          avgRetrieval: speed2?.mean_retrieval_ms ?? 0,
+          avgTotal: speed2?.mean_total_ms ?? 0,
+          f1Score: quality2?.avg_f1_score ?? 0,
+        },
+        deltas: {
+          avgRetrieval: calcDelta(speed1?.mean_retrieval_ms ?? 0, speed2?.mean_retrieval_ms ?? 0),
+          avgTotal: calcDelta(speed1?.mean_total_ms ?? 0, speed2?.mean_total_ms ?? 0),
+          f1Score: calcDelta(quality1?.avg_f1_score ?? 0, quality2?.avg_f1_score ?? 0),
+        },
+      };
+    });
+  }, [comparisonMode]);
 
   // Speed test data
   const speedSummary = speed_test.summary as SpeedTestSummary[];
@@ -379,12 +417,17 @@ export function BenchmarkDashboard() {
     const baseData = scalabilityData[databases[0]] || [];
 
     // Always create combined data format with database values as properties
+    // Include upper/lower bounds for confidence intervals (±1 std)
     const combinedData = baseData.map((item, idx) => ({
       top_k: item.top_k,
       ...databases.reduce((acc, db) => {
-        acc[db] = scalabilityData[db]?.[idx]?.avg_time ?? 0;
+        const dbData = scalabilityData[db]?.[idx];
+        acc[db] = dbData?.avg_time ?? 0;
+        acc[`${db}_upper`] = (dbData?.avg_time ?? 0) + (dbData?.std_time ?? 0);
+        acc[`${db}_lower`] = Math.max(0, (dbData?.avg_time ?? 0) - (dbData?.std_time ?? 0));
+        acc[`${db}_range`] = [(dbData?.avg_time ?? 0) - (dbData?.std_time ?? 0), (dbData?.avg_time ?? 0) + (dbData?.std_time ?? 0)];
         return acc;
-      }, {} as Record<string, number>),
+      }, {} as Record<string, number | number[]>),
     }));
 
     if (!scalabilitySortConfig) return combinedData;
@@ -400,6 +443,44 @@ export function BenchmarkDashboard() {
   }, [scalabilityData, databases, scalabilitySortConfig]);
 
 
+  // Loading effect
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Keyboard navigation for tabs
+  useEffect(() => {
+    const tabs: TabType[] = ["summary", "speed", "scalability", "quality"];
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        setActiveTab((prev) => {
+          const idx = tabs.indexOf(prev);
+          return tabs[(idx + 1) % tabs.length];
+        });
+      } else if (e.key === "ArrowLeft") {
+        setActiveTab((prev) => {
+          const idx = tabs.indexOf(prev);
+          return tabs[(idx - 1 + tabs.length) % tabs.length];
+        });
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Loading Skeleton
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-primary/30 rounded-full" />
+          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground p-4 md:p-8 lg:p-12 space-y-8 font-sans">
       {/* Header Section */}
@@ -409,10 +490,6 @@ export function BenchmarkDashboard() {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
               Vector Database Benchmark
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
-              Performance analysis of RAG pipeline across Pinecone, PostgreSQL,
-              and ChromaDB vector databases.
-            </p>
           </div>
           <div className="flex flex-col items-start lg:items-end gap-3">
             <div className="flex items-center gap-3">
@@ -492,6 +569,8 @@ export function BenchmarkDashboard() {
       </div>
 
       <Separator />
+
+
 
       {/* Summary Tab */}
       {activeTab === "summary" && (
@@ -660,13 +739,28 @@ export function BenchmarkDashboard() {
           {/* Database Comparison */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-muted-foreground" />
-                Database Comparison
-              </CardTitle>
-              <CardDescription>
-                Side-by-side performance summary
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-muted-foreground" />
+                    Database Comparison
+                  </CardTitle>
+                  <CardDescription>
+                    {comparisonMode ? "Comparing Dataset 1 vs Dataset 2" : "Side-by-side performance summary"}
+                  </CardDescription>
+                </div>
+                <button
+                  onClick={() => setComparisonMode(!comparisonMode)}
+                  className={cn(
+                    "px-3 py-1.5 text-sm font-medium rounded-md border transition-all flex items-center gap-1.5",
+                    comparisonMode
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-background text-foreground border-border hover:bg-muted"
+                  )}
+                >
+                  {comparisonMode ? "Exit Compare" : "Compare"}
+                </button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -684,6 +778,25 @@ export function BenchmarkDashboard() {
                       ? "text-blue-500"
                       : "text-emerald-500";
 
+                  // Get comparison data for this database
+                  const compItem = comparisonData?.find(c => c.database === db);
+
+                  const DeltaBadge = ({ value, inverted = false }: { value: number; inverted?: boolean }) => {
+                    const isBetter = inverted ? value < 0 : value > 0;
+                    const isZero = Math.abs(value) < 0.01;
+                    if (isZero) return null;
+
+                    return (
+                      <span className={cn(
+                        "text-xs font-medium px-1.5 py-0.5 rounded flex items-center gap-0.5 ml-2",
+                        isBetter ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-500"
+                      )}>
+                        {value > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                        {Math.abs(value).toFixed(1)}%
+                      </span>
+                    );
+                  };
+
                   return (
                     <div key={db} className={cn("rounded-lg border p-4 space-y-4", dbColor)}>
                       <div className="flex items-center justify-between">
@@ -691,43 +804,76 @@ export function BenchmarkDashboard() {
                           <DatabaseIcon database={db} className="w-5 h-5" />
                           {db}
                         </h3>
-                        {db === speedWinner.database && (
+                        {!comparisonMode && db === speedWinner.database && (
                           <Badge className="bg-primary/10 text-primary border-primary/30">
                             <Trophy className="w-3 h-3 mr-1" /> Winner
                           </Badge>
                         )}
                       </div>
                       <div className="space-y-3 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5" /> Avg Retrieval
+                        <div className="flex justify-between items-center" title="Avg Retrieval">
+                          <span className="text-muted-foreground">
+                            <Clock className="w-4 h-4" />
                           </span>
-                          <span className="font-mono font-medium">{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
+                          <div className="flex items-center">
+                            {comparisonMode && compItem ? (
+                              <>
+                                <span className="font-mono font-medium">
+                                  {compItem.dataset1.avgRetrieval.toFixed(1)} → {compItem.dataset2.avgRetrieval.toFixed(1)}ms
+                                </span>
+                                <DeltaBadge value={compItem.deltas.avgRetrieval} inverted />
+                              </>
+                            ) : (
+                              <span className="font-mono font-medium">{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Gauge className="w-3.5 h-3.5" /> Avg Total
+                        <div className="flex justify-between items-center" title="Avg Total">
+                          <span className="text-muted-foreground">
+                            <Gauge className="w-4 h-4" />
                           </span>
-                          <span className="font-mono font-medium">{speed?.mean_total_ms.toFixed(0)}ms</span>
+                          <div className="flex items-center">
+                            {comparisonMode && compItem ? (
+                              <>
+                                <span className="font-mono font-medium">
+                                  {compItem.dataset1.avgTotal.toFixed(0)} → {compItem.dataset2.avgTotal.toFixed(0)}ms
+                                </span>
+                                <DeltaBadge value={compItem.deltas.avgTotal} inverted />
+                              </>
+                            ) : (
+                              <span className="font-mono font-medium">{speed?.mean_total_ms.toFixed(0)}ms</span>
+                            )}
+                          </div>
                         </div>
                         <Separator />
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <CheckCircle className="w-3.5 h-3.5" /> Precision
+                        <div className="flex justify-between items-center" title="Precision">
+                          <span className="text-muted-foreground">
+                            <CheckCircle className="w-4 h-4" />
                           </span>
                           <span className="font-mono font-medium">{(quality.avg_precision * 100).toFixed(1)}%</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Target className="w-3.5 h-3.5" /> Recall
+                        <div className="flex justify-between items-center" title="Recall">
+                          <span className="text-muted-foreground">
+                            <Target className="w-4 h-4" />
                           </span>
                           <span className="font-mono font-medium">{(quality.avg_recall * 100).toFixed(1)}%</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Activity className="w-3.5 h-3.5" /> F1 Score
+                        <div className="flex justify-between items-center" title="F1 Score">
+                          <span className="text-muted-foreground">
+                            <Activity className="w-4 h-4" />
                           </span>
-                          <span className="font-mono font-medium">{(quality.avg_f1_score * 100).toFixed(1)}%</span>
+                          <div className="flex items-center">
+                            {comparisonMode && compItem ? (
+                              <>
+                                <span className="font-mono font-medium">
+                                  {(compItem.dataset1.f1Score * 100).toFixed(1)} → {(compItem.dataset2.f1Score * 100).toFixed(1)}%
+                                </span>
+                                <DeltaBadge value={compItem.deltas.f1Score} />
+                              </>
+                            ) : (
+                              <span className="font-mono font-medium">{(quality.avg_f1_score * 100).toFixed(1)}%</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1144,10 +1290,6 @@ export function BenchmarkDashboard() {
                 <BarChart3 className="w-6 h-6 text-primary" />
                 Scalability Analysis
               </h2>
-              <p className="text-muted-foreground">
-                Performance at different top_k values (number of documents
-                retrieved)
-              </p>
             </div>
 
             {/* Scalability Line Chart - Now at top */}
@@ -1209,6 +1351,9 @@ export function BenchmarkDashboard() {
                                   <div className="text-xs text-muted-foreground">
                                     Retrieving {topK} documents per query
                                   </div>
+                                  <div className="text-xs text-muted-foreground italic">
+                                    Shaded areas show ±1 std deviation
+                                  </div>
                                 </div>
                               );
                             }
@@ -1218,6 +1363,29 @@ export function BenchmarkDashboard() {
                         />
                       }
                     />
+                    {/* Confidence interval bands */}
+                    <Area
+                      dataKey="Pinecone_range"
+                      type="monotone"
+                      fill="hsl(45, 93%, 47%)"
+                      fillOpacity={0.15}
+                      stroke="none"
+                    />
+                    <Area
+                      dataKey="PostgreSQL_range"
+                      type="monotone"
+                      fill="hsl(210, 100%, 50%)"
+                      fillOpacity={0.15}
+                      stroke="none"
+                    />
+                    <Area
+                      dataKey="ChromaDB_range"
+                      type="monotone"
+                      fill="hsl(142, 71%, 45%)"
+                      fillOpacity={0.15}
+                      stroke="none"
+                    />
+                    {/* Main lines */}
                     <Line
                       dataKey="Pinecone"
                       type="monotone"
@@ -1416,9 +1584,6 @@ export function BenchmarkDashboard() {
                 <Activity className="w-6 h-6 text-primary" />
                 Retrieval Quality Metrics
               </h2>
-              <p className="text-muted-foreground">
-                Precision, Recall, and F1-Score analysis across databases
-              </p>
             </div>
 
             {/* Quality Summary Cards */}
