@@ -156,6 +156,37 @@ const AnimatedCounter = ({
   );
 };
 
+// Animated Progress Bar Component
+const AnimatedProgressBar = ({
+  value,
+  className,
+  duration = 800
+}: {
+  value: number;
+  className: string;
+  duration?: number;
+}) => {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    // Small delay to ensure the bar starts from 0
+    const timeout = setTimeout(() => {
+      setWidth(value);
+    }, 50);
+    return () => clearTimeout(timeout);
+  }, [value]);
+
+  return (
+    <div
+      className={cn("h-full rounded-full transition-all ease-out", className)}
+      style={{ 
+        width: `${width * 100}%`,
+        transitionDuration: `${duration}ms`
+      }}
+    />
+  );
+};
+
 const SortIcon = ({
   active,
   direction,
@@ -580,7 +611,7 @@ export function BenchmarkDashboard() {
 
       {/* Summary Tab */}
       {activeTab === "summary" && (
-        <div className="space-y-8 animate-in fade-in-50 duration-300">
+        <div key="summary-tab" className="space-y-8 animate-in fade-in-50 duration-300">
           {/* Overall Winner */}
           <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-6 opacity-[0.08] pointer-events-none">
@@ -919,7 +950,7 @@ export function BenchmarkDashboard() {
       {/* Speed Test Tab */}
       {
         activeTab === "speed" && (
-          <div className="space-y-8 animate-in fade-in-50 duration-300">
+          <div key="speed-tab" className="space-y-8 animate-in fade-in-50 duration-300">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                 <Zap className="w-6 h-6 text-primary" />
@@ -1312,7 +1343,7 @@ export function BenchmarkDashboard() {
       {/* Scalability Tab */}
       {
         activeTab === "scalability" && (
-          <div className="space-y-8 animate-in fade-in-50 duration-300">
+          <div key="scalability-tab" className="space-y-8 animate-in fade-in-50 duration-300">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                 <BarChart3 className="w-6 h-6 text-primary" />
@@ -1606,7 +1637,7 @@ export function BenchmarkDashboard() {
       {/* Quality Tab */}
       {
         activeTab === "quality" && (
-          <div className="space-y-8 animate-in fade-in-50 duration-300">
+          <div key="quality-tab" className="space-y-8 animate-in fade-in-50 duration-300">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                 <Activity className="w-6 h-6 text-primary" />
@@ -1644,13 +1675,13 @@ export function BenchmarkDashboard() {
                             Precision
                           </span>
                           <span className={cn("font-semibold", dbColor.text)}>
-                            <FormatPercent value={metrics.avg_precision} />
+                            <AnimatedCounter value={metrics.avg_precision * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
-                          <div
-                            className={cn("h-full bg-gradient-to-r rounded-full transition-all duration-700", dbColor.gradient)}
-                            style={{ width: `${metrics.avg_precision * 100}%` }}
+                          <AnimatedProgressBar
+                            value={metrics.avg_precision}
+                            className={cn("bg-gradient-to-r", dbColor.gradient)}
                           />
                         </div>
                       </div>
@@ -1662,13 +1693,13 @@ export function BenchmarkDashboard() {
                             Recall
                           </span>
                           <span className={cn("font-semibold", dbColor.text)}>
-                            <FormatPercent value={metrics.avg_recall} />
+                            <AnimatedCounter value={metrics.avg_recall * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
-                          <div
-                            className={cn("h-full bg-gradient-to-r rounded-full transition-all duration-700", dbColor.gradient)}
-                            style={{ width: `${metrics.avg_recall * 100}%` }}
+                          <AnimatedProgressBar
+                            value={metrics.avg_recall}
+                            className={cn("bg-gradient-to-r", dbColor.gradient)}
                           />
                         </div>
                       </div>
@@ -1680,13 +1711,13 @@ export function BenchmarkDashboard() {
                             F1 Score
                           </span>
                           <span className={cn("font-semibold", dbColor.text)}>
-                            <FormatPercent value={metrics.avg_f1_score} />
+                            <AnimatedCounter value={metrics.avg_f1_score * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
-                          <div
-                            className={cn("h-full bg-gradient-to-r rounded-full transition-all duration-700", dbColor.gradient)}
-                            style={{ width: `${metrics.avg_f1_score * 100}%` }}
+                          <AnimatedProgressBar
+                            value={metrics.avg_f1_score}
+                            className={cn("bg-gradient-to-r", dbColor.gradient)}
                           />
                         </div>
                       </div>
