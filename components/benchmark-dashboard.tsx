@@ -194,7 +194,7 @@ const SortIcon = ({
   active: boolean;
   direction?: "asc" | "desc";
 }) => (
-  <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+  <div className="w-4 h-4 shrink-0 flex items-center justify-center">
     {active &&
       (direction === "asc" ? (
         <ChevronUp className="w-3.5 h-3.5" />
@@ -524,7 +524,7 @@ export function BenchmarkDashboard() {
       <div className="space-y-6">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-linear-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
               Vector Database Benchmark
             </h1>
           </div>
@@ -613,7 +613,7 @@ export function BenchmarkDashboard() {
       {activeTab === "summary" && (
         <div key="summary-tab" className="space-y-8 animate-in fade-in-50 duration-300">
           {/* Overall Winner */}
-          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent shadow-xl relative overflow-hidden">
+          <Card className="border-primary/30 bg-linear-to-br from-primary/5 via-primary/10 to-transparent shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-6 opacity-[0.08] pointer-events-none">
               <Trophy className="w-48 h-48 md:w-64 md:h-64 text-primary" />
             </div>
@@ -959,7 +959,7 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Retrieval Time Chart - Now at top */}
-            <Card className="pt-0 bg-gradient-to-br from-background via-background to-muted/20">
+            <Card className="pt-0 bg-linear-to-br from-background via-background to-muted/20">
               <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
                 <div className="grid flex-1 gap-1">
                   <CardTitle>Retrieval Time per Query</CardTitle>
@@ -973,15 +973,15 @@ export function BenchmarkDashboard() {
                   config={{
                     Pinecone: {
                       label: "Pinecone",
-                      color: "hsl(45, 93%, 47%)",
+                      color: "var(--chart-1)",
                     },
                     PostgreSQL: {
                       label: "PostgreSQL",
-                      color: "hsl(210, 100%, 50%)",
+                      color: "var(--chart-2)",
                     },
                     ChromaDB: {
                       label: "ChromaDB",
-                      color: "hsl(142, 71%, 45%)",
+                      color: "var(--chart-3)",
                     },
                   } satisfies ChartConfig}
                   className="aspect-auto h-[300px] w-full"
@@ -1086,9 +1086,9 @@ export function BenchmarkDashboard() {
                     db.database === speedWinner.database
                       ? "border-primary/50 shadow-md ring-1 ring-primary/20"
                       : "border-border",
-                    db.database === "Pinecone" && "bg-gradient-to-br from-amber-500/15 via-background to-background",
-                    db.database === "PostgreSQL" && "bg-gradient-to-br from-blue-500/15 via-background to-background",
-                    db.database === "ChromaDB" && "bg-gradient-to-br from-emerald-500/15 via-background to-background"
+                    db.database === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
+                    db.database === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
+                    db.database === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
                   )}
                 >
                   <CardHeader className="pb-3">
@@ -1120,9 +1120,9 @@ export function BenchmarkDashboard() {
                         <div
                           className={cn(
                             "h-full transition-all duration-700 rounded-full",
-                            db.database === "Pinecone" && "bg-gradient-to-r from-amber-500 to-amber-400",
-                            db.database === "PostgreSQL" && "bg-gradient-to-r from-blue-500 to-blue-400",
-                            db.database === "ChromaDB" && "bg-gradient-to-r from-emerald-500 to-emerald-400"
+                            db.database === "Pinecone" && "bg-linear-to-r from-amber-500 to-amber-400",
+                            db.database === "PostgreSQL" && "bg-linear-to-r from-blue-500 to-blue-400",
+                            db.database === "ChromaDB" && "bg-linear-to-r from-emerald-500 to-emerald-400"
                           )}
                           style={{
                             width: `${(Math.min(...speedSummary.map((s) => s.mean_total_ms)) / db.mean_total_ms) * 100}%`,
@@ -1352,7 +1352,7 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Scalability Line Chart - Now at top */}
-            <Card className="pt-0 bg-gradient-to-br from-background via-background to-muted/20">
+            <Card className="pt-0 bg-linear-to-br from-background via-background to-muted/20">
               <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
                 <div className="grid flex-1 gap-1">
                   <CardTitle>Scalability Trend</CardTitle>
@@ -1366,15 +1366,15 @@ export function BenchmarkDashboard() {
                   config={{
                     Pinecone: {
                       label: "Pinecone",
-                      color: "hsl(45, 93%, 47%)",
+                      color: "var(--chart-1)",
                     },
                     PostgreSQL: {
                       label: "PostgreSQL",
-                      color: "hsl(210, 100%, 50%)",
+                      color: "var(--chart-2)",
                     },
                     ChromaDB: {
                       label: "ChromaDB",
-                      color: "hsl(142, 71%, 45%)",
+                      color: "var(--chart-3)",
                     },
                   } satisfies ChartConfig}
                   className="aspect-auto h-[300px] w-full"
@@ -1450,24 +1450,30 @@ export function BenchmarkDashboard() {
                       type="monotone"
                       stroke="hsl(45, 93%, 47%)"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(45, 93%, 47%)", r: 4 }}
-                      activeDot={{ r: 6 }}
+                      dot={false}
+                      activeDot={{
+                        r: 6,
+                      }}
                     />
                     <Line
                       dataKey="PostgreSQL"
                       type="monotone"
                       stroke="hsl(210, 100%, 50%)"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(210, 100%, 50%)", r: 4 }}
-                      activeDot={{ r: 6 }}
+                      dot={false}
+                      activeDot={{
+                        r: 6,
+                      }}
                     />
                     <Line
                       dataKey="ChromaDB"
                       type="monotone"
                       stroke="hsl(142, 71%, 45%)"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(142, 71%, 45%)", r: 4 }}
-                      activeDot={{ r: 6 }}
+                      dot={false}
+                      activeDot={{
+                        r: 6,
+                      }}
                     />
                     <ChartLegend content={<ChartLegendContent />} />
                   </LineChart>
@@ -1485,9 +1491,9 @@ export function BenchmarkDashboard() {
                     db === scalabilityWinner.database
                       ? "border-primary/50 shadow-md ring-1 ring-primary/20"
                       : "border-border",
-                    db === "Pinecone" && "bg-gradient-to-br from-amber-500/15 via-background to-background",
-                    db === "PostgreSQL" && "bg-gradient-to-br from-blue-500/15 via-background to-background",
-                    db === "ChromaDB" && "bg-gradient-to-br from-emerald-500/15 via-background to-background"
+                    db === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
+                    db === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
+                    db === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
                   )}
                 >
                   <CardHeader className="pb-4 bg-muted/30">
@@ -1520,9 +1526,9 @@ export function BenchmarkDashboard() {
                             <div
                               className={cn(
                                 "h-full rounded-full transition-all duration-500",
-                                db === "Pinecone" && "bg-gradient-to-r from-amber-500 to-amber-400",
-                                db === "PostgreSQL" && "bg-gradient-to-r from-blue-500 to-blue-400",
-                                db === "ChromaDB" && "bg-gradient-to-r from-emerald-500 to-emerald-400"
+                                db === "Pinecone" && "bg-linear-to-r from-amber-500 to-amber-400",
+                                db === "PostgreSQL" && "bg-linear-to-r from-blue-500 to-blue-400",
+                                db === "ChromaDB" && "bg-linear-to-r from-emerald-500 to-emerald-400"
                               )}
                               style={{
                                 width: `${Math.min(
@@ -1657,9 +1663,9 @@ export function BenchmarkDashboard() {
                 return (
                   <Card key={db} className={cn(
                     "overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5",
-                    db === "Pinecone" && "bg-gradient-to-br from-amber-500/15 via-background to-background",
-                    db === "PostgreSQL" && "bg-gradient-to-br from-blue-500/15 via-background to-background",
-                    db === "ChromaDB" && "bg-gradient-to-br from-emerald-500/15 via-background to-background"
+                    db === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
+                    db === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
+                    db === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
                   )}>
                     <CardHeader className="pb-4 bg-muted/30">
                       <CardTitle className="text-xl flex items-center gap-2">
@@ -1681,7 +1687,7 @@ export function BenchmarkDashboard() {
                         <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_precision}
-                            className={cn("bg-gradient-to-r", dbColor.gradient)}
+                            className={cn("bg-linear-to-r", dbColor.gradient)}
                           />
                         </div>
                       </div>
@@ -1699,7 +1705,7 @@ export function BenchmarkDashboard() {
                         <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_recall}
-                            className={cn("bg-gradient-to-r", dbColor.gradient)}
+                            className={cn("bg-linear-to-r", dbColor.gradient)}
                           />
                         </div>
                       </div>
@@ -1717,7 +1723,7 @@ export function BenchmarkDashboard() {
                         <div className="h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_f1_score}
-                            className={cn("bg-gradient-to-r", dbColor.gradient)}
+                            className={cn("bg-linear-to-r", dbColor.gradient)}
                           />
                         </div>
                       </div>

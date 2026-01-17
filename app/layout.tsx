@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-sans' });
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const geistMono = Geist_Mono({ 
+  subsets: ['latin'], 
+  variable: '--font-mono',
+  display: 'swap'
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const geistSans = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap'
+});
+
+const geistSerif = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap'
 });
 
 export const metadata: Metadata = {
@@ -27,9 +33,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistSerif.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="font-sans antialiased"
         suppressHydrationWarning
       >
         <ThemeProvider
@@ -44,4 +50,3 @@ export default function RootLayout({
     </html>
   );
 }
-
