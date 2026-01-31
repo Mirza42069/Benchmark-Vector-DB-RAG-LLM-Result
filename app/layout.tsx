@@ -23,6 +23,10 @@ const geistSerif = Geist_Mono({
 export const metadata: Metadata = {
   title: "Vector Database Benchmark Results",
   description: "Performance analysis of RAG pipeline across Pinecone, PostgreSQL, and ChromaDB vector databases",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#1f1f1f" },
+  ],
 };
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -36,15 +40,22 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistSerif.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body
         className="font-sans antialiased"
-        suppressHydrationWarning
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground rounded-md px-3 py-2 absolute left-2 top-2 z-50"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <main id="main-content" className="min-h-screen">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>
