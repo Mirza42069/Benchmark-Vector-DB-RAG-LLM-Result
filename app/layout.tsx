@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -23,6 +23,9 @@ const geistSerif = Geist_Mono({
 export const metadata: Metadata = {
   title: "Vector Database Benchmark Results",
   description: "Performance analysis of RAG pipeline across Pinecone, PostgreSQL, and ChromaDB vector databases",
+};
+
+export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#1f1f1f" },

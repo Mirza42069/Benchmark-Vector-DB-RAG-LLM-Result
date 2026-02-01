@@ -7,22 +7,22 @@ This document provides comprehensive guidelines and commands for agentic coding 
 ## 1. Build, Lint, and Test Commands
 
 ### Package Manager
-- **Always use npm** for dependency management and script execution. Do not use yarn or pnpm.
+- **Always use bun** for dependency management and script execution. Do not use npm, yarn, or pnpm.
 
 ### Development & Build
-- **Start Development Server:** `npm run dev`
-- **Build for Production:** `npm run build`
-- **Start Production Server:** `npm start`
-- **Lint Code:** `npm run lint` (runs ESLint)
-- **Check Types:** `npx tsc --noEmit`
+- **Start Development Server:** `bun run dev`
+- **Build for Production:** `bun run build`
+- **Start Production Server:** `bun run start`
+- **Lint Code:** `bun run lint` (runs ESLint)
+- **Check Types:** `bunx tsc --noEmit`
 
 ### Testing
 - **Status:** No test framework (Jest/Vitest) is currently configured in `package.json`.
 - **Pre-requisite:** If asked to write tests, you must first install a runner (Vitest is recommended for this stack).
-- **Run All Tests:** `npm test`
-- **Run Single Test:** `npx vitest run path/to/your-test.test.ts`
-- **Watch Mode:** `npx vitest`
-- **Coverage:** `npx vitest run --coverage`
+- **Run All Tests:** `bun test`
+- **Run Single Test:** `bunx vitest run path/to/your-test.test.ts`
+- **Watch Mode:** `bunx vitest`
+- **Coverage:** `bunx vitest run --coverage`
 
 ---
 

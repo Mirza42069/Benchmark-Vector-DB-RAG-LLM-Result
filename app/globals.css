@@ -205,6 +205,9 @@
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
   }
+  :is(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+  }
   :is(h1, h2, h3, h4, h5, h6)[id] {
     scroll-margin-top: 96px;
   }
