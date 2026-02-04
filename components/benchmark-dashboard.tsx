@@ -310,14 +310,23 @@ const TabButton = ({
     onClick={() => setActiveTab(tab)}
     title={label}
     aria-label={label}
+    aria-selected={activeTab === tab}
+    role="tab"
     className={cn(
-      "flex items-center justify-center p-1.5 rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      // Base styles with mobile-first sizing
+      "flex items-center justify-center gap-1.5 shrink-0",
+      // Mobile: larger touch targets, show labels
+      "px-3 py-2.5 sm:p-1.5",
+      "text-xs sm:text-[0px]", // Hide text on desktop, show on mobile
+      "transition-colors duration-150",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
       activeTab === tab
-        ? "bg-primary text-primary-foreground shadow-md"
-        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+        ? "bg-primary text-primary-foreground"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted/80 active:bg-muted"
     )}
   >
-    <Icon aria-hidden="true" className="w-4 h-4" />
+    <Icon aria-hidden="true" className="w-4 h-4 shrink-0" />
+    <span className="sm:hidden font-medium">{label.split(" ")[0]}</span>
   </button>
 );
 
@@ -662,20 +671,21 @@ export function BenchmarkDashboard() {
   }
 
   return (
-    <div className="h-screen bg-background text-foreground py-1 md:py-1.5 px-4 md:px-6 lg:px-8 font-sans overflow-hidden">
-      <div className="mx-auto w-full max-w-[1500px] h-full flex flex-col gap-1.5">
+    <div className="min-h-screen sm:h-screen bg-background text-foreground py-3 sm:py-2 md:py-1.5 px-3 sm:px-4 md:px-6 lg:px-8 font-sans sm:overflow-hidden safe-area-inset text-render-optimize">
+      <div className="mx-auto w-full max-w-[1500px] min-h-full sm:h-full flex flex-col gap-3 sm:gap-2 md:gap-1.5">
       {/* Header Section */}
-      <div className="space-y-1">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-1.5">
-          <div className="space-y-0.5">
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight">
-              Vector Database Benchmark
+      <div className="space-y-3 sm:space-y-2 md:space-y-1">
+        {/* Mobile: Stack everything vertically with more breathing room */}
+        <div className="flex flex-col gap-3 sm:gap-2 lg:flex-row lg:justify-between lg:items-center">
+          {/* Title + Controls Row */}
+          <div className="flex items-center justify-between gap-2 sm:justify-start">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight leading-tight">
+              Vector DB Benchmark
             </h1>
-          </div>
-          <div className="flex flex-col items-start lg:items-end gap-1.5">
-            <div className="flex items-center gap-1.5">
+            {/* Mobile: Show controls inline with title */}
+            <div className="flex items-center gap-2 sm:hidden">
               <div
-                className="flex items-center rounded-md border bg-muted p-0.5"
+                className="flex items-center border bg-muted p-0.5"
                 role="group"
                 aria-label="Dataset selection"
               >
@@ -687,9 +697,39 @@ export function BenchmarkDashboard() {
                     aria-pressed={selectedDataset === num}
                     aria-label={`Dataset ${num}`}
                     className={cn(
-                      "h-7 w-7 text-[13px]/[1] font-medium rounded transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                      "h-8 w-8 text-sm font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
                       selectedDataset === num
-                        ? "bg-primary text-primary-foreground shadow-sm"
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+              <ModeToggle />
+            </div>
+          </div>
+
+          {/* Desktop: Original controls layout */}
+          <div className="hidden sm:flex flex-col items-start lg:items-end gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <div
+                className="flex items-center border bg-muted p-0.5"
+                role="group"
+                aria-label="Dataset selection"
+              >
+                {[1, 2].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => setSelectedDataset(num)}
+                    aria-pressed={selectedDataset === num}
+                    aria-label={`Dataset ${num}`}
+                    className={cn(
+                      "h-7 w-7 text-[13px]/[1] font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                      selectedDataset === num
+                        ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -721,10 +761,29 @@ export function BenchmarkDashboard() {
               </Badge>
             </div>
           </div>
+
+          {/* Mobile: Compact metadata badges - horizontal scroll */}
+          <div className="flex sm:hidden overflow-x-auto gap-2 -mx-3 px-3 pb-1 scroll-snap-x no-scrollbar">
+            <Badge variant="outline" className="px-2 py-1 text-[11px] shrink-0 scroll-snap-start">
+              {new Intl.DateTimeFormat(undefined, {
+                month: "short",
+                day: "numeric",
+              }).format(new Date(metadata.benchmark_date))}
+            </Badge>
+            <Badge variant="secondary" className="text-[11px] shrink-0 scroll-snap-start">
+              {metadata.llm_model}
+            </Badge>
+            <Badge variant="secondary" className="text-[11px] shrink-0 scroll-snap-start">
+              {metadata.embedding_model}
+            </Badge>
+            <Badge variant="secondary" className="text-[11px] shrink-0 scroll-snap-start">
+              {metadata.num_queries}Q / K={metadata.top_k}
+            </Badge>
+          </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div onKeyDown={handleTabKeyDown} className="flex flex-wrap gap-0.5 p-0.5 bg-muted/50 rounded-lg w-fit">
+        {/* Tab Navigation - Mobile optimized with larger touch targets */}
+        <div onKeyDown={handleTabKeyDown} className="flex gap-1 sm:gap-0.5 p-1 sm:p-0.5 bg-muted/50 w-full sm:w-fit overflow-x-auto no-scrollbar">
           <TabButton
             tab="summary"
             label="Summary"
@@ -760,24 +819,24 @@ export function BenchmarkDashboard() {
 
 
 
-      <div className="flex-1 min-h-0 relative">
+      <div className="flex-1 sm:min-h-0 relative">
         {/* Summary Tab */}
         {activeTab === "summary" && (
-          <div key="summary-tab" className="h-full min-h-0 flex flex-col gap-1.5 overflow-y-auto no-scrollbar animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+          <div key="summary-tab" className="sm:h-full sm:min-h-0 flex flex-col gap-3 sm:gap-2 md:gap-1.5 sm:overflow-y-auto no-scrollbar pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
           {/* Overall Winner */}
             <Card size="sm" className="border-primary/30 bg-linear-to-br from-primary/5 via-primary/10 to-transparent relative overflow-hidden">
               <div className="absolute top-0 right-0 p-3 opacity-[0.08] pointer-events-none">
-                <Trophy aria-hidden="true" className="w-16 h-16 text-primary" />
+                <Trophy aria-hidden="true" className="w-12 sm:w-16 h-12 sm:h-16 text-primary" />
               </div>
-              <CardHeader className="relative z-10 pb-3">
-                <div className="flex items-center gap-1.5 text-primary font-semibold text-xs uppercase tracking-wider">
-                  <Trophy aria-hidden="true" className="w-3.5 h-3.5" />
+              <CardHeader className="relative z-10 pb-3 px-3 sm:px-2.5">
+                <div className="flex items-center gap-1.5 text-primary font-semibold text-[11px] sm:text-xs uppercase tracking-wider">
+                  <Trophy aria-hidden="true" className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                   <span>Overall Winner</span>
                 </div>
-              <CardTitle className="text-3xl md:text-4xl font-bold">
+              <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
                 {speedWinner.database}
               </CardTitle>
-              <CardDescription className="text-base text-foreground/70">
+              <CardDescription className="text-sm sm:text-base text-foreground/70 leading-snug">
                 Best across speed benchmarks with{" "}
                 <span className="font-semibold text-primary">
                   {speedWinner.speed_improvement_percent}%
@@ -787,19 +846,19 @@ export function BenchmarkDashboard() {
             </CardHeader>
           </Card>
 
-          {/* Key Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5">
+          {/* Key Metrics Grid - 2 cols on small mobile, 3 on tablet+ */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-1.5">
             {/* Speed Winner */}
             <Card size="sm" className="border-amber-500/30">
-              <CardHeader className="pb-1">
-                <div className="flex items-center gap-1.5 text-amber-500">
-                  <Zap aria-hidden="true" className="w-4 h-4" />
-                  <CardTitle className="text-sm font-medium uppercase tracking-wide">Fastest Retrieval</CardTitle>
+              <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-amber-500">
+                  <Zap aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[11px] sm:text-sm font-medium uppercase tracking-wide leading-tight">Fastest</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{speedWinner.database}</p>
-                <p className="text-sm text-muted-foreground">
+              <CardContent className="px-2.5 sm:px-2.5">
+                <p className="text-lg sm:text-2xl font-bold leading-tight">{speedWinner.database}</p>
+                <p className="text-[11px] sm:text-sm text-muted-foreground">
                   <AnimatedCounter value={speedWinner.avg_retrieval_ms} decimals={1} suffix="ms" /> avg
                 </p>
               </CardContent>
@@ -807,23 +866,23 @@ export function BenchmarkDashboard() {
 
             {/* Fastest Query */}
             <Card size="sm" className="border-green-500/30">
-              <CardHeader className="pb-1">
-                <div className="flex items-center gap-1.5 text-green-500">
-                  <ArrowUp aria-hidden="true" className="w-4 h-4" />
-                  <CardTitle className="text-sm font-medium uppercase tracking-wide">Fastest Query</CardTitle>
+              <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-green-500">
+                  <ArrowUp aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[11px] sm:text-sm font-medium uppercase tracking-wide leading-tight">Best Query</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-2.5 sm:px-2.5">
                 {(() => {
                   const fastest = speedRawResults.reduce((min, curr) =>
                     curr.retrieval_time < min.retrieval_time ? curr : min
                   );
                   return (
                     <>
-                      <p className="text-2xl font-bold">
+                      <p className="text-lg sm:text-2xl font-bold leading-tight">
                         <AnimatedCounter value={fastest.retrieval_time} decimals={1} suffix="ms" />
                       </p>
-                      <p className="text-sm text-muted-foreground truncate" title={fastest.query}>
+                      <p className="text-[11px] sm:text-sm text-muted-foreground truncate" title={fastest.query}>
                         Q{fastest.query_num}: {fastest.database}
                       </p>
                     </>
@@ -832,25 +891,25 @@ export function BenchmarkDashboard() {
               </CardContent>
             </Card>
 
-            {/* Slowest Query */}
-            <Card size="sm" className="border-red-500/30">
-              <CardHeader className="pb-1">
-                <div className="flex items-center gap-1.5 text-red-500">
-                  <ArrowDown aria-hidden="true" className="w-4 h-4" />
-                  <CardTitle className="text-sm font-medium uppercase tracking-wide">Slowest Query</CardTitle>
+            {/* Slowest Query - Hidden on very small screens to save space, shown as 2-col span on sm */}
+            <Card size="sm" className="border-red-500/30 col-span-2 sm:col-span-1">
+              <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-red-500">
+                  <ArrowDown aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[11px] sm:text-sm font-medium uppercase tracking-wide leading-tight">Slowest Query</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-2.5 sm:px-2.5">
                 {(() => {
                   const slowest = speedRawResults.reduce((max, curr) =>
                     curr.retrieval_time > max.retrieval_time ? curr : max
                   );
                   return (
                     <>
-                      <p className="text-2xl font-bold">
+                      <p className="text-lg sm:text-2xl font-bold leading-tight">
                         <AnimatedCounter value={slowest.retrieval_time} decimals={1} suffix="ms" />
                       </p>
-                      <p className="text-sm text-muted-foreground truncate" title={slowest.query}>
+                      <p className="text-[11px] sm:text-sm text-muted-foreground truncate" title={slowest.query}>
                         Q{slowest.query_num}: {slowest.database}
                       </p>
                     </>
@@ -860,18 +919,18 @@ export function BenchmarkDashboard() {
             </Card>
           </div>
 
-          {/* Secondary Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5">
+          {/* Secondary Metrics - 3 cols on mobile */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-1.5">
             {/* Best Scalability */}
             <Card size="sm" className="border-blue-500/30">
-              <CardHeader className="pb-1">
-                <div className="flex items-center gap-1.5 text-blue-500">
-                  <TrendingUp aria-hidden="true" className="w-4 h-4" />
-                  <CardTitle className="text-sm font-medium uppercase tracking-wide">Best Scalability</CardTitle>
+              <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
+                <div className="flex items-center gap-1 text-blue-500">
+                  <TrendingUp aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Scale</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">
+              <CardContent className="px-2 sm:px-2.5">
+                <p className="text-base sm:text-2xl font-bold leading-tight truncate">
                   {(() => {
                     const lastTopK = sortedScalabilityData[sortedScalabilityData.length - 1];
                     if (!lastTopK) return 'N/A';
@@ -879,39 +938,39 @@ export function BenchmarkDashboard() {
                     return times.reduce((min, curr) => curr.time < min.time ? curr : min).db;
                   })()}
                 </p>
-                <p className="text-sm text-muted-foreground">at top_k=20</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">k=20</p>
               </CardContent>
             </Card>
 
             {/* Best Quality */}
             <Card size="sm" className="border-emerald-500/30">
-              <CardHeader className="pb-1">
-                <div className="flex items-center gap-1.5 text-emerald-500">
-                  <Target aria-hidden="true" className="w-4 h-4" />
-                  <CardTitle className="text-sm font-medium uppercase tracking-wide">Highest F1 Score</CardTitle>
+              <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
+                <div className="flex items-center gap-1 text-emerald-500">
+                  <Target aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">F1</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{qualityLeader}</p>
-                <p className="text-sm text-muted-foreground">
-                  <AnimatedCounter value={maxF1Score * 100} decimals={1} suffix="%" /> F1
+              <CardContent className="px-2 sm:px-2.5">
+                <p className="text-base sm:text-2xl font-bold leading-tight truncate">{qualityLeader}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">
+                  <AnimatedCounter value={maxF1Score * 100} decimals={1} suffix="%" />
                 </p>
               </CardContent>
             </Card>
 
             {/* Total Queries */}
             <Card size="sm" className="border-violet-500/30">
-              <CardHeader className="pb-1">
-                <div className="flex items-center gap-1.5 text-violet-500">
-                  <Activity aria-hidden="true" className="w-4 h-4" />
-                  <CardTitle className="text-sm font-medium uppercase tracking-wide">Total Queries</CardTitle>
+              <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
+                <div className="flex items-center gap-1 text-violet-500">
+                  <Activity aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Queries</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">
+              <CardContent className="px-2 sm:px-2.5">
+                <p className="text-base sm:text-2xl font-bold leading-tight">
                   <AnimatedCounter value={metadata.num_queries} decimals={0} />
                 </p>
-                <p className="text-sm text-muted-foreground">benchmarked</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">tested</p>
               </CardContent>
             </Card>
           </div>
@@ -922,30 +981,31 @@ export function BenchmarkDashboard() {
               className="bg-linear-to-br from-background via-background to-muted/25"
             >
               <CardHeader className="pb-2 pt-2.5 px-3 border-b border-border/40 bg-muted/20">
-                <div className="flex flex-wrap items-center justify-between gap-1.5">
-                  <CardTitle className="text-base flex items-center gap-1.5">
-                    <BarChart3 aria-hidden="true" className="w-4 h-4 text-muted-foreground" />
-                    Database Comparison
-                    <span className="text-xs text-muted-foreground font-normal ml-1">
-                      {comparisonMode ? "(Dataset 1 vs 2)" : ""}
+                <div className="flex items-center justify-between gap-2">
+                  <CardTitle className="text-sm sm:text-base flex items-center gap-1.5">
+                    <BarChart3 aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-muted-foreground shrink-0" />
+                    <span className="truncate">DB Compare</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">
+                      {comparisonMode ? "(1 vs 2)" : ""}
                     </span>
                   </CardTitle>
                   <button
                     type="button"
                     onClick={toggleComparisonMode}
                     className={cn(
-                      "h-6 px-2 text-xs font-medium rounded border transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+                      "h-7 sm:h-6 px-2.5 sm:px-2 text-xs font-medium border transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 shrink-0",
                       comparisonMode
                         ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-background text-foreground border-border hover:bg-muted"
+                        : "bg-background text-foreground border-border hover:bg-muted active:bg-muted"
                     )}
                   >
                     {comparisonMode ? "Exit" : "Compare"}
                   </button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-3 pb-3 px-3 flex flex-col">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3">
+              <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col">
+                {/* Mobile: Horizontal scroll for database cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                     {databases.map((db) => {
                       const speed = speedSummary.find(s => s.database === db);
                       const quality = qualityData[db];
@@ -1109,22 +1169,22 @@ export function BenchmarkDashboard() {
         {/* Speed Test Tab */}
         {
           activeTab === "speed" && (
-            <div key="speed-tab" className="h-full overflow-y-auto no-scrollbar space-y-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+            <div key="speed-tab" className="sm:h-full sm:overflow-y-auto no-scrollbar space-y-3 sm:space-y-2 pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
             <div className="space-y-0.5">
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
-                <Zap aria-hidden="true" className="w-5 h-5 text-primary" />
-                Speed Test Results
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
+                <Zap aria-hidden="true" className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                Speed Test
               </h2>
             </div>
 
             {/* Retrieval Time Chart - Now at top */}
             <Card className="pt-0 bg-linear-to-br from-background via-background to-muted/20">
-              <CardHeader className="flex items-center gap-1.5 space-y-0 border-b py-2.5 sm:flex-row">
+              <CardHeader className="flex items-center gap-1.5 space-y-0 border-b py-2 sm:py-2.5 px-2.5 sm:px-3 sm:flex-row">
                 <div className="grid flex-1 gap-0.5">
-                  <CardTitle className="text-lg">Retrieval Time per Query</CardTitle>
+                  <CardTitle className="text-sm sm:text-lg">Retrieval Time</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="px-2.5 pt-2.5 sm:px-3 sm:pt-3">
+              <CardContent className="px-1.5 sm:px-2.5 pt-2 sm:pt-2.5">
                 <ChartContainer
                   config={{
                     Pinecone: {
@@ -1140,7 +1200,7 @@ export function BenchmarkDashboard() {
                       color: "var(--chart-3)",
                     },
                   } satisfies ChartConfig}
-                  className="aspect-auto h-[300px] md:h-[340px] w-full"
+                  className="aspect-auto h-[200px] sm:h-[280px] md:h-[340px] w-full"
                 >
                   <AreaChart
                     data={(() => {
@@ -1338,18 +1398,18 @@ export function BenchmarkDashboard() {
 
             {/* Detailed Results Table */}
             <Card size="sm">
-              <CardHeader className="pb-2">
-                <div className="flex flex-wrap items-start justify-between gap-1.5">
+              <CardHeader className="pb-2 px-2.5 sm:px-3">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-between gap-2 sm:gap-1.5">
                   <div>
-                    <CardTitle className="text-base">
+                    <CardTitle className="text-sm sm:text-base">
                       Query Results
                     </CardTitle>
-                    <CardDescription className="text-xs">
-                      Individual query performance breakdown. Click columns to sort.
+                    <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
+                      Click columns to sort.
                     </CardDescription>
                   </div>
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-1.5">
-                    <div className="relative w-full md:w-48">
+                  <div className="flex w-full sm:w-auto items-center gap-2 sm:gap-1.5">
+                    <div className="relative flex-1 sm:flex-none sm:w-48">
                       <Search aria-hidden="true" className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         type="search"
@@ -1357,18 +1417,18 @@ export function BenchmarkDashboard() {
                         autoComplete="off"
                         inputMode="search"
                         aria-label="Search queries"
-                        placeholder="Search queries…"
-                        className="pl-8"
+                        placeholder="Search…"
+                        className="pl-8 h-8 sm:h-7 text-sm sm:text-xs"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
                     <Select value={filterDb} onValueChange={setFilterDb}>
-                      <SelectTrigger className="w-[140px]" aria-label="Filter by database">
-                        <SelectValue placeholder="Database…" />
+                      <SelectTrigger className="w-28 sm:w-[140px] h-8 sm:h-7" aria-label="Filter by database">
+                        <SelectValue placeholder="DB…" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Databases</SelectItem>
+                        <SelectItem value="all">All DBs</SelectItem>
                         {databases.map((db) => (
                           <SelectItem key={db} value={db}>
                             {db}
@@ -1379,9 +1439,9 @@ export function BenchmarkDashboard() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="w-full overflow-x-auto">
-                  <table className="w-full min-w-[640px] table-fixed text-xs">
+              <CardContent className="px-1.5 sm:px-2.5">
+                <div className="w-full overflow-x-auto -mx-1.5 px-1.5 scroll-snap-x">
+                  <table className="w-full min-w-[580px] table-fixed text-[11px] sm:text-xs">
                     <colgroup>
                       <col className="w-8" />
                       <col className="w-48" />
@@ -1517,22 +1577,22 @@ export function BenchmarkDashboard() {
         {/* Scalability Tab */}
         {
           activeTab === "scalability" && (
-            <div key="scalability-tab" className="h-full overflow-y-auto no-scrollbar space-y-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+            <div key="scalability-tab" className="sm:h-full sm:overflow-y-auto no-scrollbar space-y-3 sm:space-y-2 pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
             <div className="space-y-0.5">
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
-                <BarChart3 aria-hidden="true" className="w-5 h-5 text-primary" />
-                Scalability Analysis
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
+                <BarChart3 aria-hidden="true" className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                Scalability
               </h2>
             </div>
 
             {/* Scalability Line Chart - Now at top */}
             <Card className="pt-0 bg-linear-to-br from-background via-background to-muted/20">
-              <CardHeader className="flex items-center gap-1.5 space-y-0 border-b py-2.5 sm:flex-row">
+              <CardHeader className="flex items-center gap-1.5 space-y-0 border-b py-2 sm:py-2.5 px-2.5 sm:px-3 sm:flex-row">
                 <div className="grid flex-1 gap-0.5">
-                  <CardTitle className="text-lg">Scalability Trend</CardTitle>
+                  <CardTitle className="text-sm sm:text-lg">Trend by top_k</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="px-2.5 pt-2.5 sm:px-3 sm:pt-3">
+              <CardContent className="px-1.5 sm:px-2.5 pt-2 sm:pt-2.5">
                 <ChartContainer
                   config={{
                     Pinecone: {
@@ -1548,7 +1608,7 @@ export function BenchmarkDashboard() {
                       color: "var(--chart-3)",
                     },
                   } satisfies ChartConfig}
-                  className="aspect-auto h-[300px] md:h-[340px] w-full"
+                  className="aspect-auto h-[200px] sm:h-[280px] md:h-[340px] w-full"
                 >
                   <LineChart
                     data={sortedScalabilityData}
@@ -1800,16 +1860,16 @@ export function BenchmarkDashboard() {
         {/* Quality Tab */}
         {
           activeTab === "quality" && (
-            <div key="quality-tab" className="h-full overflow-y-auto no-scrollbar space-y-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+            <div key="quality-tab" className="sm:h-full sm:overflow-y-auto no-scrollbar space-y-3 sm:space-y-2 pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
             <div className="space-y-0.5">
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
-                <Activity aria-hidden="true" className="w-5 h-5 text-primary" />
-                Retrieval Quality Metrics
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
+                <Activity aria-hidden="true" className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                Quality Metrics
               </h2>
             </div>
 
-            {/* Quality Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5">
+            {/* Quality Summary Cards - 3 cols on mobile for compact view */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-1.5">
               {databases.map((db) => {
                 const metrics = qualityData[db];
                 const dbColor = db === "Pinecone"
@@ -1819,29 +1879,27 @@ export function BenchmarkDashboard() {
                     : { text: "text-emerald-500", gradient: "from-emerald-500 to-emerald-400" };
                 return (
                   <Card key={db} size="sm" className={cn(
-                    "overflow-hidden transition-shadow duration-200 hover:shadow-md",
+                    "overflow-hidden",
                     db === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
                     db === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
                     db === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
                   )}>
-                    <CardHeader className="pb-1 bg-muted/30">
-                      <CardTitle className="text-sm flex items-center gap-1.5">
-                        <DatabaseIcon database={db} className="w-4 h-4" />
-                        {db}
+                    <CardHeader className="pb-0.5 sm:pb-1 bg-muted/30 px-2 sm:px-2.5">
+                      <CardTitle className="text-[11px] sm:text-sm flex items-center gap-1">
+                        <DatabaseIcon database={db} className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
+                        <span className="truncate">{db}</span>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-2 space-y-2">
+                    <CardContent className="pt-1.5 sm:pt-2 space-y-1.5 sm:space-y-2 px-2 sm:px-2.5">
                       {/* Precision */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-muted-foreground font-medium">
-                            Precision
-                          </span>
-                          <span className={cn("text-sm font-bold", dbColor.text)}>
+                      <div className="space-y-0.5 sm:space-y-1">
+                        <div className="flex justify-between items-center text-[10px] sm:text-xs">
+                          <span className="text-muted-foreground font-medium">P</span>
+                          <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
                             <AnimatedCounter value={metrics.avg_precision * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
-                        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                        <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_precision}
                             className={cn("bg-linear-to-r", dbColor.gradient)}
@@ -1850,16 +1908,14 @@ export function BenchmarkDashboard() {
                       </div>
 
                       {/* Recall */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-muted-foreground font-medium">
-                            Recall
-                          </span>
-                          <span className={cn("text-sm font-bold", dbColor.text)}>
+                      <div className="space-y-0.5 sm:space-y-1">
+                        <div className="flex justify-between items-center text-[10px] sm:text-xs">
+                          <span className="text-muted-foreground font-medium">R</span>
+                          <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
                             <AnimatedCounter value={metrics.avg_recall * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
-                        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                        <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_recall}
                             className={cn("bg-linear-to-r", dbColor.gradient)}
@@ -1868,16 +1924,14 @@ export function BenchmarkDashboard() {
                       </div>
 
                       {/* F1 Score */}
-                      <div className="space-y-1">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-muted-foreground font-medium">
-                            F1 Score
-                          </span>
-                          <span className={cn("text-sm font-bold", dbColor.text)}>
+                      <div className="space-y-0.5 sm:space-y-1">
+                        <div className="flex justify-between items-center text-[10px] sm:text-xs">
+                          <span className="text-muted-foreground font-medium">F1</span>
+                          <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
                             <AnimatedCounter value={metrics.avg_f1_score * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
-                        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                        <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_f1_score}
                             className={cn("bg-linear-to-r", dbColor.gradient)}
@@ -1892,15 +1946,15 @@ export function BenchmarkDashboard() {
 
             {/* Per-Query Quality Results */}
             <Card size="sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">Per-Query Quality Analysis</CardTitle>
-                <CardDescription className="text-xs">
-                  Detailed precision, recall, and F1 scores for each query. Click columns to sort.
+              <CardHeader className="pb-2 px-2.5 sm:px-3">
+                <CardTitle className="text-sm sm:text-base">Per-Query Analysis</CardTitle>
+                <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
+                  Click columns to sort.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="w-full overflow-x-auto">
-                  <table className="w-full min-w-[640px] table-fixed text-xs">
+              <CardContent className="px-1.5 sm:px-2.5">
+                <div className="w-full overflow-x-auto -mx-1.5 px-1.5 scroll-snap-x">
+                  <table className="w-full min-w-[520px] table-fixed text-[11px] sm:text-xs">
                     <colgroup>
                       <col className="w-48" />
                       <col className="w-[104px]" />
