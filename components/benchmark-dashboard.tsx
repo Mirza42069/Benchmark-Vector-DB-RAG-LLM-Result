@@ -296,9 +296,11 @@ interface TabButtonProps {
   icon: React.ElementType;
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
+  variant?: "sidebar" | "bottom";
 }
 
-const TabButton = ({
+// Sidebar tab button (desktop) - icon only with left border accent
+const SidebarTabButton = ({
   tab,
   label,
   icon: Icon,
@@ -313,20 +315,45 @@ const TabButton = ({
     aria-selected={activeTab === tab}
     role="tab"
     className={cn(
-      // Base styles with mobile-first sizing
-      "flex items-center justify-center gap-1.5 shrink-0",
-      // Mobile: larger touch targets, show labels
-      "px-3 py-2.5 sm:p-1.5",
-      "text-xs sm:text-[0px]", // Hide text on desktop, show on mobile
-      "transition-colors duration-150",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+      "relative flex items-center justify-center w-10 h-10 transition-colors duration-150",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
       activeTab === tab
-        ? "bg-primary text-primary-foreground"
-        : "text-muted-foreground hover:text-foreground hover:bg-muted/80 active:bg-muted"
+        ? "text-foreground"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
     )}
   >
-    <Icon aria-hidden="true" className="w-4 h-4 shrink-0" />
-    <span className="sm:hidden font-medium">{label.split(" ")[0]}</span>
+    {/* Left border accent for active state */}
+    {activeTab === tab && (
+      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary" />
+    )}
+    <Icon aria-hidden="true" className="w-5 h-5" />
+  </button>
+);
+
+// Bottom nav tab button (mobile) - icon with label
+const BottomNavTabButton = ({
+  tab,
+  label,
+  icon: Icon,
+  activeTab,
+  setActiveTab,
+}: TabButtonProps) => (
+  <button
+    type="button"
+    onClick={() => setActiveTab(tab)}
+    aria-label={label}
+    aria-selected={activeTab === tab}
+    role="tab"
+    className={cn(
+      "flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 min-w-[3.5rem] transition-colors duration-150",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+      activeTab === tab
+        ? "text-primary"
+        : "text-muted-foreground active:text-foreground"
+    )}
+  >
+    <Icon aria-hidden="true" className="w-5 h-5" />
+    <span className="text-[10px] font-medium leading-none">{label.split(" ")[0]}</span>
   </button>
 );
 
@@ -671,158 +698,113 @@ export function BenchmarkDashboard() {
   }
 
   return (
-    <div className="min-h-screen sm:h-screen bg-background text-foreground py-3 sm:py-2 md:py-1.5 px-3 sm:px-4 md:px-6 lg:px-8 font-sans sm:overflow-hidden safe-area-inset text-render-optimize">
-      <div className="mx-auto w-full max-w-[1500px] min-h-full sm:h-full flex flex-col gap-3 sm:gap-2 md:gap-1.5">
-      {/* Header Section */}
-      <div className="space-y-3 sm:space-y-2 md:space-y-1">
-        {/* Mobile: Stack everything vertically with more breathing room */}
-        <div className="flex flex-col gap-3 sm:gap-2 lg:flex-row lg:justify-between lg:items-center">
-          {/* Title + Controls Row */}
-          <div className="flex items-center justify-between gap-2 sm:justify-start">
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight leading-tight">
-              Vector DB Benchmark
-            </h1>
-            {/* Mobile: Show controls inline with title */}
-            <div className="flex items-center gap-2 sm:hidden">
-              <div
-                className="flex items-center border bg-muted p-0.5"
-                role="group"
-                aria-label="Dataset selection"
-              >
-                {[1, 2].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => setSelectedDataset(num)}
-                    aria-pressed={selectedDataset === num}
-                    aria-label={`Dataset ${num}`}
-                    className={cn(
-                      "h-8 w-8 text-sm font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-                      selectedDataset === num
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {num}
-                  </button>
-                ))}
-              </div>
-              <ModeToggle />
-            </div>
-          </div>
-
-          {/* Desktop: Original controls layout */}
-          <div className="hidden sm:flex flex-col items-start lg:items-end gap-1.5">
-            <div className="flex items-center gap-1.5">
-              <div
-                className="flex items-center border bg-muted p-0.5"
-                role="group"
-                aria-label="Dataset selection"
-              >
-                {[1, 2].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => setSelectedDataset(num)}
-                    aria-pressed={selectedDataset === num}
-                    aria-label={`Dataset ${num}`}
-                    className={cn(
-                      "h-7 w-7 text-[13px]/[1] font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                      selectedDataset === num
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {num}
-                  </button>
-                ))}
-              </div>
-              <ModeToggle />
-              <Badge variant="outline" className="px-2.5 py-1 text-xs">
-                {new Intl.DateTimeFormat(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                }).format(new Date(metadata.benchmark_date))}
-              </Badge>
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Badge variant="secondary" className="text-xs">
-                LLM: {metadata.llm_model}
-              </Badge>
-              <Badge variant="secondary" className="text-xs">
-                Embed: {metadata.embedding_model}
-              </Badge>
-              <Badge variant="secondary" className="text-xs">
-                {metadata.num_queries} Queries
-              </Badge>
-              <Badge variant="secondary" className="text-xs">
-                Top-K: {metadata.top_k}
-              </Badge>
-            </div>
-          </div>
-
-          {/* Mobile: Compact metadata badges - horizontal scroll */}
-          <div className="flex sm:hidden overflow-x-auto gap-2 -mx-3 px-3 pb-1 scroll-snap-x no-scrollbar">
-            <Badge variant="outline" className="px-2 py-1 text-[11px] shrink-0 scroll-snap-start">
-              {new Intl.DateTimeFormat(undefined, {
-                month: "short",
-                day: "numeric",
-              }).format(new Date(metadata.benchmark_date))}
-            </Badge>
-            <Badge variant="secondary" className="text-[11px] shrink-0 scroll-snap-start">
-              {metadata.llm_model}
-            </Badge>
-            <Badge variant="secondary" className="text-[11px] shrink-0 scroll-snap-start">
-              {metadata.embedding_model}
-            </Badge>
-            <Badge variant="secondary" className="text-[11px] shrink-0 scroll-snap-start">
-              {metadata.num_queries}Q / K={metadata.top_k}
-            </Badge>
-          </div>
+    <div className="min-h-screen sm:h-screen bg-background text-foreground font-sans sm:overflow-hidden text-render-optimize flex">
+      {/* Desktop Sidebar */}
+      <aside className="hidden sm:flex flex-col w-14 border-r border-border/50 bg-muted/20 shrink-0">
+        {/* Dataset Switcher - Stacked vertically */}
+        <div className="flex flex-col items-center gap-1 p-2 border-b border-border/50">
+          {[1, 2].map((num) => (
+            <button
+              key={num}
+              type="button"
+              onClick={() => setSelectedDataset(num)}
+              aria-pressed={selectedDataset === num}
+              aria-label={`Dataset ${num}`}
+              title={`Dataset ${num}`}
+              className={cn(
+                "w-10 h-8 text-sm font-mono font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
+                selectedDataset === num
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
+            >
+              {num}
+            </button>
+          ))}
         </div>
 
-        {/* Tab Navigation - Mobile optimized with larger touch targets */}
-        <div onKeyDown={handleTabKeyDown} className="flex gap-1 sm:gap-0.5 p-1 sm:p-0.5 bg-muted/50 w-full sm:w-fit overflow-x-auto no-scrollbar">
-          <TabButton
+        {/* Tab Navigation */}
+        <nav
+          role="tablist"
+          aria-label="Main navigation"
+          onKeyDown={handleTabKeyDown}
+          className="flex-1 flex flex-col items-center py-2"
+        >
+          <SidebarTabButton
             tab="summary"
             label="Summary"
             icon={LayoutDashboard}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <TabButton
+          <SidebarTabButton
             tab="speed"
             label="Speed Test"
             icon={Zap}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <TabButton
+          <SidebarTabButton
             tab="scalability"
             label="Scalability"
             icon={TrendingUp}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <TabButton
+          <SidebarTabButton
             tab="quality"
             label="Retrieval Quality"
             icon={Target}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
+        </nav>
+
+        {/* Theme Toggle */}
+        <div className="flex flex-col items-center p-2 border-t border-border/50">
+          <ModeToggle />
         </div>
-      </div>
+      </aside>
 
-      <Separator />
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-h-full sm:h-full overflow-hidden">
+        {/* Header - Metadata only */}
+        <header className="shrink-0 px-3 sm:px-4 md:px-6 py-2 sm:py-2 border-b border-border/50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <h1 className="text-base sm:text-lg md:text-xl font-bold tracking-tight leading-tight">
+              Vector DB Benchmark
+            </h1>
+            {/* Metadata badges */}
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <Badge variant="outline" className="px-2 py-0.5 text-[11px] sm:text-xs">
+                {new Intl.DateTimeFormat(undefined, {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }).format(new Date(metadata.benchmark_date))}
+              </Badge>
+              <Badge variant="secondary" className="text-[11px] sm:text-xs">
+                {metadata.llm_model}
+              </Badge>
+              <Badge variant="secondary" className="text-[11px] sm:text-xs hidden sm:inline-flex">
+                {metadata.embedding_model}
+              </Badge>
+              <Badge variant="secondary" className="text-[11px] sm:text-xs">
+                {metadata.num_queries}Q
+              </Badge>
+              <Badge variant="secondary" className="text-[11px] sm:text-xs">
+                K={metadata.top_k}
+              </Badge>
+            </div>
+          </div>
+        </header>
 
-
-
-      <div className="flex-1 sm:min-h-0 relative">
-        {/* Summary Tab */}
-        {activeTab === "summary" && (
-          <div key="summary-tab" className="sm:h-full sm:min-h-0 flex flex-col gap-3 sm:gap-2 md:gap-1.5 sm:overflow-y-auto no-scrollbar pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+        {/* Content Area with padding for mobile bottom nav */}
+        <div className="flex-1 sm:min-h-0 relative px-3 sm:px-4 md:px-6 pt-3 sm:pt-2 pb-20 sm:pb-2 overflow-y-auto sm:overflow-hidden">
+          <div className="sm:h-full sm:min-h-0 relative">
+            {/* Summary Tab */}
+            {activeTab === "summary" && (
+              <div key="summary-tab" className="sm:h-full sm:min-h-0 flex flex-col gap-3 sm:gap-2 md:gap-1.5 sm:overflow-y-auto no-scrollbar pb-4 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
           {/* Overall Winner */}
             <Card size="sm" className="border-primary/30 bg-linear-to-br from-primary/5 via-primary/10 to-transparent relative overflow-hidden">
               <div className="absolute top-0 right-0 p-3 opacity-[0.08] pointer-events-none">
@@ -2077,9 +2059,78 @@ export function BenchmarkDashboard() {
             </div>
           )
         }
+          </div>
+        </div>
       </div>
 
-      </div>
+      {/* Mobile Bottom Navigation */}
+      <nav
+        role="tablist"
+        aria-label="Main navigation"
+        className="fixed bottom-0 inset-x-0 sm:hidden border-t border-border/50 bg-background/95 backdrop-blur-sm z-50 safe-area-inset"
+      >
+        <div className="flex items-center justify-between px-2 py-1">
+          {/* Dataset Switcher */}
+          <div
+            className="flex items-center border border-border/50 bg-muted/30 p-0.5"
+            role="group"
+            aria-label="Dataset selection"
+          >
+            {[1, 2].map((num) => (
+              <button
+                key={num}
+                type="button"
+                onClick={() => setSelectedDataset(num)}
+                aria-pressed={selectedDataset === num}
+                aria-label={`Dataset ${num}`}
+                className={cn(
+                  "w-8 h-8 text-sm font-mono font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+                  selectedDataset === num
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground"
+                )}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex items-center" onKeyDown={handleTabKeyDown}>
+            <BottomNavTabButton
+              tab="summary"
+              label="Summary"
+              icon={LayoutDashboard}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <BottomNavTabButton
+              tab="speed"
+              label="Speed"
+              icon={Zap}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <BottomNavTabButton
+              tab="scalability"
+              label="Scale"
+              icon={TrendingUp}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <BottomNavTabButton
+              tab="quality"
+              label="Quality"
+              icon={Target}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+          </div>
+
+          {/* Theme Toggle */}
+          <ModeToggle />
+        </div>
+      </nav>
     </div>
   );
 }
