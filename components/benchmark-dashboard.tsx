@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import benchmarkData1 from "../benchmark result.json";
-import benchmarkData2 from "../benchmark result 2.json";
+import benchmarkData1 from "../Data Benchmark/benchmark result.json";
+import benchmarkData2 from "../Data Benchmark/benchmark result 2.json";
+import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
 const benchmarkDatasets = [benchmarkData1, benchmarkData2];
 
@@ -72,6 +73,7 @@ import {
   Gauge,
   ArrowUp,
   ArrowDown,
+  Info,
 } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -122,9 +124,23 @@ interface QualityMetrics {
   per_query: QualityPerQuery[];
 }
 
-type TabType = "summary" | "speed" | "scalability" | "quality";
+interface ThesisDbEmbeddingComparisonItem {
+  embedding_model: string;
+  database: string;
+  retrieval_median_ms: number;
+  retrieval_mean_ms: number;
+  total_median_ms: number;
+  total_mean_ms: number;
+  avg_f1_score: number;
+  avg_precision: number;
+  avg_recall: number;
+  is_retrieval_winner: boolean;
+  source_file: string;
+}
 
-const tabOptions: TabType[] = ["summary", "speed", "scalability", "quality"];
+type TabType = "summary" | "speed" | "scalability" | "quality" | "info";
+
+const tabOptions: TabType[] = ["summary", "speed", "scalability", "quality", "info"];
 
 
 // Sub-components moved outside to avoid re-creation on render
@@ -436,6 +452,14 @@ export function BenchmarkDashboard() {
   const speedSummary = speed_test.summary as SpeedTestSummary[];
   const speedRawResults = speed_test.raw_results as SpeedTestRawResult[];
   const speedWinner = speed_test.winner;
+  const speedSuccessCount = useMemo(
+    () => speedRawResults.filter((row) => row.success).length,
+    [speedRawResults]
+  );
+  const speedSuccessRate = useMemo(
+    () => (speedRawResults.length > 0 ? (speedSuccessCount / speedRawResults.length) * 100 : 0),
+    [speedRawResults.length, speedSuccessCount]
+  );
 
   // Scalability test data
   const scalabilityData = scalability_test as Record<string, ScalabilityResult[]>;
@@ -448,6 +472,12 @@ export function BenchmarkDashboard() {
     dbParam && (dbParam === "all" || databases.includes(dbParam))
       ? dbParam
       : "all";
+
+  const qualityDbParam = searchParams.get("qualityDb");
+  const selectedQualityDb =
+    qualityDbParam && databases.includes(qualityDbParam)
+      ? qualityDbParam
+      : databases[0] ?? "";
 
   const updateUrl = (updater: (params: URLSearchParams) => void) => {
     const currentQuery = searchParams.toString();
@@ -488,6 +518,11 @@ export function BenchmarkDashboard() {
       if (params.get("db") === "all") {
         params.delete("db");
       }
+
+      const currentQualityDb = params.get("qualityDb");
+      if (currentQualityDb && !nextDatabases.includes(currentQualityDb)) {
+        params.delete("qualityDb");
+      }
     });
   };
 
@@ -497,6 +532,16 @@ export function BenchmarkDashboard() {
         params.delete("db");
       } else {
         params.set("db", value);
+      }
+    });
+  };
+
+  const setSelectedQualityDb = (value: string) => {
+    updateUrl((params) => {
+      if (!value || value === databases[0]) {
+        params.delete("qualityDb");
+      } else {
+        params.set("qualityDb", value);
       }
     });
   };
@@ -552,6 +597,24 @@ export function BenchmarkDashboard() {
     if (databases.length === 0) return 0;
     return Math.max(...databases.map((db) => qualityData[db]?.avg_f1_score ?? 0));
   }, [qualityData, databases]);
+
+  const thesisComparisonRows = thesisDbEmbeddingComparison as ThesisDbEmbeddingComparisonItem[];
+  const thesisComparisonByEmbedding = useMemo(() => {
+    const grouped = thesisComparisonRows.reduce<Record<string, ThesisDbEmbeddingComparisonItem[]>>((acc, row) => {
+      if (!acc[row.embedding_model]) {
+        acc[row.embedding_model] = [];
+      }
+      acc[row.embedding_model].push(row);
+      return acc;
+    }, {});
+
+    return Object.entries(grouped)
+      .map(([embeddingModel, rows]) => ({
+        embeddingModel,
+        rows: [...rows].sort((a, b) => a.retrieval_mean_ms - b.retrieval_mean_ms),
+      }))
+      .sort((a, b) => a.embeddingModel.localeCompare(b.embeddingModel));
+  }, [thesisComparisonRows]);
 
   // Filter and Sort for Speed Test
   const filteredSpeedResults = useMemo(() => {
@@ -620,7 +683,7 @@ export function BenchmarkDashboard() {
 
   // Sorted quality per-query data
   const sortedQualityResults = useMemo(() => {
-    const data = qualityData[databases[0]]?.per_query || [];
+    const data = qualityData[selectedQualityDb]?.per_query || [];
     if (!qualitySortConfig) return data;
     return [...data].sort((a, b) => {
       const aValue = a[qualitySortConfig.key as keyof QualityPerQuery];
@@ -636,7 +699,7 @@ export function BenchmarkDashboard() {
         ? (aValue as number) - (bValue as number)
         : (bValue as number) - (aValue as number);
     });
-  }, [qualityData, databases, qualitySortConfig]);
+  }, [qualityData, selectedQualityDb, qualitySortConfig]);
 
   // Sorted scalability data - always return combined format for consistency
   const sortedScalabilityData = useMemo(() => {
@@ -758,6 +821,13 @@ export function BenchmarkDashboard() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
+          <SidebarTabButton
+            tab="info"
+            label="More Info"
+            icon={Info}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </nav>
 
         {/* Theme Toggle */}
@@ -786,7 +856,7 @@ export function BenchmarkDashboard() {
               <Badge variant="secondary" className="text-[11px] sm:text-xs">
                 {metadata.llm_model}
               </Badge>
-              <Badge variant="secondary" className="text-[11px] sm:text-xs hidden sm:inline-flex">
+              <Badge variant="secondary" className="text-[11px] sm:text-xs">
                 {metadata.embedding_model}
               </Badge>
               <Badge variant="secondary" className="text-[11px] sm:text-xs">
@@ -1353,7 +1423,7 @@ export function BenchmarkDashboard() {
                     <Separator />
 
                     {/* Additional Stats */}
-                    <div className="grid grid-cols-3 gap-1.5 text-xs">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 text-xs">
                       <div className="text-center p-1.5 bg-muted/50 rounded-md">
                         <div className="text-muted-foreground text-xs">Min</div>
                         <div className="font-mono font-medium">
@@ -1364,6 +1434,12 @@ export function BenchmarkDashboard() {
                         <div className="text-muted-foreground text-xs">Median</div>
                         <div className="font-mono font-medium">
                           {db.median_total_ms.toFixed(0)}ms
+                        </div>
+                      </div>
+                      <div className="text-center p-1.5 bg-muted/50 rounded-md">
+                        <div className="text-muted-foreground text-xs">Std Dev</div>
+                        <div className="font-mono font-medium">
+                          {db.std_total_ms.toFixed(0)}ms
                         </div>
                       </div>
                       <div className="text-center p-1.5 bg-muted/50 rounded-md">
@@ -1423,7 +1499,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-1.5 sm:px-2.5">
                 <div className="w-full overflow-x-auto -mx-1.5 px-1.5 scroll-snap-x">
-                  <table className="w-full min-w-[580px] table-fixed text-[11px] sm:text-xs">
+                  <table className="w-full min-w-[760px] table-fixed text-[11px] sm:text-xs">
                     <colgroup>
                       <col className="w-8" />
                       <col className="w-48" />
@@ -1431,6 +1507,8 @@ export function BenchmarkDashboard() {
                       <col className="w-[104px]" />
                       <col className="w-[104px]" />
                       <col className="w-[104px]" />
+                      <col className="w-[72px]" />
+                      <col className="w-[88px]" />
                     </colgroup>
                     <thead>
                       <tr className="border-b">
@@ -1512,6 +1590,32 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
+                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                          <button
+                            type="button"
+                            onClick={() => requestSort("num_docs")}
+                            className="flex w-full items-center justify-end gap-1 text-right hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
+                          >
+                            <span>Docs</span>
+                            <SortIcon
+                              active={sortConfig?.key === "num_docs"}
+                              direction={sortConfig?.direction}
+                            />
+                          </button>
+                        </th>
+                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                          <button
+                            type="button"
+                            onClick={() => requestSort("success")}
+                            className="flex w-full items-center justify-end gap-1 text-right hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
+                          >
+                            <span>Status</span>
+                            <SortIcon
+                              active={sortConfig?.key === "success"}
+                              direction={sortConfig?.direction}
+                            />
+                          </button>
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="content-visibility-auto">
@@ -1539,6 +1643,22 @@ export function BenchmarkDashboard() {
                           </td>
                           <td className="p-1.5 text-right font-mono tabular-nums">
                             <FormatMs ms={row.total_time} />
+                          </td>
+                          <td className="p-1.5 text-right font-mono tabular-nums">
+                            {row.num_docs.toFixed(0)}
+                          </td>
+                          <td className="p-1.5 text-right">
+                            <div className="flex justify-end">
+                              <Badge
+                                variant="secondary"
+                                className={cn(
+                                  "font-normal text-xs h-5 px-1.5",
+                                  row.success ? "text-emerald-600" : "text-red-600"
+                                )}
+                              >
+                                {row.success ? "OK" : "Fail"}
+                              </Badge>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -1929,10 +2049,26 @@ export function BenchmarkDashboard() {
             {/* Per-Query Quality Results */}
             <Card size="sm">
               <CardHeader className="pb-2 px-2.5 sm:px-3">
-                <CardTitle className="text-sm sm:text-base">Per-Query Analysis</CardTitle>
-                <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
-                  Click columns to sort.
-                </CardDescription>
+                <div className="flex flex-wrap items-start justify-between gap-1.5">
+                  <div>
+                    <CardTitle className="text-sm sm:text-base">Per-Query Analysis</CardTitle>
+                    <CardDescription className="text-[11px] sm:text-xs hidden sm:block">
+                      Click columns to sort.
+                    </CardDescription>
+                  </div>
+                  <Select value={selectedQualityDb} onValueChange={setSelectedQualityDb}>
+                    <SelectTrigger className="w-[150px] h-8 sm:h-7" aria-label="Select quality database">
+                      <SelectValue placeholder="Database" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {databases.map((db) => (
+                        <SelectItem key={db} value={db}>
+                          {db}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent className="px-1.5 sm:px-2.5">
                 <div className="w-full overflow-x-auto -mx-1.5 px-1.5 scroll-snap-x">
@@ -2059,6 +2195,181 @@ export function BenchmarkDashboard() {
             </div>
           )
         }
+
+        {/* Info Tab */}
+        {
+          activeTab === "info" && (
+            <div key="info-tab" className="sm:h-full sm:overflow-y-auto no-scrollbar space-y-3 sm:space-y-2 pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+              <div className="space-y-0.5">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
+                  <Info aria-hidden="true" className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                  More Info
+                </h2>
+              </div>
+
+              <Card size="sm" className="border-border/70">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="size-12 sm:size-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/25">
+                      <BarChart3 aria-hidden="true" className="w-6 h-6 sm:w-7 sm:h-7" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm sm:text-base">Benchmark Dataset {selectedDataset}</CardTitle>
+                      <CardDescription className="text-xs">
+                        Configuration details, source files, and data coverage.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-xs">
+                    <div className="bg-muted/50 p-1.5">
+                      <div className="text-muted-foreground">Aggregation</div>
+                      <div className="font-medium">{metadata.aggregation}</div>
+                    </div>
+                    <div className="bg-muted/50 p-1.5">
+                      <div className="text-muted-foreground">Runs</div>
+                      <div className="font-medium font-mono tabular-nums">{metadata.runs_aggregated}</div>
+                    </div>
+                    <div className="bg-muted/50 p-1.5">
+                      <div className="text-muted-foreground">Source Files</div>
+                      <div className="font-medium font-mono tabular-nums">{metadata.source_files.length}</div>
+                    </div>
+                    <div className="bg-muted/50 p-1.5">
+                      <div className="text-muted-foreground">Queries</div>
+                      <div className="font-medium font-mono tabular-nums">{metadata.num_queries}</div>
+                    </div>
+                    <div className="bg-muted/50 p-1.5">
+                      <div className="text-muted-foreground">Success Rate</div>
+                      <div className="font-medium font-mono tabular-nums">{speedSuccessRate.toFixed(1)}%</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">Models</p>
+                      <div className="space-y-1">
+                        <div className="text-xs bg-muted/40 px-2 py-1 break-all">
+                          <span className="text-muted-foreground">LLM:</span> {metadata.llm_model}
+                        </div>
+                        <div className="text-xs bg-muted/40 px-2 py-1 break-all">
+                          <span className="text-muted-foreground">Embedding:</span> {metadata.embedding_model}
+                        </div>
+                        <div className="text-xs bg-muted/40 px-2 py-1">
+                          <span className="text-muted-foreground">Top-K:</span> {metadata.top_k}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">Source Files</p>
+                      <div className="grid gap-1">
+                        {metadata.source_files.map((sourceFile) => (
+                          <div key={sourceFile} className="text-xs font-mono bg-muted/40 px-2 py-1 truncate" title={sourceFile}>
+                            {sourceFile}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
+                    <div className="bg-muted/40 px-2 py-1">
+                      <span className="text-muted-foreground">Speed rows:</span>{" "}
+                      <span className="font-mono tabular-nums">{speedRawResults.length}</span>
+                    </div>
+                    <div className="bg-muted/40 px-2 py-1">
+                      <span className="text-muted-foreground">Quality rows:</span>{" "}
+                      <span className="font-mono tabular-nums">{sortedQualityResults.length}</span>
+                    </div>
+                    <div className="bg-muted/40 px-2 py-1">
+                      <span className="text-muted-foreground">Scalability DBs:</span>{" "}
+                      <span className="font-mono tabular-nums">{Object.keys(scalabilityData).length}</span>
+                    </div>
+                    <div className="bg-muted/40 px-2 py-1">
+                      <span className="text-muted-foreground">Winner:</span>{" "}
+                      <span className="font-medium">{speedWinner.database}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card size="sm" className="border-border/70">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-lg bg-secondary text-foreground flex items-center justify-center border border-border/60">
+                      <Database aria-hidden="true" className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm sm:text-base">Thesis DB + Embedding Comparison</CardTitle>
+                      <CardDescription className="text-xs">
+                        Cross-embedding benchmark summary from `Data Benchmark/thesis_db_embedding_comparison.json`.
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {thesisComparisonByEmbedding.map(({ embeddingModel, rows }) => (
+                    <div key={embeddingModel} className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {embeddingModel}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground font-mono">{rows.length} DBs</span>
+                      </div>
+
+                      <div className="w-full overflow-x-auto">
+                        <table className="w-full min-w-[760px] text-xs">
+                          <thead>
+                            <tr className="border-b">
+                              <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval (Median)</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval (Mean)</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">Total (Median)</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">Total (Mean)</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">F1</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">P/R</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">Winner</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rows.map((row) => (
+                              <tr key={`${row.embedding_model}-${row.database}`} className="border-b last:border-0">
+                                <td className="p-1.5">
+                                  <div className="flex items-center gap-1.5">
+                                    <DatabaseIcon database={row.database} className="w-3.5 h-3.5" />
+                                    <span>{row.database}</span>
+                                  </div>
+                                </td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.retrieval_median_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.retrieval_mean_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.total_median_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.total_mean_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_f1_score * 100).toFixed(2)}%</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_precision * 100).toFixed(1)} / {(row.avg_recall * 100).toFixed(1)}</td>
+                                <td className="p-1.5 text-right">
+                                  {row.is_retrieval_winner ? (
+                                    <Badge className="bg-primary/10 text-primary border-primary/30 text-xs h-5 px-1.5">Yes</Badge>
+                                  ) : (
+                                    <Badge variant="secondary" className="text-xs h-5 px-1.5">No</Badge>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div className="text-xs text-muted-foreground font-mono bg-muted/40 px-2 py-1 truncate" title={rows[0]?.source_file}>
+                        Source: {rows[0]?.source_file}
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          )
+        }
           </div>
         </div>
       </div>
@@ -2122,6 +2433,13 @@ export function BenchmarkDashboard() {
               tab="quality"
               label="Quality"
               icon={Target}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <BottomNavTabButton
+              tab="info"
+              label="Info"
+              icon={Info}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
             />

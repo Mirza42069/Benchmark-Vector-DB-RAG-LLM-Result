@@ -1,0 +1,80 @@
+[
+  {
+    "embedding_model": "mxbai-embed-large",
+    "database": "ChromaDB",
+    "retrieval_median_ms": 25.28,
+    "retrieval_mean_ms": 29.64,
+    "total_median_ms": 5235.71,
+    "total_mean_ms": 6644.29,
+    "avg_f1_score": 0.8419,
+    "avg_precision": 0.782,
+    "avg_recall": 0.98,
+    "is_retrieval_winner": true,
+    "source_file": "mx embed/benchmark_full_median_1_2_3.json"
+  },
+  {
+    "embedding_model": "mxbai-embed-large",
+    "database": "PostgreSQL",
+    "retrieval_median_ms": 71.95,
+    "retrieval_mean_ms": 71.37,
+    "total_median_ms": 5173.89,
+    "total_mean_ms": 8674.55,
+    "avg_f1_score": 0.8419,
+    "avg_precision": 0.782,
+    "avg_recall": 0.98,
+    "is_retrieval_winner": false,
+    "source_file": "mx embed/benchmark_full_median_1_2_3.json"
+  },
+  {
+    "embedding_model": "mxbai-embed-large",
+    "database": "Pinecone",
+    "retrieval_median_ms": 302.55,
+    "retrieval_mean_ms": 327.62,
+    "total_median_ms": 5522.14,
+    "total_mean_ms": 5985.34,
+    "avg_f1_score": 0.8408,
+    "avg_precision": 0.78,
+    "avg_recall": 0.98,
+    "is_retrieval_winner": false,
+    "source_file": "mx embed/benchmark_full_median_1_2_3.json"
+  },
+  {
+    "embedding_model": "qwen3-embedding:8b",
+    "database": "ChromaDB",
+    "retrieval_median_ms": 1913.73,
+    "retrieval_mean_ms": 1933.78,
+    "total_median_ms": 8695.35,
+    "total_mean_ms": 9286.94,
+    "avg_f1_score": 0.9305,
+    "avg_precision": 0.89,
+    "avg_recall": 1.0,
+    "is_retrieval_winner": true,
+    "source_file": "qwen embed/benchmark_full_median_1_2_3.json"
+  },
+  {
+    "embedding_model": "qwen3-embedding:8b",
+    "database": "PostgreSQL",
+    "retrieval_median_ms": 1926.1,
+    "retrieval_mean_ms": 1950.79,
+    "total_median_ms": 8669.27,
+    "total_mean_ms": 9094.98,
+    "avg_f1_score": 0.9305,
+    "avg_precision": 0.89,
+    "avg_recall": 1.0,
+    "is_retrieval_winner": false,
+    "source_file": "qwen embed/benchmark_full_median_1_2_3.json"
+  },
+  {
+    "embedding_model": "qwen3-embedding:8b",
+    "database": "Pinecone",
+    "retrieval_median_ms": 2197.83,
+    "retrieval_mean_ms": 2227.57,
+    "total_median_ms": 8999.34,
+    "total_mean_ms": 9475.77,
+    "avg_f1_score": 0.9305,
+    "avg_precision": 0.89,
+    "avg_recall": 1.0,
+    "is_retrieval_winner": false,
+    "source_file": "qwen embed/benchmark_full_median_1_2_3.json"
+  }
+]
