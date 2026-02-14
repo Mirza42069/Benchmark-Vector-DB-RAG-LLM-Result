@@ -2,22 +2,22 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistMono = Geist_Mono({ 
-  subsets: ['latin'], 
-  variable: '--font-mono',
-  display: 'swap'
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 const geistSans = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap'
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
 const geistSerif = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-serif',
-  display: 'swap'
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
