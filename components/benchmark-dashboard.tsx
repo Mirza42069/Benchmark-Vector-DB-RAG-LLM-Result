@@ -7,6 +7,10 @@ import benchmarkData2 from "../Data Benchmark/benchmark result 2.json";
 import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
 const benchmarkDatasets = [benchmarkData1, benchmarkData2];
+const benchmarkSourceFallbacks = [
+  "benchmark_full_20260408_225619.json",
+  "benchmark_full_20260408_182639.json",
+];
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -136,6 +140,18 @@ interface ThesisDbEmbeddingComparisonItem {
   avg_recall: number;
   is_retrieval_winner: boolean;
   source_file: string;
+}
+
+interface BenchmarkMetadata {
+  benchmark_date: string;
+  llm_model: string;
+  embedding_model: string;
+  num_queries: number;
+  top_k: number;
+  databases_tested: string[];
+  aggregation?: string;
+  runs_aggregated?: number;
+  source_files?: string[];
 }
 
 type TabType = "summary" | "speed" | "scalability" | "quality" | "info";
@@ -392,7 +408,10 @@ export function BenchmarkDashboard() {
     searchParams.get("compare") === "1" || searchParams.get("compare") === "true";
 
   const benchmarkData = benchmarkDatasets[selectedDataset - 1];
-  const { metadata, speed_test, scalability_test, retrieval_quality } = benchmarkData;
+  const metadata = benchmarkData.metadata as BenchmarkMetadata;
+  const speed_test = benchmarkData.speed_test;
+  const scalability_test = benchmarkData.scalability_test;
+  const retrieval_quality = benchmarkData.retrieval_quality;
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -460,6 +479,12 @@ export function BenchmarkDashboard() {
     () => (speedRawResults.length > 0 ? (speedSuccessCount / speedRawResults.length) * 100 : 0),
     [speedRawResults.length, speedSuccessCount]
   );
+  const aggregationLabel = metadata.aggregation ?? "single run";
+  const runsAggregated = metadata.runs_aggregated ?? 1;
+  const sourceFiles =
+    metadata.source_files && metadata.source_files.length > 0
+      ? metadata.source_files
+      : [benchmarkSourceFallbacks[selectedDataset - 1]];
 
   // Scalability test data
   const scalabilityData = scalability_test as Record<string, ScalabilityResult[]>;
@@ -2225,15 +2250,15 @@ export function BenchmarkDashboard() {
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-xs">
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Aggregation</div>
-                      <div className="font-medium">{metadata.aggregation}</div>
+                       <div className="font-medium">{aggregationLabel}</div>
                     </div>
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Runs</div>
-                      <div className="font-medium font-mono tabular-nums">{metadata.runs_aggregated}</div>
+                       <div className="font-medium font-mono tabular-nums">{runsAggregated}</div>
                     </div>
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Source Files</div>
-                      <div className="font-medium font-mono tabular-nums">{metadata.source_files.length}</div>
+                       <div className="font-medium font-mono tabular-nums">{sourceFiles.length}</div>
                     </div>
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Queries</div>
@@ -2264,7 +2289,7 @@ export function BenchmarkDashboard() {
                     <div className="space-y-1">
                       <p className="text-xs font-medium text-muted-foreground">Source Files</p>
                       <div className="grid gap-1">
-                        {metadata.source_files.map((sourceFile) => (
+                         {sourceFiles.map((sourceFile) => (
                           <div key={sourceFile} className="text-xs font-mono bg-muted/40 px-2 py-1 truncate" title={sourceFile}>
                             {sourceFile}
                           </div>
