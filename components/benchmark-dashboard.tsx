@@ -6,10 +6,10 @@ import benchmarkData1 from "../Data Benchmark/benchmark result.json";
 import benchmarkData2 from "../Data Benchmark/benchmark result 2.json";
 import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
-const benchmarkDatasets = [benchmarkData1, benchmarkData2];
+const benchmarkDatasets = [benchmarkData1, benchmarkData2] as unknown as BenchmarkDataShape[];
 const benchmarkSourceFallbacks = [
-  "benchmark_full_20260408_225619.json",
-  "benchmark_full_20260408_182639.json",
+  "benchmark_full_20260423_040633.json",
+  "benchmark_full_20260422_160043.json",
 ];
 
 function usePrefersReducedMotion() {
@@ -83,7 +83,9 @@ import { ModeToggle } from "@/components/mode-toggle";
 
 // Type definitions
 interface SpeedTestRawResult {
+  repetition?: number;
   query_num: number;
+  global_query_num?: number;
   query: string;
   database: string;
   retrieval_time: number;
@@ -100,8 +102,24 @@ interface SpeedTestSummary {
   std_total_ms: number;
   min_total_ms: number;
   max_total_ms: number;
+  p95_total_ms?: number;
   mean_retrieval_ms: number;
+  p95_retrieval_ms?: number;
   mean_llm_ms: number;
+}
+
+interface RepetitionSummaryItem {
+  repetition: number;
+  mean_retrieval_ms: number;
+  mean_total_ms: number;
+  p95_retrieval_ms?: number;
+  p95_total_ms?: number;
+}
+
+interface QueryTypeSummaryItem {
+  queries_tested: number;
+  mean_retrieval_ms: number;
+  mean_total_ms: number;
 }
 
 interface ScalabilityResult {
@@ -112,10 +130,23 @@ interface ScalabilityResult {
   max_time: number;
 }
 
+interface RawScalabilityResult {
+  top_k: number;
+  avg_time?: number;
+  std_time?: number;
+  min_time?: number;
+  max_time?: number;
+  mean_avg_time?: number;
+  std_avg_time?: number;
+  min_avg_time?: number;
+  max_avg_time?: number;
+}
+
 interface QualityPerQuery {
   query: string;
   precision: number;
-  recall: number;
+  recall?: number;
+  hit_at_k?: number;
   f1_score: number;
   relevant_retrieved: number;
   total_retrieved: number;
@@ -123,7 +154,8 @@ interface QualityPerQuery {
 
 interface QualityMetrics {
   avg_precision: number;
-  avg_recall: number;
+  avg_recall?: number;
+  avg_hit_at_k?: number;
   avg_f1_score: number;
   per_query: QualityPerQuery[];
 }
@@ -137,7 +169,8 @@ interface ThesisDbEmbeddingComparisonItem {
   total_mean_ms: number;
   avg_f1_score: number;
   avg_precision: number;
-  avg_recall: number;
+  avg_recall?: number;
+  avg_hit_at_k?: number;
   is_retrieval_winner: boolean;
   source_file: string;
 }
@@ -147,11 +180,81 @@ interface BenchmarkMetadata {
   llm_model: string;
   embedding_model: string;
   num_queries: number;
+  repetitions?: number;
   top_k: number;
   databases_tested: string[];
   aggregation?: string;
   runs_aggregated?: number;
   source_files?: string[];
+  score_threshold?: number;
+  scalability_doc_counts?: number[];
+  scalability_query_count?: number;
+}
+
+interface BenchmarkDataShape {
+  metadata: BenchmarkMetadata;
+  speed_test: {
+    winner: {
+      database: string;
+      avg_retrieval_ms: number;
+      speed_improvement_percent: number;
+    };
+    summary: SpeedTestSummary[];
+    raw_results: SpeedTestRawResult[];
+    per_repetition_summary?: Record<string, RepetitionSummaryItem[]>;
+    query_type_summary?: Record<string, {
+      answerable?: QueryTypeSummaryItem;
+      no_answer?: QueryTypeSummaryItem;
+    }>;
+  };
+  scalability_test?: Record<string, RawScalabilityResult[]>;
+  top_k_sensitivity_test?: Record<string, RawScalabilityResult[]>;
+  retrieval_quality?: Record<string, QualityMetrics>;
+  answerable_retrieval_quality?: Record<string, QualityMetrics>;
+}
+
+function getQualityData(benchmarkData: {
+  retrieval_quality?: Record<string, QualityMetrics>;
+  answerable_retrieval_quality?: Record<string, QualityMetrics>;
+}) {
+  return (benchmarkData.answerable_retrieval_quality ?? benchmarkData.retrieval_quality ?? {}) as Record<string, QualityMetrics>;
+}
+
+function getQualityCoverageLabel(benchmarkData: {
+  answerable_retrieval_quality?: Record<string, QualityMetrics>;
+}) {
+  return benchmarkData.answerable_retrieval_quality ? "Hit@K" : "Recall";
+}
+
+function getQualityScopeLabel(benchmarkData: {
+  answerable_retrieval_quality?: Record<string, QualityMetrics>;
+}) {
+  return benchmarkData.answerable_retrieval_quality ? "answerable queries only" : "all queries";
+}
+
+function getQualityCoverageValue(metrics?: QualityMetrics) {
+  return metrics?.avg_hit_at_k ?? metrics?.avg_recall ?? 0;
+}
+
+function getPerQueryCoverageValue(result: QualityPerQuery) {
+  return result.hit_at_k ?? result.recall ?? 0;
+}
+
+function getScalabilityData(benchmarkData: BenchmarkDataShape) {
+  const rawData = (benchmarkData.scalability_test ?? benchmarkData.top_k_sensitivity_test ?? {}) as Record<string, RawScalabilityResult[]>;
+
+  return Object.fromEntries(
+    Object.entries(rawData).map(([database, rows]) => [
+      database,
+      rows.map((row) => ({
+        top_k: row.top_k,
+        avg_time: row.avg_time ?? row.mean_avg_time ?? 0,
+        std_time: row.std_time ?? row.std_avg_time ?? 0,
+        min_time: row.min_time ?? row.min_avg_time ?? 0,
+        max_time: row.max_time ?? row.max_avg_time ?? 0,
+      })),
+    ])
+  ) as Record<string, ScalabilityResult[]>;
 }
 
 type TabType = "summary" | "speed" | "scalability" | "quality" | "info";
@@ -407,11 +510,30 @@ export function BenchmarkDashboard() {
   const comparisonMode =
     searchParams.get("compare") === "1" || searchParams.get("compare") === "true";
 
-  const benchmarkData = benchmarkDatasets[selectedDataset - 1];
+  const benchmarkData = benchmarkDatasets[selectedDataset - 1] as BenchmarkDataShape;
   const metadata = benchmarkData.metadata as BenchmarkMetadata;
   const speed_test = benchmarkData.speed_test;
-  const scalability_test = benchmarkData.scalability_test;
-  const retrieval_quality = benchmarkData.retrieval_quality;
+  const scalabilityData = getScalabilityData(benchmarkData);
+  const qualityData = getQualityData(benchmarkData);
+  const qualityCoverageLabel = getQualityCoverageLabel(benchmarkData);
+  const qualityScopeLabel = getQualityScopeLabel(benchmarkData);
+  const datasetDescriptors = benchmarkDatasets.map((dataset, index) => {
+    const datasetMetadata = dataset.metadata as BenchmarkMetadata;
+    const shortLabel = datasetMetadata.embedding_model.includes("mxbai") ? "M" : "Q";
+
+    return {
+      id: index + 1,
+      shortLabel,
+      embeddingModel: datasetMetadata.embedding_model,
+      title: `Dataset ${index + 1}: ${datasetMetadata.embedding_model}`,
+      subtitle: new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).format(new Date(datasetMetadata.benchmark_date)),
+    };
+  });
+  const activeDatasetDescriptor = datasetDescriptors[selectedDataset - 1];
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -431,12 +553,14 @@ export function BenchmarkDashboard() {
     const data1 = benchmarkDatasets[0];
     const data2 = benchmarkDatasets[1];
     const databases = data1.metadata.databases_tested;
+    const qualityData1 = getQualityData(data1);
+    const qualityData2 = getQualityData(data2);
 
     return databases.map((db) => {
       const speed1 = (data1.speed_test.summary as SpeedTestSummary[]).find(s => s.database === db);
       const speed2 = (data2.speed_test.summary as SpeedTestSummary[]).find(s => s.database === db);
-      const quality1 = (data1.retrieval_quality as Record<string, QualityMetrics>)[db];
-      const quality2 = (data2.retrieval_quality as Record<string, QualityMetrics>)[db];
+      const quality1 = qualityData1[db];
+      const quality2 = qualityData2[db];
 
       const calcDelta = (v1: number, v2: number) => v1 !== 0 ? ((v2 - v1) / v1) * 100 : 0;
 
@@ -446,21 +570,21 @@ export function BenchmarkDashboard() {
           avgRetrieval: speed1?.mean_retrieval_ms ?? 0,
           avgTotal: speed1?.mean_total_ms ?? 0,
           precision: quality1?.avg_precision ?? 0,
-          recall: quality1?.avg_recall ?? 0,
+          coverage: getQualityCoverageValue(quality1),
           f1Score: quality1?.avg_f1_score ?? 0,
         },
         dataset2: {
           avgRetrieval: speed2?.mean_retrieval_ms ?? 0,
           avgTotal: speed2?.mean_total_ms ?? 0,
           precision: quality2?.avg_precision ?? 0,
-          recall: quality2?.avg_recall ?? 0,
+          coverage: getQualityCoverageValue(quality2),
           f1Score: quality2?.avg_f1_score ?? 0,
         },
         deltas: {
           avgRetrieval: calcDelta(speed1?.mean_retrieval_ms ?? 0, speed2?.mean_retrieval_ms ?? 0),
           avgTotal: calcDelta(speed1?.mean_total_ms ?? 0, speed2?.mean_total_ms ?? 0),
           precision: calcDelta(quality1?.avg_precision ?? 0, quality2?.avg_precision ?? 0),
-          recall: calcDelta(quality1?.avg_recall ?? 0, quality2?.avg_recall ?? 0),
+          coverage: calcDelta(getQualityCoverageValue(quality1), getQualityCoverageValue(quality2)),
           f1Score: calcDelta(quality1?.avg_f1_score ?? 0, quality2?.avg_f1_score ?? 0),
         },
       };
@@ -479,16 +603,16 @@ export function BenchmarkDashboard() {
     () => (speedRawResults.length > 0 ? (speedSuccessCount / speedRawResults.length) * 100 : 0),
     [speedRawResults.length, speedSuccessCount]
   );
-  const aggregationLabel = metadata.aggregation ?? "single run";
-  const runsAggregated = metadata.runs_aggregated ?? 1;
+  const runsAggregated = metadata.runs_aggregated ?? metadata.repetitions ?? 1;
+  const aggregationLabel = metadata.aggregation ?? (runsAggregated > 1 ? "multi-run benchmark" : "single run");
   const sourceFiles =
     metadata.source_files && metadata.source_files.length > 0
       ? metadata.source_files
       : [benchmarkSourceFallbacks[selectedDataset - 1]];
+  const perRepetitionSummary = speed_test.per_repetition_summary ?? {};
+  const queryTypeSummary = speed_test.query_type_summary ?? {};
 
   // Scalability test data
-  const scalabilityData = scalability_test as Record<string, ScalabilityResult[]>;
-
   // Databases list - declared early as it's used in useMemo hooks below
   const databases = metadata.databases_tested;
 
@@ -606,8 +730,6 @@ export function BenchmarkDashboard() {
     return winner;
   }, [scalabilityData, databases]);
 
-  // Retrieval quality data
-  const qualityData = retrieval_quality as Record<string, QualityMetrics>;
   const qualityLeader = useMemo(() => {
     const scores = databases.map((db) => ({
       db,
@@ -624,6 +746,7 @@ export function BenchmarkDashboard() {
   }, [qualityData, databases]);
 
   const thesisComparisonRows = thesisDbEmbeddingComparison as ThesisDbEmbeddingComparisonItem[];
+  const thesisCoverageLabel = thesisComparisonRows.some((row) => typeof row.avg_hit_at_k === "number") ? "P/Hit@K" : "P/R";
   const thesisComparisonByEmbedding = useMemo(() => {
     const grouped = thesisComparisonRows.reduce<Record<string, ThesisDbEmbeddingComparisonItem[]>>((acc, row) => {
       if (!acc[row.embedding_model]) {
@@ -791,22 +914,22 @@ export function BenchmarkDashboard() {
       <aside className="hidden sm:flex flex-col w-14 border-r border-border/50 bg-muted/20 shrink-0">
         {/* Dataset Switcher - Stacked vertically */}
         <div className="flex flex-col items-center gap-1 p-2 border-b border-border/50">
-          {[1, 2].map((num) => (
+          {datasetDescriptors.map((num) => (
             <button
-              key={num}
+              key={num.id}
               type="button"
-              onClick={() => setSelectedDataset(num)}
-              aria-pressed={selectedDataset === num}
-              aria-label={`Dataset ${num}`}
-              title={`Dataset ${num}`}
+              onClick={() => setSelectedDataset(num.id)}
+              aria-pressed={selectedDataset === num.id}
+              aria-label={num.title}
+              title={num.title}
               className={cn(
                 "w-10 h-8 text-sm font-mono font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
-                selectedDataset === num
+                  selectedDataset === num.id
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
-              {num}
+              {num.shortLabel}
             </button>
           ))}
         </div>
@@ -884,6 +1007,11 @@ export function BenchmarkDashboard() {
               <Badge variant="secondary" className="text-[11px] sm:text-xs">
                 {metadata.embedding_model}
               </Badge>
+              {metadata.score_threshold !== undefined && (
+                <Badge variant="secondary" className="text-[11px] sm:text-xs">
+                  threshold {metadata.score_threshold}
+                </Badge>
+              )}
               <Badge variant="secondary" className="text-[11px] sm:text-xs">
                 {metadata.num_queries}Q
               </Badge>
@@ -1083,7 +1211,7 @@ export function BenchmarkDashboard() {
               <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col">
                 {/* Mobile: Horizontal scroll for database cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
-                    {databases.map((db) => {
+                {databases.map((db) => {
                       const speed = speedSummary.find(s => s.database === db);
                       const quality = qualityData[db];
                       const dbColor = db === "Pinecone"
@@ -1195,20 +1323,20 @@ export function BenchmarkDashboard() {
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Recall">
+                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title={qualityCoverageLabel}>
                             <span className="text-muted-foreground flex items-center gap-2">
-                              <Target aria-hidden="true" className="w-4 h-4" /> Recall
+                              <Target aria-hidden="true" className="w-4 h-4" /> {qualityCoverageLabel}
                             </span>
                             <div className="flex items-center">
                               {comparisonMode && compItem ? (
                                 <>
                                   <span className="font-mono font-semibold text-base md:text-lg">
-                                    {(compItem.dataset1.recall * 100).toFixed(0)}→{(compItem.dataset2.recall * 100).toFixed(0)}%
+                                    {(compItem.dataset1.coverage * 100).toFixed(0)}→{(compItem.dataset2.coverage * 100).toFixed(0)}%
                                   </span>
-                                  <DeltaBadge value={compItem.deltas.recall} />
+                                  <DeltaBadge value={compItem.deltas.coverage} />
                                 </>
                               ) : (
-                                <span className="font-mono font-semibold text-base md:text-lg">{(quality.avg_recall * 100).toFixed(1)}%</span>
+                                <span className="font-mono font-semibold text-base md:text-lg">{(getQualityCoverageValue(quality) * 100).toFixed(1)}%</span>
                               )}
                             </div>
                           </div>
@@ -1646,7 +1774,7 @@ export function BenchmarkDashboard() {
                     <tbody className="content-visibility-auto">
                       {sortedSpeedResults.map((row) => (
                         <tr
-                          key={`${row.query_num}-${row.database}`}
+                          key={`${row.global_query_num ?? row.query_num}-${row.database}-${row.repetition ?? 1}`}
                           className="border-b last:border-0 hover:bg-muted/50 transition-colors"
                         >
                           <td className="p-1.5 font-mono tabular-nums">{row.query_num}</td>
@@ -1847,8 +1975,8 @@ export function BenchmarkDashboard() {
                   </CardHeader>
                   <CardContent className="pt-2">
                     <div className="space-y-1">
-                      {scalabilityData[db]?.map((item) => (
-                        <div key={item.top_k} className="space-y-1">
+                      {scalabilityData[db]?.map((item, idx) => (
+                        <div key={`${db}-${item.top_k}-${idx}`} className="space-y-1">
                           <div className="flex justify-between items-center text-xs">
                             <span className="font-medium">
                               top_k = {item.top_k}
@@ -1945,13 +2073,13 @@ export function BenchmarkDashboard() {
                       </tr>
                     </thead>
                     <tbody className="content-visibility-auto">
-                      {sortedScalabilityData.map((item) => {
+                      {sortedScalabilityData.map((item, idx) => {
                         const minTime = Math.min(
                           ...databases.map((d) => (item as Record<string, number>)[d] ?? Infinity)
                         );
                         return (
                           <tr
-                            key={item.top_k}
+                            key={`${item.top_k}-${idx}`}
                             className="border-b last:border-0 hover:bg-muted/50 transition-colors"
                           >
                             <td className="p-1.5 font-medium font-mono tabular-nums">{item.top_k}</td>
@@ -1993,6 +2121,9 @@ export function BenchmarkDashboard() {
                 <Activity aria-hidden="true" className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
                 Quality Metrics
               </h2>
+              <p className="text-xs text-muted-foreground">
+                Quality is measured on {qualityScopeLabel} using precision, {qualityCoverageLabel.toLowerCase()}, and F1.
+              </p>
             </div>
 
             {/* Quality Summary Cards - 3 cols on mobile for compact view */}
@@ -2034,17 +2165,17 @@ export function BenchmarkDashboard() {
                         </div>
                       </div>
 
-                      {/* Recall */}
+                      {/* Coverage */}
                       <div className="space-y-0.5 sm:space-y-1">
                         <div className="flex justify-between items-center text-[10px] sm:text-xs">
-                          <span className="text-muted-foreground font-medium">R</span>
+                          <span className="text-muted-foreground font-medium">{qualityCoverageLabel === "Recall" ? "R" : "H@K"}</span>
                           <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
-                            <AnimatedCounter value={metrics.avg_recall * 100} decimals={1} suffix="%" />
+                            <AnimatedCounter value={getQualityCoverageValue(metrics) * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
-                            value={metrics.avg_recall}
+                            value={getQualityCoverageValue(metrics)}
                             className={cn("bg-linear-to-r", dbColor.gradient)}
                           />
                         </div>
@@ -2136,12 +2267,12 @@ export function BenchmarkDashboard() {
                         <th className="text-right p-1.5 font-medium text-muted-foreground">
                           <button
                             type="button"
-                            onClick={() => requestQualitySort("recall")}
+                            onClick={() => requestQualitySort(qualityCoverageLabel === "Recall" ? "recall" : "hit_at_k")}
                             className="flex w-full items-center justify-end gap-1 text-right hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
                           >
-                            <span>Recall</span>
+                            <span>{qualityCoverageLabel}</span>
                             <SortIcon
-                              active={qualitySortConfig?.key === "recall"}
+                              active={qualitySortConfig?.key === (qualityCoverageLabel === "Recall" ? "recall" : "hit_at_k")}
                               direction={qualitySortConfig?.direction}
                             />
                           </button>
@@ -2194,11 +2325,11 @@ export function BenchmarkDashboard() {
                           <td
                             className={cn(
                               "p-1.5 text-right font-mono tabular-nums",
-                              item.recall === 1.0 && "text-emerald-500"
-                            )}
-                          >
-                            <FormatPercent value={item.recall} />
-                          </td>
+                               getPerQueryCoverageValue(item) === 1.0 && "text-emerald-500"
+                             )}
+                           >
+                             <FormatPercent value={getPerQueryCoverageValue(item)} />
+                           </td>
                           <td
                             className={cn(
                               "p-1.5 text-right font-mono tabular-nums",
@@ -2239,18 +2370,18 @@ export function BenchmarkDashboard() {
                       <BarChart3 aria-hidden="true" className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
                     <div>
-                      <CardTitle className="text-sm sm:text-base">Benchmark Dataset {selectedDataset}</CardTitle>
+                      <CardTitle className="text-sm sm:text-base">{activeDatasetDescriptor?.title}</CardTitle>
                       <CardDescription className="text-xs">
-                        Configuration details, source files, and data coverage.
+                        Configuration details, source files, and benchmark run metadata.
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-6 gap-1.5 text-xs">
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Aggregation</div>
-                       <div className="font-medium">{aggregationLabel}</div>
+                        <div className="font-medium">{aggregationLabel}</div>
                     </div>
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Runs</div>
@@ -2264,9 +2395,38 @@ export function BenchmarkDashboard() {
                       <div className="text-muted-foreground">Queries</div>
                       <div className="font-medium font-mono tabular-nums">{metadata.num_queries}</div>
                     </div>
+                    {metadata.score_threshold !== undefined && (
+                      <div className="bg-muted/50 p-1.5">
+                        <div className="text-muted-foreground">Threshold</div>
+                        <div className="font-medium font-mono tabular-nums">{metadata.score_threshold}</div>
+                      </div>
+                    )}
                     <div className="bg-muted/50 p-1.5">
                       <div className="text-muted-foreground">Success Rate</div>
                       <div className="font-medium font-mono tabular-nums">{speedSuccessRate.toFixed(1)}%</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 text-xs">
+                    <div className="bg-muted/40 px-2 py-1.5">
+                      <div className="text-muted-foreground">Benchmark Timestamp</div>
+                      <div className="font-medium font-mono break-all">{metadata.benchmark_date}</div>
+                    </div>
+                    <div className="bg-muted/40 px-2 py-1.5">
+                      <div className="text-muted-foreground">Scalability Docs</div>
+                      <div className="font-medium font-mono tabular-nums">
+                        {metadata.scalability_doc_counts?.join(", ") ?? "N/A"}
+                      </div>
+                    </div>
+                    <div className="bg-muted/40 px-2 py-1.5">
+                      <div className="text-muted-foreground">Scalability Queries</div>
+                      <div className="font-medium font-mono tabular-nums">
+                        {metadata.scalability_query_count ?? "N/A"}
+                      </div>
+                    </div>
+                    <div className="bg-muted/40 px-2 py-1.5">
+                      <div className="text-muted-foreground">Quality Scope</div>
+                      <div className="font-medium">{qualityCoverageLabel} on {qualityScopeLabel}</div>
                     </div>
                   </div>
 
@@ -2321,6 +2481,146 @@ export function BenchmarkDashboard() {
 
               <Card size="sm" className="border-border/70">
                 <CardHeader className="pb-2">
+                  <CardTitle className="text-sm sm:text-base">Speed Summary Details</CardTitle>
+                  <CardDescription className="text-xs">
+                    Per-database latency summary from the active benchmark dataset.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="px-1.5 sm:px-2.5">
+                  <div className="w-full overflow-x-auto">
+                    <table className="w-full min-w-[900px] text-xs">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval Mean</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval P95</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Total Mean</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Total Median</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Total P95</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Min</th>
+                          <th className="p-1.5 text-right font-medium text-muted-foreground">Max</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {speedSummary.map((row) => (
+                          <tr key={row.database} className="border-b last:border-0">
+                            <td className="p-1.5">
+                              <div className="flex items-center gap-1.5">
+                                <DatabaseIcon database={row.database} className="w-3.5 h-3.5" />
+                                <span>{row.database}</span>
+                              </div>
+                            </td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.mean_retrieval_ms.toFixed(2)}ms</td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.p95_retrieval_ms?.toFixed(2) ?? "-"}ms</td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.mean_total_ms.toFixed(2)}ms</td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.median_total_ms.toFixed(2)}ms</td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.p95_total_ms?.toFixed(2) ?? "-"}ms</td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.min_total_ms.toFixed(2)}ms</td>
+                            <td className="p-1.5 text-right font-mono tabular-nums">{row.max_total_ms.toFixed(2)}ms</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {Object.keys(queryTypeSummary).length > 0 && (
+                <Card size="sm" className="border-border/70">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm sm:text-base">Query Type Breakdown</CardTitle>
+                    <CardDescription className="text-xs">
+                      Answerable vs no-answer performance split from `speed_test.query_type_summary`.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-1.5 sm:px-2.5">
+                    <div className="w-full overflow-x-auto">
+                      <table className="w-full min-w-[920px] text-xs">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Answerable Q</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Answerable Retrieval</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Answerable Total</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">No-Answer Q</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">No-Answer Retrieval</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">No-Answer Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(queryTypeSummary).map(([database, stats]) => (
+                            <tr key={database} className="border-b last:border-0">
+                              <td className="p-1.5">
+                                <div className="flex items-center gap-1.5">
+                                  <DatabaseIcon database={database} className="w-3.5 h-3.5" />
+                                  <span>{database}</span>
+                                </div>
+                              </td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.answerable?.queries_tested ?? 0}</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.answerable?.mean_retrieval_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.answerable?.mean_total_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.no_answer?.queries_tested ?? 0}</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.no_answer?.mean_retrieval_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.no_answer?.mean_total_ms.toFixed(2) ?? "-"}ms</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {Object.keys(perRepetitionSummary).length > 0 && (
+                <Card size="sm" className="border-border/70">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm sm:text-base">Per-Repetition Summary</CardTitle>
+                    <CardDescription className="text-xs">
+                      Repetition-level stability from `speed_test.per_repetition_summary`.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {Object.entries(perRepetitionSummary).map(([database, repetitions]) => (
+                      <div key={database} className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 text-sm font-medium">
+                            <DatabaseIcon database={database} className="w-4 h-4" />
+                            <span>{database}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground font-mono">{repetitions.length} runs</span>
+                        </div>
+                        <div className="w-full overflow-x-auto">
+                          <table className="w-full min-w-[680px] text-xs">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="p-1.5 text-left font-medium text-muted-foreground">Run</th>
+                                <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval Mean</th>
+                                <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval P95</th>
+                                <th className="p-1.5 text-right font-medium text-muted-foreground">Total Mean</th>
+                                <th className="p-1.5 text-right font-medium text-muted-foreground">Total P95</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {repetitions.map((run) => (
+                                <tr key={`${database}-${run.repetition}`} className="border-b last:border-0">
+                                  <td className="p-1.5 font-mono tabular-nums">Run {run.repetition}</td>
+                                  <td className="p-1.5 text-right font-mono tabular-nums">{run.mean_retrieval_ms.toFixed(2)}ms</td>
+                                  <td className="p-1.5 text-right font-mono tabular-nums">{run.p95_retrieval_ms?.toFixed(2) ?? "-"}ms</td>
+                                  <td className="p-1.5 text-right font-mono tabular-nums">{run.mean_total_ms.toFixed(2)}ms</td>
+                                  <td className="p-1.5 text-right font-mono tabular-nums">{run.p95_total_ms?.toFixed(2) ?? "-"}ms</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card size="sm" className="border-border/70">
+                <CardHeader className="pb-2">
                   <div className="flex items-center gap-3">
                     <div className="size-10 rounded-lg bg-secondary text-foreground flex items-center justify-center border border-border/60">
                       <Database aria-hidden="true" className="w-5 h-5" />
@@ -2353,7 +2653,7 @@ export function BenchmarkDashboard() {
                               <th className="p-1.5 text-right font-medium text-muted-foreground">Total (Median)</th>
                               <th className="p-1.5 text-right font-medium text-muted-foreground">Total (Mean)</th>
                               <th className="p-1.5 text-right font-medium text-muted-foreground">F1</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">P/R</th>
+                              <th className="p-1.5 text-right font-medium text-muted-foreground">{thesisCoverageLabel}</th>
                               <th className="p-1.5 text-right font-medium text-muted-foreground">Winner</th>
                             </tr>
                           </thead>
@@ -2371,7 +2671,7 @@ export function BenchmarkDashboard() {
                                 <td className="p-1.5 text-right font-mono tabular-nums">{row.total_median_ms.toFixed(2)}ms</td>
                                 <td className="p-1.5 text-right font-mono tabular-nums">{row.total_mean_ms.toFixed(2)}ms</td>
                                 <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_f1_score * 100).toFixed(2)}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_precision * 100).toFixed(1)} / {(row.avg_recall * 100).toFixed(1)}</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_precision * 100).toFixed(1)} / {(((row.avg_hit_at_k ?? row.avg_recall) ?? 0) * 100).toFixed(1)}</td>
                                 <td className="p-1.5 text-right">
                                   {row.is_retrieval_winner ? (
                                     <Badge className="bg-primary/10 text-primary border-primary/30 text-xs h-5 px-1.5">Yes</Badge>
@@ -2412,21 +2712,21 @@ export function BenchmarkDashboard() {
             role="group"
             aria-label="Dataset selection"
           >
-            {[1, 2].map((num) => (
+            {datasetDescriptors.map((num) => (
               <button
-                key={num}
+                key={num.id}
                 type="button"
-                onClick={() => setSelectedDataset(num)}
-                aria-pressed={selectedDataset === num}
-                aria-label={`Dataset ${num}`}
+                onClick={() => setSelectedDataset(num.id)}
+                aria-pressed={selectedDataset === num.id}
+                aria-label={num.title}
                 className={cn(
                   "w-8 h-8 text-sm font-mono font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-                  selectedDataset === num
+                  selectedDataset === num.id
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground"
                 )}
               >
-                {num}
+                {num.shortLabel}
               </button>
             ))}
           </div>
