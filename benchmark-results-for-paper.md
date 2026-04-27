@@ -2,10 +2,10 @@
 title: Benchmark Results For Paper
 purpose: Source document for AI-assisted paper drafting and editing
 generator: export-benchmark-results.mjs
-generated_at: 2026-04-25T04:20:38.386Z
+generated_at: 2026-04-27T13:16:12.212Z
 datasets:
-  - Data Benchmark/benchmark result.json
-  - Data Benchmark/benchmark result 2.json
+  - Data Benchmark/benchmark_full_20260426_201137.json
+  - Data Benchmark/benchmark_full_20260427_200941.json
 comparison_file: Data Benchmark/thesis_db_embedding_comparison.json
 primary_metrics:
   - mean_retrieval_ms
@@ -24,93 +24,88 @@ This file is the canonical benchmark digest for AI-assisted paper writing and ed
 
 | Dataset | Embedding | Benchmark Date | Queries | Repetitions | Top-K | Threshold | Canonical File | Raw Source |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Dataset 1 | qwen3-embedding:8b | 2026-04-23T04:06:32.656114 | 120 | 5 | 5 | 0.75 | Data Benchmark/benchmark result.json | benchmark_full_20260423_040633.json |
-| Dataset 2 | mxbai-embed-large | 2026-04-22T16:00:43.032992 | 120 | 5 | 5 | 0.75 | Data Benchmark/benchmark result 2.json | benchmark_full_20260422_160043.json |
+| Dataset 1 | qwen3-embedding:8b | 2026-04-26T20:11:37.169821 | 100 | 5 | 5 | N/A | Data Benchmark/benchmark_full_20260426_201137.json | benchmark_full_20260426_201137.json |
+| Dataset 2 | mxbai-embed-large | 2026-04-27T20:09:40.985535 | 100 | 5 | 5 | N/A | Data Benchmark/benchmark_full_20260427_200941.json | benchmark_full_20260427_200941.json |
 
 ## Paper-Ready Findings
 
-- Across all three databases, `mxbai-embed-large` is between 7.8x and 76.7x faster than `qwen3-embedding:8b` on mean retrieval latency.
+- Across all three databases, `mxbai-embed-large` is between 7.1x and 85.1x faster than `qwen3-embedding:8b` on mean retrieval latency.
 - Across all three databases, `qwen3-embedding:8b` has higher answerable-query retrieval quality than `mxbai-embed-large`, improving F1 by 21.78 to 21.78 percentage points and Hit@K by 25.00 to 25.00 percentage points.
-- Dataset 1 (qwen3-embedding:8b) has its fastest retrieval on ChromaDB at 2024.71 ms mean retrieval time.
-- Dataset 1 (qwen3-embedding:8b) has its lowest median total latency on PostgreSQL at 7312.58 ms.
-- Dataset 2 (mxbai-embed-large) has its fastest retrieval on ChromaDB at 26.41 ms mean retrieval time.
-- Dataset 2 (mxbai-embed-large) has its lowest median total latency on ChromaDB at 3984.45 ms.
+- Dataset 1 (qwen3-embedding:8b) has its fastest retrieval on ChromaDB at 2017.26 ms mean retrieval time.
+- Dataset 1 (qwen3-embedding:8b) has its lowest median total latency on PostgreSQL at 7428.89 ms.
+- Dataset 2 (mxbai-embed-large) has its fastest retrieval on ChromaDB at 23.71 ms mean retrieval time.
+- Dataset 2 (mxbai-embed-large) has its lowest median total latency on ChromaDB at 3180.87 ms.
 
 ## Cross-Embedding Comparison
 
 | Embedding | Database | Retrieval Median (ms) | Retrieval Mean (ms) | Total Median (ms) | Total Mean (ms) | Precision | Hit@K | F1 | Retrieval Winner | Source File |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mxbai-embed-large | ChromaDB | 24.21 | 26.41 | 3984.45 | 4479.85 | 32.33% | 68.33% | 41.42% | Yes | benchmark_full_20260422_160043.json |
-| mxbai-embed-large | PostgreSQL | 77.70 | 78.74 | 4027.63 | 5483.39 | 32.33% | 68.33% | 41.42% | No | benchmark_full_20260422_160043.json |
-| mxbai-embed-large | Pinecone | 282.75 | 300.81 | 4375.13 | 5096.38 | 32.33% | 68.33% | 41.42% | No | benchmark_full_20260422_160043.json |
-| qwen3-embedding:8b | ChromaDB | 2015.01 | 2024.71 | 7317.50 | 9753.06 | 52.67% | 93.33% | 63.20% | Yes | benchmark_full_20260423_040633.json |
-| qwen3-embedding:8b | PostgreSQL | 2036.55 | 2046.69 | 7312.58 | 8833.51 | 52.67% | 93.33% | 63.20% | No | benchmark_full_20260423_040633.json |
-| qwen3-embedding:8b | Pinecone | 2284.02 | 2337.67 | 7617.72 | 9581.10 | 52.67% | 93.33% | 63.20% | No | benchmark_full_20260423_040633.json |
+| mxbai-embed-large | ChromaDB | 22.83 | 23.71 | 3180.87 | 3690.40 | 32.33% | 68.33% | 41.42% | Yes | benchmark_full_20260427_200941.json |
+| mxbai-embed-large | PostgreSQL | 75.41 | 76.46 | 3247.85 | 3722.08 | 32.33% | 68.33% | 41.42% | No | benchmark_full_20260427_200941.json |
+| mxbai-embed-large | Pinecone | 288.03 | 339.17 | 3577.19 | 4142.32 | 32.33% | 68.33% | 41.42% | No | benchmark_full_20260427_200941.json |
+| qwen3-embedding:8b | ChromaDB | 2010.02 | 2017.26 | 7495.94 | 10134.85 | 52.67% | 93.33% | 63.20% | Yes | benchmark_full_20260426_201137.json |
+| qwen3-embedding:8b | PostgreSQL | 2030.78 | 2047.04 | 7428.89 | 9244.96 | 52.67% | 93.33% | 63.20% | No | benchmark_full_20260426_201137.json |
+| qwen3-embedding:8b | Pinecone | 2283.56 | 2408.71 | 7892.04 | 10355.21 | 52.67% | 93.33% | 63.20% | No | benchmark_full_20260426_201137.json |
 
 ### mxbai-embed-large
 
 | Database | Retrieval Mean (ms) | Total Median (ms) | Precision | Hit@K | F1 |
 | --- | --- | --- | --- | --- | --- |
-| ChromaDB | 26.41 | 3984.45 | 32.33% | 68.33% | 41.42% |
-| PostgreSQL | 78.74 | 4027.63 | 32.33% | 68.33% | 41.42% |
-| Pinecone | 300.81 | 4375.13 | 32.33% | 68.33% | 41.42% |
+| ChromaDB | 23.71 | 3180.87 | 32.33% | 68.33% | 41.42% |
+| PostgreSQL | 76.46 | 3247.85 | 32.33% | 68.33% | 41.42% |
+| Pinecone | 339.17 | 3577.19 | 32.33% | 68.33% | 41.42% |
 
 ### qwen3-embedding:8b
 
 | Database | Retrieval Mean (ms) | Total Median (ms) | Precision | Hit@K | F1 |
 | --- | --- | --- | --- | --- | --- |
-| ChromaDB | 2024.71 | 7317.50 | 52.67% | 93.33% | 63.20% |
-| PostgreSQL | 2046.69 | 7312.58 | 52.67% | 93.33% | 63.20% |
-| Pinecone | 2337.67 | 7617.72 | 52.67% | 93.33% | 63.20% |
+| ChromaDB | 2017.26 | 7495.94 | 52.67% | 93.33% | 63.20% |
+| PostgreSQL | 2047.04 | 7428.89 | 52.67% | 93.33% | 63.20% |
+| Pinecone | 2408.71 | 7892.04 | 52.67% | 93.33% | 63.20% |
 
 ## Dataset 1 - qwen3-embedding:8b
 
-Source of record: `Data Benchmark/benchmark result.json`
+Source of record: `Data Benchmark/benchmark_full_20260426_201137.json`
 
-Matching raw source files: `benchmark_full_20260423_040633.json`
+Matching raw source files: `benchmark_full_20260426_201137.json`
 
 ### Metadata
 
 | Field | Value |
 | --- | --- |
-| benchmark_date | 2026-04-23T04:06:32.656114 |
+| benchmark_date | 2026-04-26T20:11:37.169821 |
 | llm_model | qwen3:8b |
 | embedding_model | qwen3-embedding:8b |
-| num_queries | 120 |
+| num_queries | 100 |
 | repetitions | 5 |
 | top_k | 5 |
-| score_threshold | 0.75 |
+| score_threshold | N/A |
 | scalability_doc_counts | 5, 10, 15, 20 |
 | scalability_query_count | 15 |
 | databases_tested | Pinecone, PostgreSQL, ChromaDB |
 
 ### Paper-Ready Findings
 
-- ChromaDB is the fastest retrieval backend (2024.71 ms mean retrieval), while Pinecone is the slowest (2337.67 ms).
-- PostgreSQL has the lowest median end-to-end latency at 7312.58 ms.
-- PostgreSQL has the highest p95 total latency at 13154.36 ms, which is the most conservative tail-latency figure in this dataset.
+- ChromaDB is the fastest retrieval backend (2017.26 ms mean retrieval), while Pinecone is the slowest (2408.71 ms).
+- PostgreSQL has the lowest median end-to-end latency at 7428.89 ms.
+- PostgreSQL has the highest p95 total latency at 17194.87 ms, which is the most conservative tail-latency figure in this dataset.
 - Answerable-query retrieval quality is effectively tied across all three databases, with max F1 = 63.20%.
-- PostgreSQL has the highest no-answer abstention accuracy at 100.00%.
-- Answerable queries are slower than no-answer queries on average (11138.65 ms vs 7639.79 ms mean total latency across databases).
 
 ### Speed Summary
 
 | Database | Retrieval Mean (ms) | Retrieval P95 (ms) | Total Mean (ms) | Total Median (ms) | Total P95 (ms) | Min Total (ms) | Max Total (ms) | LLM Mean (ms) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Pinecone | 2337.67 | 2542.49 | 9581.10 | 7617.72 | 12459.52 | 5954.84 | 464581.12 | 7243.43 |
-| PostgreSQL | 2046.69 | 2102.45 | 8833.51 | 7312.58 | 13154.36 | 5679.56 | 410402.32 | 6786.82 |
-| ChromaDB | 2024.71 | 2057.20 | 9753.06 | 7317.50 | 12461.15 | 5484.76 | 469382.01 | 7728.35 |
+| Pinecone | 2408.71 | 3036.88 | 10355.21 | 7892.04 | 16916.00 | 5814.92 | 339711.12 | 7946.50 |
+| PostgreSQL | 2047.04 | 2271.61 | 9244.96 | 7428.89 | 17194.87 | 5485.70 | 204454.37 | 7197.92 |
+| ChromaDB | 2017.26 | 2246.65 | 10134.85 | 7495.94 | 16302.22 | 5555.89 | 433814.82 | 8117.60 |
 
 ### Query-Type Breakdown
 
 | Database | Query Type | Queries Tested | Mean Retrieval (ms) | Mean Total (ms) |
 | --- | --- | --- | --- | --- |
-| Pinecone | answerable | 300 | 2336.02 | 11310.35 |
-| Pinecone | no_answer | 300 | 2339.32 | 7851.84 |
-| PostgreSQL | answerable | 300 | 2044.37 | 10096.98 |
-| PostgreSQL | no_answer | 300 | 2049.00 | 7570.04 |
-| ChromaDB | answerable | 300 | 2028.39 | 12008.63 |
-| ChromaDB | no_answer | 300 | 2021.02 | 7497.48 |
+| Pinecone | answerable | 500 | 2408.71 | 10355.21 |
+| PostgreSQL | answerable | 500 | 2047.04 | 9244.96 |
+| ChromaDB | answerable | 500 | 2017.26 | 10134.85 |
 
 ### Answerable Retrieval Quality
 
@@ -124,124 +119,117 @@ Matching raw source files: `benchmark_full_20260423_040633.json`
 
 | Database | Abstention Accuracy | False Positive Rate | Average Docs Returned | Per-Query Rows |
 | --- | --- | --- | --- | --- |
-| Pinecone | 20.00% | 80.00% | 3.6167 | 60 |
-| PostgreSQL | 100.00% | 0.00% | 0.0000 | 60 |
-| ChromaDB | 100.00% | 0.00% | 0.0000 | 60 |
+| N/A | N/A | N/A | N/A | N/A |
 
 ### Per-Repetition Stability
 
 | Database | Repetition | Retrieval Mean (ms) | Retrieval P95 (ms) | Total Mean (ms) | Total P95 (ms) |
 | --- | --- | --- | --- | --- | --- |
-| Pinecone | 1 | 2344.13 | 2551.82 | 9668.40 | 14817.04 |
-| Pinecone | 2 | 2312.59 | 2523.89 | 8566.82 | 11833.25 |
-| Pinecone | 3 | 2363.12 | 2628.50 | 9196.38 | 10926.48 |
-| Pinecone | 4 | 2320.35 | 2512.26 | 8411.90 | 12459.52 |
-| Pinecone | 5 | 2348.15 | 2538.93 | 12061.99 | 11897.30 |
-| PostgreSQL | 1 | 2049.28 | 2098.10 | 8176.23 | 11587.26 |
-| PostgreSQL | 2 | 2040.89 | 2068.04 | 8220.12 | 15569.44 |
-| PostgreSQL | 3 | 2060.43 | 2290.70 | 8098.81 | 12187.17 |
-| PostgreSQL | 4 | 2035.63 | 2066.23 | 8117.23 | 12159.02 |
-| PostgreSQL | 5 | 2047.20 | 2243.11 | 11555.16 | 12932.42 |
-| ChromaDB | 1 | 2041.58 | 2254.90 | 13546.51 | 12149.13 |
-| ChromaDB | 2 | 2017.13 | 2040.67 | 8102.18 | 12574.53 |
-| ChromaDB | 3 | 2024.31 | 2078.56 | 8048.36 | 11896.08 |
-| ChromaDB | 4 | 2019.96 | 2049.00 | 8238.45 | 12470.41 |
-| ChromaDB | 5 | 2020.55 | 2046.98 | 10829.78 | 12227.93 |
+| Pinecone | 1 | 2390.53 | 2755.32 | 9960.34 | 15902.53 |
+| Pinecone | 2 | 2398.69 | 2808.60 | 11883.12 | 14290.35 |
+| Pinecone | 3 | 2438.55 | 4027.18 | 11449.43 | 16915.62 |
+| Pinecone | 4 | 2422.89 | 2918.40 | 9521.58 | 19587.71 |
+| Pinecone | 5 | 2392.88 | 2684.13 | 8961.56 | 15656.66 |
+| PostgreSQL | 1 | 2053.73 | 2274.00 | 8662.79 | 15321.06 |
+| PostgreSQL | 2 | 2044.07 | 2084.22 | 8664.37 | 17209.54 |
+| PostgreSQL | 3 | 2035.55 | 2055.31 | 11536.80 | 17760.93 |
+| PostgreSQL | 4 | 2052.70 | 2297.58 | 8729.36 | 16889.08 |
+| PostgreSQL | 5 | 2049.18 | 2270.73 | 8631.49 | 16742.66 |
+| ChromaDB | 1 | 2026.08 | 2253.30 | 8493.33 | 16485.63 |
+| ChromaDB | 2 | 2012.45 | 2037.88 | 8469.90 | 16008.52 |
+| ChromaDB | 3 | 2022.41 | 2246.33 | 15406.75 | 16441.73 |
+| ChromaDB | 4 | 2031.46 | 2241.28 | 8435.99 | 15779.56 |
+| ChromaDB | 5 | 1993.89 | 2260.88 | 9868.28 | 17871.76 |
 
 ### Top-K Sensitivity Summary
 
 | Database | top_k | Runs | Mean Avg Time (ms) | Mean Median Time (ms) | Mean P95 Time (ms) | Std Avg Time (ms) | Min Avg Time (ms) | Max Avg Time (ms) | Query Count |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Pinecone | 1 | 5 | 391.49 | 391.49 | 391.49 | 88.69 | 343.32 | 568.67 | 10 |
-| Pinecone | 2 | 5 | 347.53 | 347.53 | 347.53 | 9.08 | 340.29 | 365.14 | 10 |
-| Pinecone | 3 | 5 | 352.23 | 352.23 | 352.23 | 12.62 | 342.72 | 375.31 | 10 |
-| Pinecone | 5 | 5 | 348.61 | 348.61 | 348.61 | 4.14 | 345.52 | 356.35 | 10 |
-| Pinecone | 8 | 5 | 348.21 | 348.21 | 348.21 | 3.34 | 343.97 | 353.93 | 10 |
-| Pinecone | 10 | 5 | 353.79 | 353.79 | 353.79 | 15.53 | 345.00 | 384.82 | 10 |
-| Pinecone | 15 | 5 | 360.66 | 360.66 | 360.66 | 7.37 | 350.83 | 373.35 | 10 |
-| Pinecone | 20 | 5 | 357.76 | 357.76 | 357.76 | 12.34 | 349.75 | 382.28 | 10 |
-| PostgreSQL | 1 | 5 | 90.64 | 90.64 | 90.64 | 2.16 | 87.20 | 94.03 | 10 |
-| PostgreSQL | 2 | 5 | 91.77 | 91.77 | 91.77 | 0.70 | 90.81 | 92.85 | 10 |
-| PostgreSQL | 3 | 5 | 93.13 | 93.13 | 93.13 | 2.08 | 91.57 | 97.24 | 10 |
-| PostgreSQL | 5 | 5 | 93.46 | 93.46 | 93.46 | 0.26 | 93.16 | 93.85 | 10 |
-| PostgreSQL | 8 | 5 | 95.88 | 95.88 | 95.88 | 0.65 | 95.31 | 96.89 | 10 |
-| PostgreSQL | 10 | 5 | 97.68 | 97.68 | 97.68 | 0.99 | 95.98 | 98.69 | 10 |
-| PostgreSQL | 15 | 5 | 101.65 | 101.65 | 101.65 | 1.62 | 100.01 | 104.19 | 10 |
-| PostgreSQL | 20 | 5 | 103.90 | 103.90 | 103.90 | 0.54 | 103.01 | 104.57 | 10 |
-| ChromaDB | 1 | 5 | 71.16 | 71.16 | 71.16 | 0.39 | 70.79 | 71.92 | 10 |
-| ChromaDB | 2 | 5 | 71.10 | 71.10 | 71.10 | 0.27 | 70.64 | 71.37 | 10 |
-| ChromaDB | 3 | 5 | 71.41 | 71.41 | 71.41 | 0.46 | 70.87 | 71.98 | 10 |
-| ChromaDB | 5 | 5 | 71.36 | 71.36 | 71.36 | 0.33 | 70.88 | 71.92 | 10 |
-| ChromaDB | 8 | 5 | 71.65 | 71.65 | 71.65 | 0.58 | 71.04 | 72.75 | 10 |
-| ChromaDB | 10 | 5 | 71.38 | 71.38 | 71.38 | 0.41 | 71.00 | 72.13 | 10 |
-| ChromaDB | 15 | 5 | 72.03 | 72.03 | 72.03 | 0.59 | 71.32 | 72.96 | 10 |
-| ChromaDB | 20 | 5 | 72.44 | 72.44 | 72.44 | 0.31 | 71.98 | 72.85 | 10 |
+| Pinecone | 1 | 5 | 400.17 | 400.17 | 400.17 | 89.07 | 336.88 | 566.04 | 10 |
+| Pinecone | 2 | 5 | 395.71 | 395.71 | 395.71 | 53.07 | 339.99 | 481.49 | 10 |
+| Pinecone | 3 | 5 | 369.99 | 369.99 | 369.99 | 36.35 | 337.36 | 440.94 | 10 |
+| Pinecone | 5 | 5 | 354.12 | 354.12 | 354.12 | 18.66 | 336.83 | 388.31 | 10 |
+| Pinecone | 8 | 5 | 405.58 | 405.58 | 405.58 | 62.56 | 354.17 | 516.28 | 10 |
+| Pinecone | 10 | 5 | 372.94 | 372.94 | 372.94 | 25.76 | 341.41 | 397.24 | 10 |
+| Pinecone | 15 | 5 | 423.60 | 423.60 | 423.60 | 47.07 | 343.34 | 482.81 | 10 |
+| Pinecone | 20 | 5 | 373.82 | 373.82 | 373.82 | 28.48 | 343.18 | 425.46 | 10 |
+| PostgreSQL | 1 | 5 | 89.27 | 89.27 | 89.27 | 0.70 | 88.01 | 89.98 | 10 |
+| PostgreSQL | 2 | 5 | 90.02 | 90.02 | 90.02 | 0.57 | 89.27 | 90.81 | 10 |
+| PostgreSQL | 3 | 5 | 91.15 | 91.15 | 91.15 | 0.36 | 90.63 | 91.54 | 10 |
+| PostgreSQL | 5 | 5 | 91.50 | 91.50 | 91.50 | 0.77 | 90.54 | 92.54 | 10 |
+| PostgreSQL | 8 | 5 | 95.51 | 95.51 | 95.51 | 1.58 | 93.77 | 98.42 | 10 |
+| PostgreSQL | 10 | 5 | 95.65 | 95.65 | 95.65 | 0.15 | 95.53 | 95.95 | 10 |
+| PostgreSQL | 15 | 5 | 99.90 | 99.90 | 99.90 | 0.98 | 98.77 | 101.74 | 10 |
+| PostgreSQL | 20 | 5 | 103.15 | 103.15 | 103.15 | 1.29 | 102.20 | 105.66 | 10 |
+| ChromaDB | 1 | 5 | 69.96 | 69.96 | 69.96 | 0.31 | 69.57 | 70.47 | 10 |
+| ChromaDB | 2 | 5 | 70.16 | 70.16 | 70.16 | 0.52 | 69.42 | 70.71 | 10 |
+| ChromaDB | 3 | 5 | 70.12 | 70.12 | 70.12 | 0.48 | 69.73 | 71.03 | 10 |
+| ChromaDB | 5 | 5 | 70.66 | 70.66 | 70.66 | 0.77 | 69.34 | 71.73 | 10 |
+| ChromaDB | 8 | 5 | 70.30 | 70.30 | 70.30 | 0.21 | 70.06 | 70.66 | 10 |
+| ChromaDB | 10 | 5 | 70.46 | 70.46 | 70.46 | 0.36 | 69.93 | 70.97 | 10 |
+| ChromaDB | 15 | 5 | 71.09 | 71.09 | 71.09 | 0.35 | 70.47 | 71.47 | 10 |
+| ChromaDB | 20 | 5 | 70.92 | 70.92 | 70.92 | 0.82 | 70.00 | 72.43 | 10 |
 
 ### Corpus-Size Scalability Summary
 
 | Database | Doc Count | Runs | Mean Avg Time (ms) | Mean Median Time (ms) | Mean P95 Time (ms) | Std Avg Time (ms) | Min Avg Time (ms) | Max Avg Time (ms) | Query Count |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Pinecone | 5 | 5 | 366.24 | 340.85 | 461.08 | 50.30 | 338.82 | 466.79 | 15 |
-| Pinecone | 10 | 5 | 360.25 | 341.39 | 434.21 | 40.85 | 339.62 | 441.95 | 15 |
-| Pinecone | 15 | 5 | 446.43 | 343.16 | 845.79 | 142.99 | 343.42 | 721.80 | 15 |
-| Pinecone | 20 | 5 | 362.93 | 342.90 | 442.28 | 42.62 | 339.68 | 448.11 | 15 |
-| PostgreSQL | 5 | 5 | 79.03 | 75.74 | 91.69 | 5.91 | 75.72 | 90.85 | 15 |
-| PostgreSQL | 10 | 5 | 78.47 | 74.93 | 92.59 | 4.47 | 76.01 | 87.42 | 15 |
-| PostgreSQL | 15 | 5 | 79.14 | 75.95 | 93.03 | 4.90 | 76.04 | 88.86 | 15 |
-| PostgreSQL | 20 | 5 | 79.51 | 74.91 | 91.65 | 6.60 | 75.27 | 92.68 | 15 |
-| ChromaDB | 5 | 5 | 70.31 | 70.24 | 73.75 | 0.42 | 69.87 | 70.92 | 15 |
-| ChromaDB | 10 | 5 | 74.31 | 70.63 | 90.44 | 7.82 | 69.71 | 89.94 | 15 |
-| ChromaDB | 15 | 5 | 75.56 | 70.29 | 97.35 | 9.10 | 70.63 | 93.75 | 15 |
-| ChromaDB | 20 | 5 | 72.57 | 70.02 | 85.43 | 1.92 | 71.21 | 76.34 | 15 |
+| Pinecone | 5 | 5 | 413.37 | 340.64 | 674.69 | 37.74 | 365.23 | 474.23 | 15 |
+| Pinecone | 10 | 5 | 386.58 | 345.66 | 546.78 | 46.05 | 343.95 | 473.40 | 15 |
+| Pinecone | 15 | 5 | 393.77 | 336.75 | 646.10 | 43.75 | 345.19 | 470.42 | 15 |
+| Pinecone | 20 | 5 | 381.30 | 340.66 | 569.07 | 61.87 | 339.55 | 504.30 | 15 |
+| PostgreSQL | 5 | 5 | 77.88 | 74.36 | 93.11 | 5.00 | 74.23 | 87.60 | 15 |
+| PostgreSQL | 10 | 5 | 76.42 | 73.67 | 90.05 | 3.79 | 73.77 | 83.95 | 15 |
+| PostgreSQL | 15 | 5 | 77.42 | 73.82 | 93.48 | 5.48 | 74.40 | 88.38 | 15 |
+| PostgreSQL | 20 | 5 | 77.57 | 74.01 | 89.91 | 5.35 | 74.52 | 88.26 | 15 |
+| ChromaDB | 5 | 5 | 69.50 | 68.93 | 73.95 | 1.41 | 68.50 | 72.27 | 15 |
+| ChromaDB | 10 | 5 | 73.66 | 69.73 | 90.97 | 8.50 | 69.03 | 90.65 | 15 |
+| ChromaDB | 15 | 5 | 73.92 | 69.26 | 93.48 | 9.62 | 69.04 | 93.16 | 15 |
+| ChromaDB | 20 | 5 | 72.49 | 69.24 | 86.40 | 6.48 | 68.66 | 85.42 | 15 |
 
 ## Dataset 2 - mxbai-embed-large
 
-Source of record: `Data Benchmark/benchmark result 2.json`
+Source of record: `Data Benchmark/benchmark_full_20260427_200941.json`
 
-Matching raw source files: `benchmark_full_20260422_160043.json`
+Matching raw source files: `benchmark_full_20260427_200941.json`
 
 ### Metadata
 
 | Field | Value |
 | --- | --- |
-| benchmark_date | 2026-04-22T16:00:43.032992 |
+| benchmark_date | 2026-04-27T20:09:40.985535 |
 | llm_model | qwen3:8b |
 | embedding_model | mxbai-embed-large |
-| num_queries | 120 |
+| num_queries | 100 |
 | repetitions | 5 |
 | top_k | 5 |
-| score_threshold | 0.75 |
+| score_threshold | N/A |
 | scalability_doc_counts | 5, 10, 15, 20 |
 | scalability_query_count | 15 |
 | databases_tested | Pinecone, PostgreSQL, ChromaDB |
 
 ### Paper-Ready Findings
 
-- ChromaDB is the fastest retrieval backend (26.41 ms mean retrieval), while Pinecone is the slowest (300.81 ms).
-- ChromaDB has the lowest median end-to-end latency at 3984.45 ms.
-- Pinecone has the highest p95 total latency at 8311.57 ms, which is the most conservative tail-latency figure in this dataset.
+- ChromaDB is the fastest retrieval backend (23.71 ms mean retrieval), while Pinecone is the slowest (339.17 ms).
+- ChromaDB has the lowest median end-to-end latency at 3180.87 ms.
+- Pinecone has the highest p95 total latency at 7275.97 ms, which is the most conservative tail-latency figure in this dataset.
 - Answerable-query retrieval quality is effectively tied across all three databases, with max F1 = 41.42%.
-- ChromaDB has the highest no-answer abstention accuracy at 86.67%.
-- Answerable queries are slower than no-answer queries on average (5743.44 ms vs 4296.31 ms mean total latency across databases).
 
 ### Speed Summary
 
 | Database | Retrieval Mean (ms) | Retrieval P95 (ms) | Total Mean (ms) | Total Median (ms) | Total P95 (ms) | Min Total (ms) | Max Total (ms) | LLM Mean (ms) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Pinecone | 300.81 | 302.42 | 5096.38 | 4375.13 | 8311.57 | 2162.48 | 173358.85 | 4795.57 |
-| PostgreSQL | 78.74 | 87.84 | 5483.39 | 4027.63 | 7940.45 | 1803.83 | 392090.70 | 5404.65 |
-| ChromaDB | 26.41 | 34.06 | 4479.85 | 3984.45 | 8117.57 | 1751.01 | 17044.13 | 4453.43 |
+| Pinecone | 339.17 | 663.03 | 4142.32 | 3577.19 | 7275.97 | 1770.87 | 20004.31 | 3803.15 |
+| PostgreSQL | 76.46 | 84.48 | 3722.08 | 3247.85 | 6730.74 | 1478.02 | 9908.51 | 3645.63 |
+| ChromaDB | 23.71 | 31.61 | 3690.40 | 3180.87 | 6629.15 | 1363.45 | 13192.99 | 3666.69 |
 
 ### Query-Type Breakdown
 
 | Database | Query Type | Queries Tested | Mean Retrieval (ms) | Mean Total (ms) |
 | --- | --- | --- | --- | --- |
-| Pinecone | answerable | 300 | 287.94 | 5667.64 |
-| Pinecone | no_answer | 300 | 313.68 | 4525.12 |
-| PostgreSQL | answerable | 300 | 78.65 | 6757.22 |
-| PostgreSQL | no_answer | 300 | 78.82 | 4209.55 |
-| ChromaDB | answerable | 300 | 27.54 | 4805.45 |
-| ChromaDB | no_answer | 300 | 25.29 | 4154.25 |
+| Pinecone | answerable | 500 | 339.17 | 4142.32 |
+| PostgreSQL | answerable | 500 | 76.46 | 3722.08 |
+| ChromaDB | answerable | 500 | 23.71 | 3690.40 |
 
 ### Answerable Retrieval Quality
 
@@ -255,75 +243,73 @@ Matching raw source files: `benchmark_full_20260422_160043.json`
 
 | Database | Abstention Accuracy | False Positive Rate | Average Docs Returned | Per-Query Rows |
 | --- | --- | --- | --- | --- |
-| Pinecone | 0.00% | 100.00% | 5.0000 | 60 |
-| PostgreSQL | 28.33% | 71.67% | 3.2000 | 60 |
-| ChromaDB | 86.67% | 13.33% | 0.3500 | 60 |
+| N/A | N/A | N/A | N/A | N/A |
 
 ### Per-Repetition Stability
 
 | Database | Repetition | Retrieval Mean (ms) | Retrieval P95 (ms) | Total Mean (ms) | Total P95 (ms) |
 | --- | --- | --- | --- | --- | --- |
-| Pinecone | 1 | 301.90 | 293.18 | 6040.61 | 7265.24 |
-| Pinecone | 2 | 301.14 | 331.78 | 4787.58 | 7962.67 |
-| Pinecone | 3 | 285.87 | 292.76 | 4996.06 | 8966.54 |
-| Pinecone | 4 | 309.12 | 300.83 | 4746.89 | 8496.00 |
-| Pinecone | 5 | 306.01 | 300.30 | 4910.77 | 8681.48 |
-| PostgreSQL | 1 | 77.98 | 87.92 | 4415.46 | 7678.14 |
-| PostgreSQL | 2 | 78.14 | 86.61 | 7877.54 | 9231.53 |
-| PostgreSQL | 3 | 79.23 | 89.68 | 4484.91 | 7372.38 |
-| PostgreSQL | 4 | 78.91 | 86.58 | 4731.81 | 7795.48 |
-| PostgreSQL | 5 | 79.42 | 88.61 | 5907.21 | 8439.84 |
-| ChromaDB | 1 | 24.91 | 32.36 | 4415.85 | 8068.31 |
-| ChromaDB | 2 | 30.57 | 35.17 | 4574.28 | 8790.69 |
-| ChromaDB | 3 | 24.96 | 31.88 | 4368.26 | 7017.32 |
-| ChromaDB | 4 | 25.21 | 33.73 | 4514.13 | 8411.99 |
-| ChromaDB | 5 | 26.42 | 34.96 | 4526.71 | 8118.19 |
+| Pinecone | 1 | 338.97 | 679.34 | 4083.63 | 6822.19 |
+| Pinecone | 2 | 344.10 | 517.11 | 4206.31 | 7376.49 |
+| Pinecone | 3 | 317.38 | 453.95 | 4243.41 | 7278.83 |
+| Pinecone | 4 | 383.75 | 897.64 | 4169.34 | 7332.57 |
+| Pinecone | 5 | 311.64 | 336.41 | 4008.90 | 6940.44 |
+| PostgreSQL | 1 | 77.02 | 85.84 | 3671.38 | 6021.27 |
+| PostgreSQL | 2 | 75.89 | 81.55 | 3647.44 | 6666.16 |
+| PostgreSQL | 3 | 77.04 | 84.32 | 3763.07 | 7464.15 |
+| PostgreSQL | 4 | 77.02 | 85.09 | 3684.67 | 6605.25 |
+| PostgreSQL | 5 | 75.31 | 80.82 | 3843.87 | 8118.31 |
+| ChromaDB | 1 | 24.07 | 32.85 | 3841.89 | 7255.44 |
+| ChromaDB | 2 | 22.83 | 29.39 | 3670.44 | 6713.87 |
+| ChromaDB | 3 | 23.85 | 31.63 | 3668.29 | 6610.59 |
+| ChromaDB | 4 | 24.56 | 31.69 | 3692.46 | 6476.76 |
+| ChromaDB | 5 | 23.24 | 31.35 | 3578.92 | 6451.82 |
 
 ### Top-K Sensitivity Summary
 
 | Database | top_k | Runs | Mean Avg Time (ms) | Mean Median Time (ms) | Mean P95 Time (ms) | Std Avg Time (ms) | Min Avg Time (ms) | Max Avg Time (ms) | Query Count |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Pinecone | 1 | 5 | 310.65 | 310.65 | 310.65 | 57.55 | 281.09 | 425.75 | 10 |
-| Pinecone | 2 | 5 | 284.43 | 284.43 | 284.43 | 1.36 | 282.03 | 285.78 | 10 |
-| Pinecone | 3 | 5 | 285.22 | 285.22 | 285.22 | 1.40 | 283.36 | 287.22 | 10 |
-| Pinecone | 5 | 5 | 299.23 | 299.23 | 299.23 | 23.57 | 283.15 | 345.52 | 10 |
-| Pinecone | 8 | 5 | 288.86 | 288.86 | 288.86 | 3.34 | 285.04 | 294.13 | 10 |
-| Pinecone | 10 | 5 | 294.62 | 294.62 | 294.62 | 16.22 | 284.51 | 326.78 | 10 |
-| Pinecone | 15 | 5 | 300.49 | 300.49 | 300.49 | 25.24 | 286.62 | 350.95 | 10 |
-| Pinecone | 20 | 5 | 289.87 | 289.87 | 289.87 | 2.08 | 287.99 | 293.83 | 10 |
-| PostgreSQL | 1 | 5 | 77.27 | 77.27 | 77.27 | 1.27 | 75.37 | 79.00 | 10 |
-| PostgreSQL | 2 | 5 | 76.48 | 76.48 | 76.48 | 1.21 | 74.87 | 77.77 | 10 |
-| PostgreSQL | 3 | 5 | 77.53 | 77.53 | 77.53 | 2.13 | 75.58 | 81.49 | 10 |
-| PostgreSQL | 5 | 5 | 78.84 | 78.84 | 78.84 | 1.58 | 75.83 | 80.12 | 10 |
-| PostgreSQL | 8 | 5 | 78.28 | 78.28 | 78.28 | 2.06 | 76.56 | 82.11 | 10 |
-| PostgreSQL | 10 | 5 | 78.00 | 78.00 | 78.00 | 1.14 | 76.81 | 79.73 | 10 |
-| PostgreSQL | 15 | 5 | 79.25 | 79.25 | 79.25 | 1.75 | 76.81 | 80.93 | 10 |
-| PostgreSQL | 20 | 5 | 80.31 | 80.31 | 80.31 | 1.12 | 78.87 | 81.92 | 10 |
-| ChromaDB | 1 | 5 | 24.65 | 24.65 | 24.65 | 1.09 | 23.77 | 26.76 | 10 |
-| ChromaDB | 2 | 5 | 24.79 | 24.79 | 24.79 | 0.82 | 23.63 | 26.16 | 10 |
-| ChromaDB | 3 | 5 | 24.20 | 24.20 | 24.20 | 1.21 | 21.96 | 25.21 | 10 |
-| ChromaDB | 5 | 5 | 24.87 | 24.87 | 24.87 | 1.52 | 23.48 | 27.20 | 10 |
-| ChromaDB | 8 | 5 | 24.38 | 24.38 | 24.38 | 1.09 | 23.48 | 26.41 | 10 |
-| ChromaDB | 10 | 5 | 25.24 | 25.24 | 25.24 | 1.67 | 23.60 | 28.20 | 10 |
-| ChromaDB | 15 | 5 | 24.55 | 24.55 | 24.55 | 2.03 | 23.41 | 28.60 | 10 |
-| ChromaDB | 20 | 5 | 24.77 | 24.77 | 24.77 | 1.03 | 23.28 | 26.11 | 10 |
+| Pinecone | 1 | 5 | 296.69 | 296.69 | 296.69 | 15.44 | 281.88 | 325.76 | 10 |
+| Pinecone | 2 | 5 | 310.20 | 310.20 | 310.20 | 40.13 | 283.52 | 389.65 | 10 |
+| Pinecone | 3 | 5 | 287.91 | 287.91 | 287.91 | 6.16 | 281.49 | 296.08 | 10 |
+| Pinecone | 5 | 5 | 285.90 | 285.90 | 285.90 | 2.51 | 281.97 | 288.94 | 10 |
+| Pinecone | 8 | 5 | 285.03 | 285.03 | 285.03 | 1.64 | 283.55 | 287.44 | 10 |
+| Pinecone | 10 | 5 | 295.93 | 295.93 | 295.93 | 19.08 | 284.94 | 334.05 | 10 |
+| Pinecone | 15 | 5 | 290.14 | 290.14 | 290.14 | 1.68 | 287.93 | 291.92 | 10 |
+| Pinecone | 20 | 5 | 290.27 | 290.27 | 290.27 | 2.05 | 287.14 | 292.98 | 10 |
+| PostgreSQL | 1 | 5 | 77.69 | 77.69 | 77.69 | 2.47 | 73.43 | 81.15 | 10 |
+| PostgreSQL | 2 | 5 | 77.54 | 77.54 | 77.54 | 1.45 | 75.33 | 79.77 | 10 |
+| PostgreSQL | 3 | 5 | 77.85 | 77.85 | 77.85 | 2.29 | 74.54 | 80.21 | 10 |
+| PostgreSQL | 5 | 5 | 78.21 | 78.21 | 78.21 | 2.46 | 74.73 | 81.11 | 10 |
+| PostgreSQL | 8 | 5 | 79.84 | 79.84 | 79.84 | 2.43 | 75.69 | 83.27 | 10 |
+| PostgreSQL | 10 | 5 | 79.45 | 79.45 | 79.45 | 2.14 | 76.32 | 82.94 | 10 |
+| PostgreSQL | 15 | 5 | 81.36 | 81.36 | 81.36 | 1.10 | 79.87 | 82.91 | 10 |
+| PostgreSQL | 20 | 5 | 80.75 | 80.75 | 80.75 | 1.35 | 78.60 | 82.75 | 10 |
+| ChromaDB | 1 | 5 | 23.90 | 23.90 | 23.90 | 0.93 | 22.89 | 25.32 | 10 |
+| ChromaDB | 2 | 5 | 23.27 | 23.27 | 23.27 | 1.38 | 21.59 | 25.24 | 10 |
+| ChromaDB | 3 | 5 | 24.15 | 24.15 | 24.15 | 1.33 | 22.55 | 25.91 | 10 |
+| ChromaDB | 5 | 5 | 23.30 | 23.30 | 23.30 | 0.66 | 22.07 | 23.86 | 10 |
+| ChromaDB | 8 | 5 | 24.41 | 24.41 | 24.41 | 0.85 | 23.35 | 25.41 | 10 |
+| ChromaDB | 10 | 5 | 25.87 | 25.87 | 25.87 | 1.54 | 23.77 | 27.34 | 10 |
+| ChromaDB | 15 | 5 | 25.30 | 25.30 | 25.30 | 1.40 | 23.44 | 27.62 | 10 |
+| ChromaDB | 20 | 5 | 24.59 | 24.59 | 24.59 | 0.83 | 23.21 | 25.47 | 10 |
 
 ### Corpus-Size Scalability Summary
 
 | Database | Doc Count | Runs | Mean Avg Time (ms) | Mean Median Time (ms) | Mean P95 Time (ms) | Std Avg Time (ms) | Min Avg Time (ms) | Max Avg Time (ms) | Query Count |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Pinecone | 5 | 5 | 301.02 | 278.68 | 382.91 | 35.71 | 277.23 | 371.07 | 15 |
-| Pinecone | 10 | 5 | 292.57 | 279.07 | 347.10 | 26.81 | 277.36 | 346.12 | 15 |
-| Pinecone | 15 | 5 | 312.68 | 288.31 | 415.81 | 31.98 | 286.44 | 360.49 | 15 |
-| Pinecone | 20 | 5 | 298.60 | 281.56 | 362.22 | 29.86 | 280.52 | 358.13 | 15 |
-| PostgreSQL | 5 | 5 | 70.70 | 68.88 | 81.65 | 2.32 | 67.95 | 74.32 | 15 |
-| PostgreSQL | 10 | 5 | 70.43 | 68.96 | 79.63 | 1.18 | 69.03 | 71.92 | 15 |
-| PostgreSQL | 15 | 5 | 71.05 | 69.43 | 82.86 | 1.95 | 68.63 | 73.56 | 15 |
-| PostgreSQL | 20 | 5 | 69.21 | 68.42 | 75.79 | 1.31 | 67.18 | 70.85 | 15 |
-| ChromaDB | 5 | 5 | 23.64 | 22.83 | 29.65 | 1.33 | 21.68 | 25.60 | 15 |
-| ChromaDB | 10 | 5 | 24.87 | 22.54 | 35.53 | 2.74 | 22.38 | 30.19 | 15 |
-| ChromaDB | 15 | 5 | 24.61 | 23.24 | 33.16 | 2.04 | 22.01 | 27.45 | 15 |
-| ChromaDB | 20 | 5 | 24.01 | 22.74 | 31.30 | 1.46 | 22.23 | 26.37 | 15 |
+| Pinecone | 5 | 5 | 318.40 | 291.95 | 427.62 | 48.13 | 289.58 | 414.14 | 15 |
+| Pinecone | 10 | 5 | 297.45 | 283.04 | 355.41 | 26.08 | 284.03 | 349.61 | 15 |
+| Pinecone | 15 | 5 | 301.09 | 282.97 | 369.10 | 27.79 | 283.75 | 356.49 | 15 |
+| Pinecone | 20 | 5 | 303.97 | 289.02 | 363.95 | 29.75 | 286.05 | 363.30 | 15 |
+| PostgreSQL | 5 | 5 | 73.27 | 71.18 | 89.53 | 2.26 | 70.57 | 77.35 | 15 |
+| PostgreSQL | 10 | 5 | 71.75 | 70.13 | 84.53 | 1.85 | 68.09 | 73.09 | 15 |
+| PostgreSQL | 15 | 5 | 72.50 | 72.12 | 84.42 | 1.62 | 70.13 | 74.60 | 15 |
+| PostgreSQL | 20 | 5 | 72.79 | 69.72 | 88.12 | 1.55 | 70.38 | 74.59 | 15 |
+| ChromaDB | 5 | 5 | 23.76 | 22.52 | 29.64 | 1.58 | 21.46 | 25.18 | 15 |
+| ChromaDB | 10 | 5 | 23.72 | 21.74 | 33.27 | 2.95 | 21.26 | 29.50 | 15 |
+| ChromaDB | 15 | 5 | 24.76 | 22.43 | 35.37 | 1.66 | 22.58 | 27.47 | 15 |
+| ChromaDB | 20 | 5 | 24.26 | 22.15 | 33.33 | 1.70 | 21.37 | 26.49 | 15 |
 
 ## Interpretation Guardrails
 

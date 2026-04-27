@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "export:benchmark-md": "bun ./export-benchmark-results.mjs"
+    "export:benchmark-md": "bun ./export-benchmark-results.mjs",
+    "generate:benchmark-comparison": "bun ./generate-benchmark-comparison.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",

@@ -8,11 +8,11 @@ const outputPath = path.join(rootDir, "benchmark-results-for-paper.md");
 const datasetConfigs = [
   {
     label: "Dataset 1",
-    canonicalFile: "benchmark result.json",
+    canonicalFile: "benchmark_full_20260426_201137.json",
   },
   {
     label: "Dataset 2",
-    canonicalFile: "benchmark result 2.json",
+    canonicalFile: "benchmark_full_20260427_200941.json",
   },
 ];
 

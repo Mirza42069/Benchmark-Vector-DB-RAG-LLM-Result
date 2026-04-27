@@ -2,14 +2,14 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import benchmarkData1 from "../Data Benchmark/benchmark result.json";
-import benchmarkData2 from "../Data Benchmark/benchmark result 2.json";
+import benchmarkData1 from "../Data Benchmark/benchmark_full_20260426_201137.json";
+import benchmarkData2 from "../Data Benchmark/benchmark_full_20260427_200941.json";
 import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
 const benchmarkDatasets = [benchmarkData1, benchmarkData2] as unknown as BenchmarkDataShape[];
 const benchmarkSourceFallbacks = [
-  "benchmark_full_20260423_040633.json",
-  "benchmark_full_20260422_160043.json",
+  "benchmark_full_20260426_201137.json",
+  "benchmark_full_20260427_200941.json",
 ];
 
 function usePrefersReducedMotion() {
@@ -594,6 +594,10 @@ export function BenchmarkDashboard() {
   // Speed test data
   const speedSummary = speed_test.summary as SpeedTestSummary[];
   const speedRawResults = speed_test.raw_results as SpeedTestRawResult[];
+  const validSpeedRawResults = useMemo(
+    () => speedRawResults.filter((row) => Number.isFinite(row.retrieval_time) && row.retrieval_time >= 0),
+    [speedRawResults]
+  );
   const speedWinner = speed_test.winner;
   const speedSuccessCount = useMemo(
     () => speedRawResults.filter((row) => row.success).length,
@@ -1079,7 +1083,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-2.5 sm:px-2.5">
                 {(() => {
-                  const fastest = speedRawResults.reduce((min, curr) =>
+                  const fastest = validSpeedRawResults.reduce((min, curr) =>
                     curr.retrieval_time < min.retrieval_time ? curr : min
                   );
                   return (
@@ -1106,7 +1110,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-2.5 sm:px-2.5">
                 {(() => {
-                  const slowest = speedRawResults.reduce((max, curr) =>
+                  const slowest = validSpeedRawResults.reduce((max, curr) =>
                     curr.retrieval_time > max.retrieval_time ? curr : max
                   );
                   return (
@@ -1410,7 +1414,7 @@ export function BenchmarkDashboard() {
                   <AreaChart
                     data={(() => {
                       const queryMap = new Map<number, Record<string, number | string>>();
-                      speedRawResults.forEach((result) => {
+                      validSpeedRawResults.forEach((result) => {
                         if (!queryMap.has(result.query_num)) {
                           queryMap.set(result.query_num, { query_num: result.query_num, query: result.query });
                         }
