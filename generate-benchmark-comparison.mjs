@@ -6,8 +6,8 @@ const dataDir = path.join(rootDir, "Data Benchmark");
 const outputPath = path.join(dataDir, "thesis_db_embedding_comparison.json");
 
 const sourceFiles = [
-  "benchmark_full_20260426_201137.json",
-  "benchmark_full_20260427_200941.json",
+  "benchmark_full_20260506_171446.json",
+  "benchmark_full_20260506_114940.json",
 ];
 
 const rows = sourceFiles.flatMap((sourceFile) => {

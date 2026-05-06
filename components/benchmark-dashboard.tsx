@@ -2,14 +2,14 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import benchmarkData1 from "../Data Benchmark/benchmark_full_20260426_201137.json";
-import benchmarkData2 from "../Data Benchmark/benchmark_full_20260427_200941.json";
+import benchmarkData1 from "../Data Benchmark/benchmark_full_20260506_171446.json";
+import benchmarkData2 from "../Data Benchmark/benchmark_full_20260506_114940.json";
 import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
 const benchmarkDatasets = [benchmarkData1, benchmarkData2] as unknown as BenchmarkDataShape[];
 const benchmarkSourceFallbacks = [
-  "benchmark_full_20260426_201137.json",
-  "benchmark_full_20260427_200941.json",
+  "benchmark_full_20260506_171446.json",
+  "benchmark_full_20260506_114940.json",
 ];
 
 function usePrefersReducedMotion() {
