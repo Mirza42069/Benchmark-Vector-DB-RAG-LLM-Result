@@ -3,10 +3,20 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import benchmarkData1 from "../Data Benchmark/benchmark_final 5local db.json";
+import benchmarkDataPinecone from "../Data Benchmark/benchmark_final PN.json";
 
-const benchmarkDatasets = [benchmarkData1] as unknown as BenchmarkDataShape[];
+// Merge the local-DB benchmark with the Pinecone benchmark so all databases are
+// compared together. Both runs share identical config (models, queries, corpus,
+// top-k levels), so they combine cleanly into one dataset.
+const benchmarkDatasets = [
+  mergeBenchmarkDatasets(
+    benchmarkData1 as unknown as BenchmarkDataShape,
+    benchmarkDataPinecone as unknown as BenchmarkDataShape,
+  ),
+];
 const benchmarkSourceFallbacks = [
   "benchmark_final 5local db.json",
+  "benchmark_final PN.json",
 ];
 
 function usePrefersReducedMotion() {
@@ -251,6 +261,112 @@ interface ConcurrentUserScalabilityItem {
   max_gpu_util_percent?: number;
   avg_gpu_memory_used_mb?: number;
   max_gpu_memory_used_mb?: number;
+}
+
+// Shallow-merge per-database record sections (keyed by database name). Returns
+// undefined only when none of the sources define the section, so the component's
+// existing fallbacks (e.g. quality -> deepeval) keep working.
+function mergeRecord<T>(
+  ...sources: Array<Record<string, T> | undefined>
+): Record<string, T> | undefined {
+  const present = sources.filter(
+    (source): source is Record<string, T> => source != null
+  );
+  if (present.length === 0) return undefined;
+  return Object.assign({}, ...present);
+}
+
+// Recompute the speed winner across the combined summary: fastest = lowest mean
+// retrieval, and "speed_improvement_percent" = how much faster the winner is than
+// the slowest database (matches the formula used in the source data).
+function recomputeSpeedWinner(
+  summary: SpeedTestSummary[]
+): BenchmarkDataShape["speed_test"]["winner"] {
+  const valid = summary.filter((row) => Number.isFinite(row.mean_retrieval_ms));
+  if (valid.length === 0) {
+    return { database: "", avg_retrieval_ms: 0, speed_improvement_percent: 0 };
+  }
+  const fastest = valid.reduce((best, curr) =>
+    curr.mean_retrieval_ms < best.mean_retrieval_ms ? curr : best
+  );
+  const slowest = valid.reduce((worst, curr) =>
+    curr.mean_retrieval_ms > worst.mean_retrieval_ms ? curr : worst
+  );
+  const improvement =
+    slowest.mean_retrieval_ms > 0
+      ? ((slowest.mean_retrieval_ms - fastest.mean_retrieval_ms) / slowest.mean_retrieval_ms) * 100
+      : 0;
+  return {
+    database: fastest.database,
+    avg_retrieval_ms: Number(fastest.mean_retrieval_ms.toFixed(2)),
+    speed_improvement_percent: Number(improvement.toFixed(1)),
+  };
+}
+
+// Combine multiple benchmark runs (same config, different databases) into a single
+// dataset: concatenate the speed summary/raw rows, merge every per-database section,
+// union the databases list, and recompute the overall speed winner.
+function mergeBenchmarkDatasets(
+  base: BenchmarkDataShape,
+  ...additions: BenchmarkDataShape[]
+): BenchmarkDataShape {
+  return additions.reduce((acc, addition) => {
+    const mergedSummary = [...acc.speed_test.summary, ...addition.speed_test.summary];
+    return {
+      ...acc,
+      metadata: {
+        ...acc.metadata,
+        databases_tested: [
+          ...acc.metadata.databases_tested,
+          ...addition.metadata.databases_tested,
+        ],
+        source_files: [
+          ...(acc.metadata.source_files ?? []),
+          ...(addition.metadata.source_files ?? []),
+        ],
+      },
+      speed_test: {
+        ...acc.speed_test,
+        summary: mergedSummary,
+        raw_results: [...acc.speed_test.raw_results, ...addition.speed_test.raw_results],
+        failure_summary: mergeRecord(
+          acc.speed_test.failure_summary,
+          addition.speed_test.failure_summary
+        ),
+        per_repetition_summary: mergeRecord(
+          acc.speed_test.per_repetition_summary,
+          addition.speed_test.per_repetition_summary
+        ),
+        query_type_summary: mergeRecord(
+          acc.speed_test.query_type_summary,
+          addition.speed_test.query_type_summary
+        ),
+        winner: recomputeSpeedWinner(mergedSummary),
+      },
+      scalability_test: mergeRecord(acc.scalability_test, addition.scalability_test),
+      top_k_sensitivity_test: mergeRecord(
+        acc.top_k_sensitivity_test,
+        addition.top_k_sensitivity_test
+      ),
+      corpus_size_scalability_test: mergeRecord(
+        acc.corpus_size_scalability_test,
+        addition.corpus_size_scalability_test
+      ),
+      concurrent_user_scalability_test: mergeRecord(
+        acc.concurrent_user_scalability_test,
+        addition.concurrent_user_scalability_test
+      ),
+      retrieval_quality: mergeRecord(acc.retrieval_quality, addition.retrieval_quality),
+      answerable_retrieval_quality: mergeRecord(
+        acc.answerable_retrieval_quality,
+        addition.answerable_retrieval_quality
+      ),
+      deepeval_answer_quality: mergeRecord(
+        acc.deepeval_answer_quality,
+        addition.deepeval_answer_quality
+      ),
+    };
+  }, base);
 }
 
 function getQualityData(benchmarkData: {
@@ -685,7 +801,7 @@ export function BenchmarkDashboard() {
   const sourceFiles =
     metadata.source_files && metadata.source_files.length > 0
       ? metadata.source_files
-      : [benchmarkSourceFallbacks[0]];
+      : benchmarkSourceFallbacks;
   const perRepetitionSummary = speed_test.per_repetition_summary ?? {};
   const queryTypeSummary = speed_test.query_type_summary ?? {};
   const deepevalQuality = benchmarkData.deepeval_answer_quality ?? {};
@@ -1314,7 +1430,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col">
                 {/* Mobile: Horizontal scroll for database cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2 sm:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-3">
                 {databases.map((db) => {
                       const speed = speedSummary.find(s => s.database === db);
                       const topKScale = maxTopKByDatabase[db];
@@ -1323,90 +1439,84 @@ export function BenchmarkDashboard() {
                       const efficiencyScore = resourceEfficiencyScores[db];
                       const dbColor = cn("border-primary/20", getDatabaseCardClass(db, databases));
                     const textColor = getDatabasePalette(db, databases).text;
-                    const metricClassName = (isBest: boolean) => cn("font-mono text-base md:text-lg", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-foreground/70");
+                    const metricClassName = (isBest: boolean) => cn("font-mono text-sm sm:text-base whitespace-nowrap shrink-0", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-foreground/70");
 
                     return (
                       <div
                         key={db}
                         className={cn(
-                          "rounded-xl border p-4 md:p-5 relative overflow-hidden flex flex-col",
+                          "rounded-xl border p-3 relative overflow-hidden flex flex-col",
                           dbColor
                         )}
                       >
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className={cn("text-base md:text-lg font-bold flex items-center gap-2", textColor)}>
-                            <DatabaseIcon database={db} className="w-5 h-5 shrink-0" />
-                            {db}
+                        <div className="flex items-center justify-between gap-1.5 mb-3">
+                          <h3 className={cn("text-sm sm:text-base font-bold flex items-center gap-1.5 min-w-0", textColor)}>
+                            <DatabaseIcon database={db} className="w-4 h-4 shrink-0" />
+                            <span className="truncate">{db}</span>
                           </h3>
                           {db === speedWinner.database && (
-                            <Badge className="bg-primary/10 text-primary border-primary/30 flex items-center gap-1 text-sm h-6 px-2">
-                              <Trophy aria-hidden="true" className="w-3 h-3" />
+                            <Badge className="bg-primary/10 text-primary border-primary/30 flex items-center gap-0.5 text-[10px] h-5 px-1.5 shrink-0">
+                              <Trophy aria-hidden="true" className="w-2.5 h-2.5" />
                               Winner
                             </Badge>
                           )}
                         </div>
-                        <div className="grid gap-2 md:gap-2.5 text-sm md:text-base flex-1">
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Avg Retrieval">
-                            <span className="text-muted-foreground flex items-center gap-2">
-                              <Clock aria-hidden="true" className="w-4 h-4" /> Retrieval
+                        <div className="grid gap-1.5 flex-1">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Avg Retrieval">
+                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
+                              <Clock aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">Retrieval</span>
                             </span>
-                            <div className="flex items-center">
-                              <span className={metricClassName(dbCompareWinners.retrieval === db)}>{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
-                            </div>
+                            <span className={metricClassName(dbCompareWinners.retrieval === db)}>{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Avg Total">
-                            <span className="text-muted-foreground flex items-center gap-2">
-                              <Gauge aria-hidden="true" className="w-4 h-4" /> Total
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Avg Total = retrieval + LLM time (end-to-end per query)">
+                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
+                              <Gauge aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">Total</span>
                             </span>
-                            <div className="flex items-center">
-                              <span className={metricClassName(dbCompareWinners.total === db)}>{speed?.mean_total_ms.toFixed(0)}ms</span>
-                            </div>
+                            <span className={metricClassName(dbCompareWinners.total === db)}>{speed?.mean_total_ms.toFixed(0)}ms</span>
                           </div>
 
-                          <div className="h-px bg-border/60 my-1" />
+                          <div className="h-px bg-border/60" />
 
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Top-K scale at maximum tested k">
-                            <span className="text-muted-foreground flex items-center gap-2">
-                              <TrendingUp aria-hidden="true" className="w-4 h-4" /> Top-K Scale
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Top-K scale at maximum tested k">
+                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
+                              <TrendingUp aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">Top-K</span>
                             </span>
-                            <div className="flex items-center">
-                              <span className={metricClassName(dbCompareWinners.topK === db)} title={topKScale ? `k=${topKScale.topK}` : undefined}>
-                                {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
-                              </span>
-                            </div>
+                            <span className={metricClassName(dbCompareWinners.topK === db)} title={topKScale ? `k=${topKScale.topK}` : undefined}>
+                              {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
+                            </span>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Corpus-size scale at maximum tested corpus percentage">
-                            <span className="text-muted-foreground flex items-center gap-2">
-                              <Database aria-hidden="true" className="w-4 h-4" /> Corpus Scale
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Corpus-size scale at maximum tested corpus percentage">
+                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
+                              <Database aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">Corpus</span>
                             </span>
-                            <div className="flex items-center">
-                              <span className={metricClassName(dbCompareWinners.corpus === db)} title={corpusScale ? `${corpusScale.docCount}% corpus` : undefined}>
-                                {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
-                              </span>
-                            </div>
+                            <span className={metricClassName(dbCompareWinners.corpus === db)} title={corpusScale ? `${corpusScale.docCount}% corpus` : undefined}>
+                              {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
+                            </span>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Concurrent-user latency at maximum tested users">
-                            <span className="text-muted-foreground flex items-center gap-2">
-                              <Activity aria-hidden="true" className="w-4 h-4" /> Concurrent
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Concurrent-user latency at maximum tested users">
+                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
+                              <Activity aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">Concurrent</span>
                             </span>
-                            <div className="flex items-center">
-                              <span className={metricClassName(dbCompareWinners.concurrent === db)} title={concurrentScale ? `${concurrentScale.concurrent_users} users` : undefined}>
-                                {concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
-                              </span>
-                            </div>
+                            <span className={metricClassName(dbCompareWinners.concurrent === db)} title={concurrentScale ? `${concurrentScale.concurrent_users} users` : undefined}>
+                              {concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
+                            </span>
                           </div>
 
-                          <div className="h-px bg-border/60 my-1" />
+                          <div className="h-px bg-border/60" />
 
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Combined normalized efficiency from average CPU, RAM, GPU, and VRAM usage. Higher is better.">
-                            <span className="text-muted-foreground flex items-center gap-2">
-                              <CheckCircle aria-hidden="true" className="w-4 h-4" /> Efficient
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Combined normalized efficiency from average CPU, RAM, GPU, and VRAM usage. Higher is better.">
+                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
+                              <CheckCircle aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">Efficient</span>
                             </span>
-                            <div className="flex items-center gap-1.5">
-                              <span className={metricClassName(mostEfficientDatabase === db)}>
-                                {efficiencyScore !== null && efficiencyScore !== undefined ? efficiencyScore.toFixed(1) : "-"}
-                              </span>
-                            </div>
+                            <span className={metricClassName(mostEfficientDatabase === db)}>
+                              {efficiencyScore !== null && efficiencyScore !== undefined ? efficiencyScore.toFixed(1) : "-"}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -2114,7 +2224,7 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Quality Summary Cards - 3 cols on mobile for compact view */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-1.5">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-1.5">
               {databases.map((db) => {
                 const metrics = qualityData[db];
                 const palette = getDatabasePalette(db, databases);
@@ -2463,7 +2573,7 @@ export function BenchmarkDashboard() {
                   {Object.keys(maxConcurrentByDatabase).length > 0 && (
                     <div className="space-y-1.5">
                       <p className="text-xs font-medium text-muted-foreground">Resource Usage at Max Concurrent Users</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-1.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-1.5">
                         {databases.map((db) => {
                           const row = maxConcurrentByDatabase[db];
                           return (
