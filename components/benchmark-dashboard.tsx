@@ -257,8 +257,8 @@ interface ConcurrentUserScalabilityItem {
   max_cpu_percent?: number;
   avg_ram_used_mb?: number;
   max_ram_used_mb?: number;
-  avg_gpu_util_percent?: number;
-  max_gpu_util_percent?: number;
+  avg_gpu_util_percent?: number | null;
+  max_gpu_util_percent?: number | null;
   avg_gpu_memory_used_mb?: number;
   max_gpu_memory_used_mb?: number;
 }
@@ -437,6 +437,8 @@ function getScalabilityData(benchmarkData: BenchmarkDataShape) {
     ])
   ) as Record<string, ScalabilityResult[]>;
 }
+
+const GPU_USAGE_NOTE = "GPU utilization was measured host-side using nvidia-smi sampling. For short retrieval-only tests, GPU utilization may appear as 0% if brief embedding bursts occur between sampling intervals. Therefore, GPU utilization is interpreted as approximate, but it is still included in the dashboard efficiency score together with concurrent latency, CPU usage, RAM usage, and VRAM usage.";
 
 type TabType = "summary" | "speed" | "scalability" | "quality" | "info";
 
@@ -980,7 +982,7 @@ export function BenchmarkDashboard() {
       .filter((entry): entry is [string, ConcurrentUserScalabilityItem] => entry[1] !== null)
       .map(([database, row]) => ({ database, row }));
 
-    const scoreFor = (value: number | undefined, values: number[]) => {
+    const scoreFor = (value: number | null | undefined, values: number[]) => {
       if (!Number.isFinite(value) || values.length === 0) return null;
       const min = Math.min(...values);
       const max = Math.max(...values);
@@ -988,6 +990,7 @@ export function BenchmarkDashboard() {
       return ((max - Number(value)) / (max - min)) * 100;
     };
 
+    const latencyValues = rows.map(({ row }) => row.mean_latency_ms).filter((value): value is number => Number.isFinite(value));
     const cpuValues = rows.map(({ row }) => row.avg_cpu_percent).filter((value): value is number => Number.isFinite(value));
     const ramValues = rows.map(({ row }) => row.avg_ram_used_mb).filter((value): value is number => Number.isFinite(value));
     const gpuValues = rows.map(({ row }) => row.avg_gpu_util_percent).filter((value): value is number => Number.isFinite(value));
@@ -995,16 +998,19 @@ export function BenchmarkDashboard() {
 
     return Object.fromEntries(
       rows.map(({ database, row }) => {
-        const scores = [
-          scoreFor(row.avg_cpu_percent, cpuValues),
-          scoreFor(row.avg_ram_used_mb, ramValues),
-          scoreFor(row.avg_gpu_util_percent, gpuValues),
-          scoreFor(row.avg_gpu_memory_used_mb, vramValues),
-        ].filter((score): score is number => score !== null);
+        const weightedScores = [
+          { score: scoreFor(row.mean_latency_ms, latencyValues), weight: 0.4 },
+          { score: scoreFor(row.avg_cpu_percent, cpuValues), weight: 0.2 },
+          { score: scoreFor(row.avg_ram_used_mb, ramValues), weight: 0.15 },
+          { score: scoreFor(row.avg_gpu_util_percent, gpuValues), weight: 0.15 },
+          { score: scoreFor(row.avg_gpu_memory_used_mb, vramValues), weight: 0.1 },
+        ].filter((item): item is { score: number; weight: number } => item.score !== null);
+
+        const weightTotal = weightedScores.reduce((sum, item) => sum + item.weight, 0);
 
         return [
           database,
-          scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : null,
+          weightTotal > 0 ? weightedScores.reduce((sum, item) => sum + item.score * item.weight, 0) / weightTotal : null,
         ];
       })
     ) as Record<string, number | null>;
@@ -1509,7 +1515,7 @@ export function BenchmarkDashboard() {
 
                           <div className="h-px bg-border/60" />
 
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Combined normalized efficiency from average CPU, RAM, GPU, and VRAM usage. Higher is better.">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <CheckCircle aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Efficient</span>
@@ -2607,6 +2613,7 @@ export function BenchmarkDashboard() {
                           );
                         })}
                       </div>
+                      <p className="text-[11px] leading-snug text-muted-foreground">{GPU_USAGE_NOTE}</p>
                     </div>
                   )}
                 </CardContent>
@@ -2854,6 +2861,7 @@ export function BenchmarkDashboard() {
                         </tbody>
                       </table>
                     </div>
+                    <p className="mt-2 px-1.5 text-[11px] leading-snug text-muted-foreground">{GPU_USAGE_NOTE}</p>
                   </CardContent>
                 </Card>
               )}

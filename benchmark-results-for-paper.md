@@ -2,7 +2,7 @@
 title: Benchmark Results For Paper
 purpose: Source document for AI-assisted paper drafting and editing
 generator: export-benchmark-results.mjs
-generated_at: 2026-06-05T07:07:33.261Z
+generated_at: 2026-06-05T12:30:13.614Z
 datasets:
   - Data Benchmark/benchmark_final 5local db.json
 comparison_file: Data Benchmark/thesis_db_embedding_comparison.json
@@ -224,14 +224,16 @@ Matching raw source files: `benchmark_final 5local db.json`
 
 ### Concurrent User Scalability Summary
 
+GPU utilization was measured host-side using nvidia-smi sampling. For short retrieval-only tests, GPU utilization may appear as 0% if brief embedding bursts occur between sampling intervals. Therefore, GPU utilization is interpreted as approximate, but it is still included in the dashboard efficiency score together with concurrent latency, CPU usage, RAM usage, and VRAM usage.
+
 | Database | Users | Runs | Mean Latency (ms) | P95 Latency (ms) | P99 Latency (ms) | Throughput (rps) | Error Rate | Avg CPU | Avg RAM (MB) | Avg GPU |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PostgreSQL | 1 | 5 | 334.63 | 451.04 | 467.28 | 3.16 | 0.00% | 11.94% | 13839.21 | 11.87% |
 | PostgreSQL | 3 | 5 | 334.67 | 392.62 | 397.84 | 8.61 | 0.00% | 26.86% | 13552.34 | 10.40% |
 | PostgreSQL | 5 | 5 | 370.77 | 436.38 | 448.05 | 12.71 | 0.00% | 41.75% | 13592.54 | 20.92% |
-| ChromaDB | 1 | 5 | 115.92 | 122.43 | 123.30 | 8.63 | 0.00% | 11.16% | 13871.19 | 6.40% |
-| ChromaDB | 3 | 5 | 133.37 | 158.85 | 165.87 | 21.23 | 0.00% | 22.56% | 13510.76 | 18.10% |
-| ChromaDB | 5 | 5 | 154.17 | 212.37 | 224.84 | 29.60 | 0.00% | 31.71% | 13602.80 | 0.00% |
+| ChromaDB | 1 | 5 | 116.35 | 120.40 | 120.86 | 8.60 | 0.00% | 18.87% | 16172.84 | 41.40% |
+| ChromaDB | 3 | 5 | 131.95 | 155.84 | 162.85 | 21.31 | 0.00% | 24.87% | 16168.41 | 8.80% |
+| ChromaDB | 5 | 5 | 157.29 | 210.68 | 223.25 | 28.96 | 0.00% | 32.66% | 16199.54 | 20.50% |
 | SQLite | 1 | 5 | 528.29 | 540.85 | 541.47 | 1.89 | 0.00% | 12.65% | 13984.31 | 8.03% |
 | SQLite | 3 | 5 | 5981.67 | 10077.38 | 10329.25 | 0.43 | 0.00% | 18.70% | 14210.05 | 10.95% |
 | SQLite | 5 | 5 | 18568.39 | 37008.39 | 41064.32 | 0.22 | 1.33% | 22.38% | 14542.37 | 5.84% |
@@ -257,5 +259,7 @@ Matching raw source files: `benchmark_final 5local db.json`
 - When `answerable_retrieval_quality` is absent, quality summary fields are normalized from `deepeval_answer_quality`: contextual precision, contextual recall, and faithfulness.
 - `deepeval_answer_quality` is based on a capped sample and should be cited separately from full retrieval speed/scalability measurements.
 - Total latency is influenced by LLM generation variability and extreme outliers, so paper claims should usually anchor on retrieval mean, retrieval p95, total median, and total p95 together.
+- GPU utilization was measured host-side using nvidia-smi sampling. For short retrieval-only tests, GPU utilization may appear as 0% if brief embedding bursts occur between sampling intervals. Therefore, GPU utilization is interpreted as approximate, but it is still included in the dashboard efficiency score together with concurrent latency, CPU usage, RAM usage, and VRAM usage.
+- Resource efficiency scores in the dashboard are weighted normalized scores from max-concurrent retrieval latency (40%), average CPU usage (20%), average RAM usage (15%), average GPU utilization (15%), and average VRAM usage (10%).
 - Pinecone is intentionally absent from the active local-database benchmark until a matching Pinecone run is added.
 

@@ -12,6 +12,8 @@ const datasetConfigs = [
   },
 ];
 
+const GPU_USAGE_NOTE = "GPU utilization was measured host-side using nvidia-smi sampling. For short retrieval-only tests, GPU utilization may appear as 0% if brief embedding bursts occur between sampling intervals. Therefore, GPU utilization is interpreted as approximate, but it is still included in the dashboard efficiency score together with concurrent latency, CPU usage, RAM usage, and VRAM usage.";
+
 const comparisonRows = readJson("thesis_db_embedding_comparison.json");
 const rawFullFileNames = readdirSync(dataDir).filter((name) => name.startsWith("benchmark") && name.endsWith(".json"));
 
@@ -298,6 +300,8 @@ for (const dataset of datasets) {
   if (dataset.data.concurrent_user_scalability_test) {
     lines.push("### Concurrent User Scalability Summary");
     lines.push("");
+    lines.push(GPU_USAGE_NOTE);
+    lines.push("");
     lines.push(mdTable(
       ["Database", "Users", "Runs", "Mean Latency (ms)", "P95 Latency (ms)", "P99 Latency (ms)", "Throughput (rps)", "Error Rate", "Avg CPU", "Avg RAM (MB)", "Avg GPU"],
       flattenConcurrentSummary(dataset.data.concurrent_user_scalability_test).map((row) => [
@@ -342,6 +346,8 @@ lines.push("");
 lines.push("- When `answerable_retrieval_quality` is absent, quality summary fields are normalized from `deepeval_answer_quality`: contextual precision, contextual recall, and faithfulness.");
 lines.push("- `deepeval_answer_quality` is based on a capped sample and should be cited separately from full retrieval speed/scalability measurements.");
 lines.push("- Total latency is influenced by LLM generation variability and extreme outliers, so paper claims should usually anchor on retrieval mean, retrieval p95, total median, and total p95 together.");
+lines.push(`- ${GPU_USAGE_NOTE}`);
+lines.push("- Resource efficiency scores in the dashboard are weighted normalized scores from max-concurrent retrieval latency (40%), average CPU usage (20%), average RAM usage (15%), average GPU utilization (15%), and average VRAM usage (10%).");
 lines.push("- Pinecone is intentionally absent from the active local-database benchmark until a matching Pinecone run is added.");
 lines.push("");
 
