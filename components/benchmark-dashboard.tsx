@@ -2,14 +2,12 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import benchmarkData1 from "../Data Benchmark/benchmark_full_20260506_171446.json";
-import benchmarkData2 from "../Data Benchmark/benchmark_full_20260506_114940.json";
+import benchmarkData1 from "../Data Benchmark/benchmark_final 5local db.json";
 import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
-const benchmarkDatasets = [benchmarkData1, benchmarkData2] as unknown as BenchmarkDataShape[];
+const benchmarkDatasets = [benchmarkData1] as unknown as BenchmarkDataShape[];
 const benchmarkSourceFallbacks = [
-  "benchmark_full_20260506_171446.json",
-  "benchmark_full_20260506_114940.json",
+  "benchmark_final 5local db.json",
 ];
 
 function usePrefersReducedMotion() {
@@ -122,6 +120,13 @@ interface QueryTypeSummaryItem {
   mean_total_ms: number;
 }
 
+interface FailureSummaryItem {
+  total_rows: number;
+  success_rows: number;
+  failed_rows: number;
+  success_rate: number;
+}
+
 interface ScalabilityResult {
   top_k: number;
   avg_time: number;
@@ -142,14 +147,19 @@ interface RawScalabilityResult {
   max_avg_time?: number;
 }
 
+interface CorpusScalabilityResult {
+  doc_count: number;
+  mean_avg_time: number;
+}
+
 interface QualityPerQuery {
   query: string;
   precision: number;
   recall?: number;
   hit_at_k?: number;
   f1_score: number;
-  relevant_retrieved: number;
-  total_retrieved: number;
+  relevant_retrieved?: number;
+  total_retrieved?: number;
 }
 
 interface QualityMetrics {
@@ -176,7 +186,12 @@ interface ThesisDbEmbeddingComparisonItem {
 }
 
 interface BenchmarkMetadata {
-  benchmark_date: string;
+  benchmark_date?: string;
+  benchmark_started_at?: string;
+  benchmark_completed_at?: string;
+  run_id?: string;
+  status?: string;
+  duration_seconds?: number;
   llm_model: string;
   embedding_model: string;
   num_queries: number;
@@ -193,6 +208,7 @@ interface BenchmarkMetadata {
 
 interface BenchmarkDataShape {
   metadata: BenchmarkMetadata;
+  document_manifest?: unknown[];
   speed_test: {
     winner: {
       database: string;
@@ -201,6 +217,7 @@ interface BenchmarkDataShape {
     };
     summary: SpeedTestSummary[];
     raw_results: SpeedTestRawResult[];
+    failure_summary?: Record<string, FailureSummaryItem>;
     per_repetition_summary?: Record<string, RepetitionSummaryItem[]>;
     query_type_summary?: Record<string, {
       answerable?: QueryTypeSummaryItem;
@@ -209,26 +226,90 @@ interface BenchmarkDataShape {
   };
   scalability_test?: Record<string, RawScalabilityResult[]>;
   top_k_sensitivity_test?: Record<string, RawScalabilityResult[]>;
+  corpus_size_scalability_test?: Record<string, CorpusScalabilityResult[]>;
   retrieval_quality?: Record<string, QualityMetrics>;
   answerable_retrieval_quality?: Record<string, QualityMetrics>;
+  deepeval_answer_quality?: Record<string, DeepEvalQualityMetrics>;
+  concurrent_user_scalability_test?: Record<string, ConcurrentUserScalabilityItem[]>;
+}
+
+interface DeepEvalPerQuery {
+  query: string;
+  AnswerRelevancy_score?: number;
+  Faithfulness_score?: number;
+  ContextualRelevancy_score?: number;
+  ContextualPrecision_score?: number;
+  ContextualRecall_score?: number;
+}
+
+interface DeepEvalQualityMetrics {
+  avg_answer_relevancy?: number;
+  avg_faithfulness?: number;
+  avg_contextual_relevancy?: number;
+  avg_contextual_precision?: number;
+  avg_contextual_recall?: number;
+  per_query?: DeepEvalPerQuery[];
+}
+
+interface ConcurrentUserScalabilityItem {
+  concurrent_users: number;
+  runs: number;
+  mean_latency_ms: number;
+  p95_latency_ms: number;
+  p99_latency_ms: number;
+  throughput_rps: number;
+  error_rate: number;
+  avg_cpu_percent?: number;
+  max_cpu_percent?: number;
+  avg_ram_used_mb?: number;
+  max_ram_used_mb?: number;
+  avg_gpu_util_percent?: number;
+  max_gpu_util_percent?: number;
+  avg_gpu_memory_used_mb?: number;
+  max_gpu_memory_used_mb?: number;
 }
 
 function getQualityData(benchmarkData: {
   retrieval_quality?: Record<string, QualityMetrics>;
   answerable_retrieval_quality?: Record<string, QualityMetrics>;
+  deepeval_answer_quality?: Record<string, DeepEvalQualityMetrics>;
 }) {
-  return (benchmarkData.answerable_retrieval_quality ?? benchmarkData.retrieval_quality ?? {}) as Record<string, QualityMetrics>;
+  const retrievalQuality = benchmarkData.answerable_retrieval_quality ?? benchmarkData.retrieval_quality;
+  if (retrievalQuality) return retrievalQuality as Record<string, QualityMetrics>;
+
+  return Object.fromEntries(
+    Object.entries(benchmarkData.deepeval_answer_quality ?? {}).map(([database, metrics]) => [
+      database,
+      {
+        avg_precision: metrics.avg_contextual_precision ?? 0,
+        avg_hit_at_k: metrics.avg_contextual_recall ?? 0,
+        avg_f1_score: metrics.avg_faithfulness ?? 0,
+        per_query: (metrics.per_query ?? []).map((item) => ({
+          query: item.query,
+          precision: item.ContextualPrecision_score ?? 0,
+          hit_at_k: item.ContextualRecall_score ?? 0,
+          f1_score: item.Faithfulness_score ?? 0,
+          relevant_retrieved: undefined,
+          total_retrieved: undefined,
+        })),
+      },
+    ])
+  ) as Record<string, QualityMetrics>;
 }
 
 function getQualityCoverageLabel(benchmarkData: {
   answerable_retrieval_quality?: Record<string, QualityMetrics>;
+  deepeval_answer_quality?: Record<string, DeepEvalQualityMetrics>;
 }) {
+  if (benchmarkData.deepeval_answer_quality && !benchmarkData.answerable_retrieval_quality) return "Context Recall";
   return benchmarkData.answerable_retrieval_quality ? "Hit@K" : "Recall";
 }
 
 function getQualityScopeLabel(benchmarkData: {
   answerable_retrieval_quality?: Record<string, QualityMetrics>;
+  deepeval_answer_quality?: Record<string, DeepEvalQualityMetrics>;
 }) {
+  if (benchmarkData.deepeval_answer_quality && !benchmarkData.answerable_retrieval_quality) return "DeepEval sampled answer quality";
   return benchmarkData.answerable_retrieval_quality ? "answerable queries only" : "all queries";
 }
 
@@ -425,6 +506,77 @@ const DatabaseIcon = ({ database, className = "w-5 h-5" }: { database: string; c
   }
 };
 
+const databasePalette = [
+  { stroke: "hsl(210, 100%, 50%)", fill: "hsla(210, 100%, 50%, 0.18)", text: "text-blue-500", from: "from-blue-500", to: "to-blue-400" },
+  { stroke: "hsl(142, 71%, 45%)", fill: "hsla(142, 71%, 45%, 0.18)", text: "text-emerald-500", from: "from-emerald-500", to: "to-emerald-400" },
+  { stroke: "hsl(265, 89%, 70%)", fill: "hsla(265, 89%, 70%, 0.18)", text: "text-violet-500", from: "from-violet-500", to: "to-violet-400" },
+  { stroke: "hsl(24, 95%, 53%)", fill: "hsla(24, 95%, 53%, 0.18)", text: "text-orange-500", from: "from-orange-500", to: "to-orange-400" },
+  { stroke: "hsl(187, 92%, 42%)", fill: "hsla(187, 92%, 42%, 0.18)", text: "text-cyan-500", from: "from-cyan-500", to: "to-cyan-400" },
+  { stroke: "hsl(45, 93%, 47%)", fill: "hsla(45, 93%, 47%, 0.18)", text: "text-amber-500", from: "from-amber-500", to: "to-amber-400" },
+];
+
+function getBenchmarkDate(metadata: BenchmarkMetadata) {
+  return metadata.benchmark_date ?? metadata.benchmark_started_at ?? metadata.benchmark_completed_at ?? "";
+}
+
+function getDatabasePalette(database: string, databases: string[]) {
+  const knownIndex = ["PostgreSQL", "ChromaDB", "SQLite", "LanceDB", "Qdrant", "Pinecone"].indexOf(database);
+  const index = knownIndex >= 0 ? knownIndex : Math.max(databases.indexOf(database), 0);
+  return databasePalette[index % databasePalette.length];
+}
+
+function getDatabaseCardClass(database: string, databases: string[]) {
+  switch (database) {
+    case "PostgreSQL":
+      return "bg-linear-to-br from-blue-500/15 via-background to-background";
+    case "ChromaDB":
+      return "bg-linear-to-br from-emerald-500/15 via-background to-background";
+    case "SQLite":
+      return "bg-linear-to-br from-violet-500/15 via-background to-background";
+    case "LanceDB":
+      return "bg-linear-to-br from-orange-500/15 via-background to-background";
+    case "Qdrant":
+      return "bg-linear-to-br from-cyan-500/15 via-background to-background";
+    case "Pinecone":
+      return "bg-linear-to-br from-amber-500/15 via-background to-background";
+    default:
+      return `bg-linear-to-br ${getDatabasePalette(database, databases).from} via-background to-background`;
+  }
+}
+
+function getDatabaseBarClass(database: string, databases: string[]) {
+  switch (database) {
+    case "PostgreSQL":
+      return "bg-linear-to-r from-blue-500 to-blue-400";
+    case "ChromaDB":
+      return "bg-linear-to-r from-emerald-500 to-emerald-400";
+    case "SQLite":
+      return "bg-linear-to-r from-violet-500 to-violet-400";
+    case "LanceDB":
+      return "bg-linear-to-r from-orange-500 to-orange-400";
+    case "Qdrant":
+      return "bg-linear-to-r from-cyan-500 to-cyan-400";
+    case "Pinecone":
+      return "bg-linear-to-r from-amber-500 to-amber-400";
+    default: {
+      const palette = getDatabasePalette(database, databases);
+      return `bg-linear-to-r ${palette.from} ${palette.to}`;
+    }
+  }
+}
+
+function buildChartConfig(databases: string[]) {
+  return Object.fromEntries(
+    databases.map((database) => [
+      database,
+      {
+        label: database,
+        color: getDatabasePalette(database, databases).stroke,
+      },
+    ])
+  ) satisfies ChartConfig;
+}
+
 interface TabButtonProps {
   tab: TabType;
   label: string;
@@ -505,13 +657,17 @@ export function BenchmarkDashboard() {
       : "summary";
 
   const datasetParam = searchParams.get("dataset");
-  const selectedDataset = datasetParam === "2" ? 2 : 1;
+  const requestedDataset = Number(datasetParam ?? "1");
+  const selectedDataset = Number.isInteger(requestedDataset)
+    ? Math.min(Math.max(requestedDataset, 1), benchmarkDatasets.length)
+    : 1;
   const searchTerm = searchParams.get("q") ?? "";
   const comparisonMode =
-    searchParams.get("compare") === "1" || searchParams.get("compare") === "true";
+    benchmarkDatasets.length > 1 && (searchParams.get("compare") === "1" || searchParams.get("compare") === "true");
 
   const benchmarkData = benchmarkDatasets[selectedDataset - 1] as BenchmarkDataShape;
   const metadata = benchmarkData.metadata as BenchmarkMetadata;
+  const documentCount = benchmarkData.document_manifest?.length ?? metadata.num_queries;
   const speed_test = benchmarkData.speed_test;
   const scalabilityData = getScalabilityData(benchmarkData);
   const qualityData = getQualityData(benchmarkData);
@@ -520,6 +676,7 @@ export function BenchmarkDashboard() {
   const datasetDescriptors = benchmarkDatasets.map((dataset, index) => {
     const datasetMetadata = dataset.metadata as BenchmarkMetadata;
     const shortLabel = datasetMetadata.embedding_model.includes("mxbai") ? "M" : "Q";
+    const benchmarkDate = getBenchmarkDate(datasetMetadata);
 
     return {
       id: index + 1,
@@ -530,7 +687,7 @@ export function BenchmarkDashboard() {
         month: "short",
         day: "numeric",
         year: "numeric",
-      }).format(new Date(datasetMetadata.benchmark_date)),
+      }).format(new Date(benchmarkDate)),
     };
   });
   const activeDatasetDescriptor = datasetDescriptors[selectedDataset - 1];
@@ -615,6 +772,8 @@ export function BenchmarkDashboard() {
       : [benchmarkSourceFallbacks[selectedDataset - 1]];
   const perRepetitionSummary = speed_test.per_repetition_summary ?? {};
   const queryTypeSummary = speed_test.query_type_summary ?? {};
+  const deepevalQuality = benchmarkData.deepeval_answer_quality ?? {};
+  const concurrentUserScalability = benchmarkData.concurrent_user_scalability_test ?? {};
 
   // Scalability test data
   // Databases list - declared early as it's used in useMemo hooks below
@@ -733,6 +892,135 @@ export function BenchmarkDashboard() {
     });
     return winner;
   }, [scalabilityData, databases]);
+
+  const topKScaleSummary = useMemo(() => {
+    const maxTopK = Math.max(
+      ...Object.values(scalabilityData).flatMap((rows) => rows.map((row) => row.top_k))
+    );
+    if (!Number.isFinite(maxTopK)) return null;
+
+    const times: Array<{ db: string; topK: number; time: number }> = databases
+      .map((db) => ({
+        db,
+        topK: maxTopK,
+        time: scalabilityData[db]?.find((row) => row.top_k === maxTopK)?.avg_time,
+      }))
+      .filter((item): item is { db: string; topK: number; time: number } => Number.isFinite(item.time));
+    if (times.length === 0) return null;
+
+    return times.reduce((min, curr) => curr.time < min.time ? curr : min);
+  }, [databases, scalabilityData]);
+
+  const concurrentSummary = useMemo(() => {
+    const rows = Object.entries(concurrentUserScalability).flatMap(([database, entries]) =>
+      (entries ?? []).map((entry) => ({ database, ...entry }))
+    );
+    if (rows.length === 0) return null;
+
+    const maxUsers = Math.max(...rows.map((row) => row.concurrent_users));
+    const maxUserRows = rows.filter((row) => row.concurrent_users === maxUsers);
+    const best = maxUserRows.reduce((min, curr) => curr.mean_latency_ms < min.mean_latency_ms ? curr : min);
+
+    return {
+      database: best.database,
+      concurrentUsers: maxUsers,
+      meanLatencyMs: best.mean_latency_ms,
+    };
+  }, [concurrentUserScalability]);
+
+  const maxTopKByDatabase = useMemo(() => {
+    return Object.fromEntries(
+      databases.map((db) => {
+        const rows = scalabilityData[db] ?? [];
+        const maxTopK = Math.max(...rows.map((row) => row.top_k));
+        const row = Number.isFinite(maxTopK) ? rows.find((item) => item.top_k === maxTopK) : undefined;
+        return [db, row ? { topK: row.top_k, avgTime: row.avg_time } : null];
+      })
+    ) as Record<string, { topK: number; avgTime: number } | null>;
+  }, [databases, scalabilityData]);
+
+  const maxCorpusByDatabase = useMemo(() => {
+    const corpusData = benchmarkData.corpus_size_scalability_test ?? {};
+    return Object.fromEntries(
+      databases.map((db) => {
+        const rows = corpusData[db] ?? [];
+        const maxDocCount = Math.max(...rows.map((row) => row.doc_count));
+        const row = Number.isFinite(maxDocCount) ? rows.find((item) => item.doc_count === maxDocCount) : undefined;
+        return [db, row ? { docCount: row.doc_count, avgTime: row.mean_avg_time } : null];
+      })
+    ) as Record<string, { docCount: number; avgTime: number } | null>;
+  }, [benchmarkData.corpus_size_scalability_test, databases]);
+
+  const maxConcurrentByDatabase = useMemo(() => {
+    return Object.fromEntries(
+      databases.map((db) => {
+        const rows = concurrentUserScalability[db] ?? [];
+        const maxUsers = Math.max(...rows.map((row) => row.concurrent_users));
+        const row = Number.isFinite(maxUsers) ? rows.find((item) => item.concurrent_users === maxUsers) : undefined;
+        return [db, row ?? null];
+      })
+    ) as Record<string, ConcurrentUserScalabilityItem | null>;
+  }, [concurrentUserScalability, databases]);
+
+  const resourceEfficiencyWinners = useMemo(() => {
+    const rows = Object.entries(maxConcurrentByDatabase)
+      .filter((entry): entry is [string, ConcurrentUserScalabilityItem] => entry[1] !== null)
+      .map(([database, row]) => ({ database, row }));
+
+    const minBy = (getValue: (row: ConcurrentUserScalabilityItem) => number | undefined) => {
+      const validRows = rows.filter(({ row }) => Number.isFinite(getValue(row)));
+      if (validRows.length === 0) return null;
+      return validRows.reduce((best, curr) => (getValue(curr.row) ?? Infinity) < (getValue(best.row) ?? Infinity) ? curr : best);
+    };
+
+    return {
+      cpu: minBy((row) => row.avg_cpu_percent),
+      ram: minBy((row) => row.avg_ram_used_mb),
+      gpu: minBy((row) => row.avg_gpu_util_percent),
+      vram: minBy((row) => row.avg_gpu_memory_used_mb),
+    };
+  }, [maxConcurrentByDatabase]);
+
+  const resourceEfficiencyScores = useMemo(() => {
+    const rows = Object.entries(maxConcurrentByDatabase)
+      .filter((entry): entry is [string, ConcurrentUserScalabilityItem] => entry[1] !== null)
+      .map(([database, row]) => ({ database, row }));
+
+    const scoreFor = (value: number | undefined, values: number[]) => {
+      if (!Number.isFinite(value) || values.length === 0) return null;
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      if (max === min) return 100;
+      return ((max - Number(value)) / (max - min)) * 100;
+    };
+
+    const cpuValues = rows.map(({ row }) => row.avg_cpu_percent).filter((value): value is number => Number.isFinite(value));
+    const ramValues = rows.map(({ row }) => row.avg_ram_used_mb).filter((value): value is number => Number.isFinite(value));
+    const gpuValues = rows.map(({ row }) => row.avg_gpu_util_percent).filter((value): value is number => Number.isFinite(value));
+    const vramValues = rows.map(({ row }) => row.avg_gpu_memory_used_mb).filter((value): value is number => Number.isFinite(value));
+
+    return Object.fromEntries(
+      rows.map(({ database, row }) => {
+        const scores = [
+          scoreFor(row.avg_cpu_percent, cpuValues),
+          scoreFor(row.avg_ram_used_mb, ramValues),
+          scoreFor(row.avg_gpu_util_percent, gpuValues),
+          scoreFor(row.avg_gpu_memory_used_mb, vramValues),
+        ].filter((score): score is number => score !== null);
+
+        return [
+          database,
+          scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : null,
+        ];
+      })
+    ) as Record<string, number | null>;
+  }, [maxConcurrentByDatabase]);
+
+  const mostEfficientDatabase = useMemo(() => {
+    const entries = Object.entries(resourceEfficiencyScores).filter((entry): entry is [string, number] => entry[1] !== null);
+    if (entries.length === 0) return null;
+    return entries.reduce((best, curr) => curr[1] > best[1] ? curr : best)[0];
+  }, [resourceEfficiencyScores]);
 
   const qualityLeader = useMemo(() => {
     const scores = databases.map((db) => ({
@@ -1003,7 +1291,7 @@ export function BenchmarkDashboard() {
                   month: "short",
                   day: "numeric",
                   year: "numeric",
-                }).format(new Date(metadata.benchmark_date))}
+                }).format(new Date(getBenchmarkDate(metadata)))}
               </Badge>
               <Badge variant="secondary" className="text-[11px] sm:text-xs">
                 {metadata.llm_model}
@@ -1140,44 +1428,49 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-2 sm:px-2.5">
                 <p className="text-base sm:text-2xl font-bold leading-tight truncate">
-                  {(() => {
-                    const lastTopK = sortedScalabilityData[sortedScalabilityData.length - 1];
-                    if (!lastTopK) return 'N/A';
-                    const times = databases.map(db => ({ db, time: (lastTopK as Record<string, number>)[db] }));
-                    return times.reduce((min, curr) => curr.time < min.time ? curr : min).db;
-                  })()}
+                  {topKScaleSummary?.db ?? "N/A"}
                 </p>
-                <p className="text-[10px] sm:text-sm text-muted-foreground">k=20</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">
+                  {topKScaleSummary ? (
+                    <>
+                      <AnimatedCounter value={topKScaleSummary.time ?? 0} decimals={1} suffix="ms" /> at k={topKScaleSummary.topK}
+                    </>
+                  ) : "No data"}
+                </p>
               </CardContent>
             </Card>
 
-            {/* Best Quality */}
-            <Card size="sm" className="border-emerald-500/30">
+            {/* Concurrent Users */}
+            <Card size="sm" className="border-cyan-500/30">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
-                <div className="flex items-center gap-1 text-emerald-500">
-                  <Target aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
-                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">F1</CardTitle>
+                <div className="flex items-center gap-1 text-cyan-500">
+                  <Gauge aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Concurrent</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="px-2 sm:px-2.5">
-                <p className="text-base sm:text-2xl font-bold leading-tight truncate">{qualityLeader}</p>
+                <p className="text-base sm:text-2xl font-bold leading-tight truncate">{concurrentSummary?.database ?? "N/A"}</p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground">
-                  <AnimatedCounter value={maxF1Score * 100} decimals={1} suffix="%" />
+                  {concurrentSummary ? (
+                    <>
+                      {concurrentSummary.concurrentUsers} users, <AnimatedCounter value={concurrentSummary.meanLatencyMs} decimals={1} suffix="ms" />
+                    </>
+                  ) : "No data"}
                 </p>
               </CardContent>
             </Card>
 
-            {/* Total Queries */}
+            {/* Total Documents */}
             <Card size="sm" className="border-violet-500/30">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
                 <div className="flex items-center gap-1 text-violet-500">
-                  <Activity aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
-                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Queries</CardTitle>
+                  <Database aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
+                  <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Documents</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="px-2 sm:px-2.5">
                 <p className="text-base sm:text-2xl font-bold leading-tight">
-                  <AnimatedCounter value={metadata.num_queries} decimals={0} />
+                  <AnimatedCounter value={documentCount} decimals={0} />
                 </p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground">tested</p>
               </CardContent>
@@ -1198,36 +1491,34 @@ export function BenchmarkDashboard() {
                       {comparisonMode ? "(1 vs 2)" : ""}
                     </span>
                   </CardTitle>
-                  <button
-                    type="button"
-                    onClick={toggleComparisonMode}
-                    className={cn(
-                      "h-7 sm:h-6 px-2.5 sm:px-2 text-xs font-medium border transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 shrink-0",
-                      comparisonMode
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-background text-foreground border-border hover:bg-muted active:bg-muted"
-                    )}
-                  >
-                    {comparisonMode ? "Exit" : "Compare"}
-                  </button>
+                  {benchmarkDatasets.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={toggleComparisonMode}
+                      className={cn(
+                        "h-7 sm:h-6 px-2.5 sm:px-2 text-xs font-medium border transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 shrink-0",
+                        comparisonMode
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background text-foreground border-border hover:bg-muted active:bg-muted"
+                      )}
+                    >
+                      {comparisonMode ? "Exit" : "Compare"}
+                    </button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col">
                 {/* Mobile: Horizontal scroll for database cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2 sm:gap-3">
                 {databases.map((db) => {
                       const speed = speedSummary.find(s => s.database === db);
-                      const quality = qualityData[db];
-                      const dbColor = db === "Pinecone"
-                        ? "border-amber-500/40 bg-linear-to-br from-amber-500/12 via-background to-background"
-                      : db === "PostgreSQL"
-                        ? "border-blue-500/40 bg-linear-to-br from-blue-500/12 via-background to-background"
-                        : "border-emerald-500/40 bg-linear-to-br from-emerald-500/12 via-background to-background";
-                    const textColor = db === "Pinecone"
-                      ? "text-amber-500"
-                      : db === "PostgreSQL"
-                        ? "text-blue-500"
-                        : "text-emerald-500";
+                      const topKScale = maxTopKByDatabase[db];
+                      const corpusScale = maxCorpusByDatabase[db];
+                      const concurrentScale = maxConcurrentByDatabase[db];
+                      const efficiencyScore = resourceEfficiencyScores[db];
+                      const isMostEfficient = mostEfficientDatabase === db;
+                      const dbColor = cn("border-primary/20", getDatabaseCardClass(db, databases));
+                    const textColor = getDatabasePalette(db, databases).text;
 
                     // Get comparison data for this database
                     const compItem = comparisonData?.find(c => c.database === db);
@@ -1310,55 +1601,48 @@ export function BenchmarkDashboard() {
 
                           <div className="h-px bg-border/60 my-1" />
 
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Precision">
+                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Top-K scale at maximum tested k">
                             <span className="text-muted-foreground flex items-center gap-2">
-                              <CheckCircle aria-hidden="true" className="w-4 h-4" /> Precision
+                              <TrendingUp aria-hidden="true" className="w-4 h-4" /> Top-K Scale
                             </span>
                             <div className="flex items-center">
-                              {comparisonMode && compItem ? (
-                                <>
-                                  <span className="font-mono font-semibold text-base md:text-lg">
-                                    {(compItem.dataset1.precision * 100).toFixed(0)}→{(compItem.dataset2.precision * 100).toFixed(0)}%
-                                  </span>
-                                  <DeltaBadge value={compItem.deltas.precision} />
-                                </>
-                              ) : (
-                                <span className="font-mono font-semibold text-base md:text-lg">{(quality.avg_precision * 100).toFixed(1)}%</span>
-                              )}
+                              <span className="font-mono font-semibold text-base md:text-lg" title={topKScale ? `k=${topKScale.topK}` : undefined}>
+                                {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
+                              </span>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title={qualityCoverageLabel}>
+                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Corpus-size scale at maximum tested corpus percentage">
                             <span className="text-muted-foreground flex items-center gap-2">
-                              <Target aria-hidden="true" className="w-4 h-4" /> {qualityCoverageLabel}
+                              <Database aria-hidden="true" className="w-4 h-4" /> Corpus Scale
                             </span>
                             <div className="flex items-center">
-                              {comparisonMode && compItem ? (
-                                <>
-                                  <span className="font-mono font-semibold text-base md:text-lg">
-                                    {(compItem.dataset1.coverage * 100).toFixed(0)}→{(compItem.dataset2.coverage * 100).toFixed(0)}%
-                                  </span>
-                                  <DeltaBadge value={compItem.deltas.coverage} />
-                                </>
-                              ) : (
-                                <span className="font-mono font-semibold text-base md:text-lg">{(getQualityCoverageValue(quality) * 100).toFixed(1)}%</span>
-                              )}
+                              <span className="font-mono font-semibold text-base md:text-lg" title={corpusScale ? `${corpusScale.docCount}% corpus` : undefined}>
+                                {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
+                              </span>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="F1 Score">
+                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Concurrent-user latency at maximum tested users">
                             <span className="text-muted-foreground flex items-center gap-2">
-                              <Activity aria-hidden="true" className="w-4 h-4" /> F1 Score
+                              <Activity aria-hidden="true" className="w-4 h-4" /> Concurrent
                             </span>
                             <div className="flex items-center">
-                              {comparisonMode && compItem ? (
-                                <>
-                                  <span className="font-mono font-semibold text-base md:text-lg">
-                                    {(compItem.dataset1.f1Score * 100).toFixed(0)}→{(compItem.dataset2.f1Score * 100).toFixed(0)}%
-                                  </span>
-                                  <DeltaBadge value={compItem.deltas.f1Score} />
-                                </>
-                              ) : (
-                                <span className="font-mono font-semibold text-base md:text-lg">{(quality.avg_f1_score * 100).toFixed(1)}%</span>
-                              )}
+                              <span className="font-mono font-semibold text-base md:text-lg" title={concurrentScale ? `${concurrentScale.concurrent_users} users` : undefined}>
+                                {concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="h-px bg-border/60 my-1" />
+
+                          <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Combined normalized efficiency from average CPU, RAM, GPU, and VRAM usage. Higher is better.">
+                            <span className="text-muted-foreground flex items-center gap-2">
+                              <CheckCircle aria-hidden="true" className="w-4 h-4" /> Efficient
+                            </span>
+                            <div className="flex items-center gap-1.5">
+                              {isMostEfficient && <Badge className="h-5 px-1.5 text-[10px] bg-green-500/10 text-green-500 border-green-500/30">Best</Badge>}
+                              <span className="font-mono font-semibold text-base md:text-lg">
+                                {efficiencyScore !== null && efficiencyScore !== undefined ? efficiencyScore.toFixed(1) : "-"}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -1395,20 +1679,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-1.5 sm:px-2.5 pt-2 sm:pt-2.5">
                 <ChartContainer
-                  config={{
-                    Pinecone: {
-                      label: "Pinecone",
-                      color: "var(--chart-1)",
-                    },
-                    PostgreSQL: {
-                      label: "PostgreSQL",
-                      color: "var(--chart-2)",
-                    },
-                    ChromaDB: {
-                      label: "ChromaDB",
-                      color: "var(--chart-3)",
-                    },
-                  } satisfies ChartConfig}
+                  config={buildChartConfig(databases)}
                   className="aspect-auto h-[200px] sm:h-[280px] md:h-[340px] w-full"
                 >
                   <AreaChart
@@ -1426,18 +1697,15 @@ export function BenchmarkDashboard() {
                     margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient id="fillPinecone" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(45, 93%, 47%)" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="hsl(45, 93%, 47%)" stopOpacity={0.1} />
-                      </linearGradient>
-                      <linearGradient id="fillPostgreSQL" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(210, 100%, 50%)" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="hsl(210, 100%, 50%)" stopOpacity={0.1} />
-                      </linearGradient>
-                      <linearGradient id="fillChromaDB" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(142, 71%, 45%)" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="hsl(142, 71%, 45%)" stopOpacity={0.1} />
-                      </linearGradient>
+                      {databases.map((database) => {
+                        const palette = getDatabasePalette(database, databases);
+                        return (
+                          <linearGradient key={database} id={`fill-${database}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={palette.stroke} stopOpacity={0.8} />
+                            <stop offset="95%" stopColor={palette.stroke} stopOpacity={0.1} />
+                          </linearGradient>
+                        );
+                      })}
                     </defs>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis
@@ -1474,27 +1742,19 @@ export function BenchmarkDashboard() {
                         />
                       }
                     />
-                    <Area
-                      dataKey="Pinecone"
-                      type="monotone"
-                      fill="url(#fillPinecone)"
-                      stroke="hsl(45, 93%, 47%)"
-                      strokeWidth={2}
-                    />
-                    <Area
-                      dataKey="PostgreSQL"
-                      type="monotone"
-                      fill="url(#fillPostgreSQL)"
-                      stroke="hsl(210, 100%, 50%)"
-                      strokeWidth={2}
-                    />
-                    <Area
-                      dataKey="ChromaDB"
-                      type="monotone"
-                      fill="url(#fillChromaDB)"
-                      stroke="hsl(142, 71%, 45%)"
-                      strokeWidth={2}
-                    />
+                    {databases.map((database) => {
+                      const palette = getDatabasePalette(database, databases);
+                      return (
+                        <Area
+                          key={database}
+                          dataKey={database}
+                          type="monotone"
+                          fill={`url(#fill-${database})`}
+                          stroke={palette.stroke}
+                          strokeWidth={2}
+                        />
+                      );
+                    })}
                     <ChartLegend content={(props) => <ChartLegendContent {...props} />} />
                   </AreaChart>
                 </ChartContainer>
@@ -1512,9 +1772,7 @@ export function BenchmarkDashboard() {
                     db.database === speedWinner.database
                       ? "border-primary/50 ring-1 ring-primary/20"
                       : "border-border",
-                    db.database === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
-                    db.database === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
-                    db.database === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
+                    getDatabaseCardClass(db.database, databases)
                   )}
                 >
                   <CardHeader className="pb-1">
@@ -1546,9 +1804,7 @@ export function BenchmarkDashboard() {
                         <div
                           className={cn(
                             "h-full transition-[width] duration-700 motion-reduce:transition-none rounded-full",
-                            db.database === "Pinecone" && "bg-linear-to-r from-amber-500 to-amber-400",
-                            db.database === "PostgreSQL" && "bg-linear-to-r from-blue-500 to-blue-400",
-                            db.database === "ChromaDB" && "bg-linear-to-r from-emerald-500 to-emerald-400"
+                            getDatabaseBarClass(db.database, databases)
                           )}
                           style={{
                             width: `${(Math.min(...speedSummary.map((s) => s.mean_total_ms)) / db.mean_total_ms) * 100}%`,
@@ -1853,20 +2109,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-1.5 sm:px-2.5 pt-2 sm:pt-2.5">
                 <ChartContainer
-                  config={{
-                    Pinecone: {
-                      label: "Pinecone",
-                      color: "var(--chart-1)",
-                    },
-                    PostgreSQL: {
-                      label: "PostgreSQL",
-                      color: "var(--chart-2)",
-                    },
-                    ChromaDB: {
-                      label: "ChromaDB",
-                      color: "var(--chart-3)",
-                    },
-                  } satisfies ChartConfig}
+                  config={buildChartConfig(databases)}
                   className="aspect-auto h-[200px] sm:h-[280px] md:h-[340px] w-full"
                 >
                   <LineChart
@@ -1911,36 +2154,19 @@ export function BenchmarkDashboard() {
                     />
                     {/* Confidence interval bands */}
                     {/* Main lines */}
-                    <Line
-                      dataKey="Pinecone"
-                      type="monotone"
-                      stroke="hsl(45, 93%, 47%)"
-                      strokeWidth={2}
-                      dot={false}
-                      activeDot={{
-                        r: 6,
-                      }}
-                    />
-                    <Line
-                      dataKey="PostgreSQL"
-                      type="monotone"
-                      stroke="hsl(210, 100%, 50%)"
-                      strokeWidth={2}
-                      dot={false}
-                      activeDot={{
-                        r: 6,
-                      }}
-                    />
-                    <Line
-                      dataKey="ChromaDB"
-                      type="monotone"
-                      stroke="hsl(142, 71%, 45%)"
-                      strokeWidth={2}
-                      dot={false}
-                      activeDot={{
-                        r: 6,
-                      }}
-                    />
+                    {databases.map((database) => (
+                      <Line
+                        key={database}
+                        dataKey={database}
+                        type="monotone"
+                        stroke={getDatabasePalette(database, databases).stroke}
+                        strokeWidth={2}
+                        dot={false}
+                        activeDot={{
+                          r: 6,
+                        }}
+                      />
+                    ))}
                     <ChartLegend content={(props) => <ChartLegendContent {...props} />} />
                   </LineChart>
                 </ChartContainer>
@@ -1958,9 +2184,7 @@ export function BenchmarkDashboard() {
                     db === scalabilityWinner.database
                       ? "border-primary/50 ring-1 ring-primary/20"
                       : "border-border",
-                    db === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
-                    db === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
-                    db === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
+                    getDatabaseCardClass(db, databases)
                   )}
                 >
                   <CardHeader className="pb-1 bg-muted/30">
@@ -1993,9 +2217,7 @@ export function BenchmarkDashboard() {
                             <div
                               className={cn(
                                 "h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
-                                db === "Pinecone" && "bg-linear-to-r from-amber-500 to-amber-400",
-                                db === "PostgreSQL" && "bg-linear-to-r from-blue-500 to-blue-400",
-                                db === "ChromaDB" && "bg-linear-to-r from-emerald-500 to-emerald-400"
+                                getDatabaseBarClass(db, databases)
                               )}
                               style={{
                                 width: `${Math.min(
@@ -2095,9 +2317,7 @@ export function BenchmarkDashboard() {
                                   key={db}
                                   className={cn(
                                     "p-1.5 text-right font-mono tabular-nums",
-                                    isMin && db === "ChromaDB" && "text-emerald-500 font-semibold",
-                                    isMin && db === "Pinecone" && "text-amber-500 font-semibold",
-                                    isMin && db === "PostgreSQL" && "text-blue-500 font-semibold"
+                                    isMin && `${getDatabasePalette(db, databases).text} font-semibold`
                                   )}
                                 >
                                   {time?.toFixed(2)}ms
@@ -2131,20 +2351,14 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Quality Summary Cards - 3 cols on mobile for compact view */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-1.5">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-1.5">
               {databases.map((db) => {
                 const metrics = qualityData[db];
-                const dbColor = db === "Pinecone"
-                  ? { text: "text-amber-500", gradient: "from-amber-500 to-amber-400" }
-                  : db === "PostgreSQL"
-                    ? { text: "text-blue-500", gradient: "from-blue-500 to-blue-400" }
-                    : { text: "text-emerald-500", gradient: "from-emerald-500 to-emerald-400" };
+                const palette = getDatabasePalette(db, databases);
                 return (
                   <Card key={db} size="sm" className={cn(
                     "overflow-hidden",
-                    db === "Pinecone" && "bg-linear-to-br from-amber-500/15 via-background to-background",
-                    db === "PostgreSQL" && "bg-linear-to-br from-blue-500/15 via-background to-background",
-                    db === "ChromaDB" && "bg-linear-to-br from-emerald-500/15 via-background to-background"
+                    getDatabaseCardClass(db, databases)
                   )}>
                     <CardHeader className="pb-0.5 sm:pb-1 bg-muted/30 px-2 sm:px-2.5">
                       <CardTitle className="text-[11px] sm:text-sm flex items-center gap-1">
@@ -2157,14 +2371,14 @@ export function BenchmarkDashboard() {
                       <div className="space-y-0.5 sm:space-y-1">
                         <div className="flex justify-between items-center text-[10px] sm:text-xs">
                           <span className="text-muted-foreground font-medium">P</span>
-                          <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
+                          <span className={cn("text-[11px] sm:text-sm font-bold", palette.text)}>
                             <AnimatedCounter value={metrics.avg_precision * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_precision}
-                            className={cn("bg-linear-to-r", dbColor.gradient)}
+                            className={getDatabaseBarClass(db, databases)}
                           />
                         </div>
                       </div>
@@ -2172,15 +2386,15 @@ export function BenchmarkDashboard() {
                       {/* Coverage */}
                       <div className="space-y-0.5 sm:space-y-1">
                         <div className="flex justify-between items-center text-[10px] sm:text-xs">
-                          <span className="text-muted-foreground font-medium">{qualityCoverageLabel === "Recall" ? "R" : "H@K"}</span>
-                          <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
+                          <span className="text-muted-foreground font-medium">{qualityCoverageLabel === "Context Recall" ? "CR" : qualityCoverageLabel === "Recall" ? "R" : "H@K"}</span>
+                          <span className={cn("text-[11px] sm:text-sm font-bold", palette.text)}>
                             <AnimatedCounter value={getQualityCoverageValue(metrics) * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
                             value={getQualityCoverageValue(metrics)}
-                            className={cn("bg-linear-to-r", dbColor.gradient)}
+                            className={getDatabaseBarClass(db, databases)}
                           />
                         </div>
                       </div>
@@ -2188,15 +2402,15 @@ export function BenchmarkDashboard() {
                       {/* F1 Score */}
                       <div className="space-y-0.5 sm:space-y-1">
                         <div className="flex justify-between items-center text-[10px] sm:text-xs">
-                          <span className="text-muted-foreground font-medium">F1</span>
-                          <span className={cn("text-[11px] sm:text-sm font-bold", dbColor.text)}>
+                          <span className="text-muted-foreground font-medium">{benchmarkData.deepeval_answer_quality ? "Faith" : "F1"}</span>
+                          <span className={cn("text-[11px] sm:text-sm font-bold", palette.text)}>
                             <AnimatedCounter value={metrics.avg_f1_score * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
                         <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_f1_score}
-                            className={cn("bg-linear-to-r", dbColor.gradient)}
+                            className={getDatabaseBarClass(db, databases)}
                           />
                         </div>
                       </div>
@@ -2261,7 +2475,7 @@ export function BenchmarkDashboard() {
                             onClick={() => requestQualitySort("precision")}
                             className="flex w-full items-center justify-end gap-1 text-right hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
                           >
-                            <span>Precision</span>
+                            <span>{benchmarkData.deepeval_answer_quality ? "Ctx Precision" : "Precision"}</span>
                             <SortIcon
                               active={qualitySortConfig?.key === "precision"}
                               direction={qualitySortConfig?.direction}
@@ -2287,7 +2501,7 @@ export function BenchmarkDashboard() {
                             onClick={() => requestQualitySort("f1_score")}
                             className="flex w-full items-center justify-end gap-1 text-right hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
                           >
-                            <span>F1</span>
+                            <span>{benchmarkData.deepeval_answer_quality ? "Faithfulness" : "F1"}</span>
                             <SortIcon
                               active={qualitySortConfig?.key === "f1_score"}
                               direction={qualitySortConfig?.direction}
@@ -2300,7 +2514,7 @@ export function BenchmarkDashboard() {
                             onClick={() => requestQualitySort("relevant_retrieved")}
                             className="flex w-full items-center justify-end gap-1 text-right hover:text-foreground transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
                           >
-                            <span>Retrieved</span>
+                            <span>{benchmarkData.deepeval_answer_quality ? "Sample" : "Retrieved"}</span>
                             <SortIcon
                               active={qualitySortConfig?.key === "relevant_retrieved"}
                               direction={qualitySortConfig?.direction}
@@ -2343,7 +2557,9 @@ export function BenchmarkDashboard() {
                             <FormatPercent value={item.f1_score} />
                           </td>
                           <td className="p-1.5 text-right font-mono tabular-nums">
-                            {item.relevant_retrieved}/{item.total_retrieved}
+                            {item.relevant_retrieved !== undefined && item.total_retrieved !== undefined
+                              ? `${item.relevant_retrieved}/${item.total_retrieved}`
+                              : "DeepEval"}
                           </td>
                         </tr>
                       ))}
@@ -2414,7 +2630,7 @@ export function BenchmarkDashboard() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 text-xs">
                     <div className="bg-muted/40 px-2 py-1.5">
                       <div className="text-muted-foreground">Benchmark Timestamp</div>
-                      <div className="font-medium font-mono break-all">{metadata.benchmark_date}</div>
+                      <div className="font-medium font-mono break-all">{getBenchmarkDate(metadata)}</div>
                     </div>
                     <div className="bg-muted/40 px-2 py-1.5">
                       <div className="text-muted-foreground">Scalability Docs</div>
@@ -2480,6 +2696,46 @@ export function BenchmarkDashboard() {
                       <span className="font-medium">{speedWinner.database}</span>
                     </div>
                   </div>
+
+                  {Object.keys(maxConcurrentByDatabase).length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-xs font-medium text-muted-foreground">Resource Usage at Max Concurrent Users</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-1.5">
+                        {databases.map((db) => {
+                          const row = maxConcurrentByDatabase[db];
+                          return (
+                            <div key={db} className={cn("border px-2 py-1.5 text-xs", getDatabaseCardClass(db, databases))}>
+                              <div className="mb-1 flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-1.5 font-medium">
+                                  <DatabaseIcon database={db} className="w-3.5 h-3.5" />
+                                  <span>{db}</span>
+                                </div>
+                                <span className="font-mono text-muted-foreground">{row?.concurrent_users ?? "-"} users</span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-x-2 gap-y-1 font-mono tabular-nums">
+                                <span className="text-muted-foreground">CPU avg</span>
+                                <span className="text-right">{row?.avg_cpu_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className="text-muted-foreground">CPU max</span>
+                                <span className="text-right">{row?.max_cpu_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className="text-muted-foreground">RAM avg</span>
+                                <span className="text-right">{row?.avg_ram_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className="text-muted-foreground">RAM max</span>
+                                <span className="text-right">{row?.max_ram_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className="text-muted-foreground">GPU avg</span>
+                                <span className="text-right">{row?.avg_gpu_util_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className="text-muted-foreground">GPU max</span>
+                                <span className="text-right">{row?.max_gpu_util_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className="text-muted-foreground">VRAM avg</span>
+                                <span className="text-right">{row?.avg_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className="text-muted-foreground">VRAM max</span>
+                                <span className="text-right">{row?.max_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -2528,6 +2784,48 @@ export function BenchmarkDashboard() {
                   </div>
                 </CardContent>
               </Card>
+
+              {speed_test.failure_summary && Object.keys(speed_test.failure_summary).length > 0 && (
+                <Card size="sm" className="border-border/70">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm sm:text-base">Failure Summary</CardTitle>
+                    <CardDescription className="text-xs">
+                      Per-database success and failure counts from `speed_test.failure_summary`.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-1.5 sm:px-2.5">
+                    <div className="w-full overflow-x-auto">
+                      <table className="w-full min-w-[620px] text-xs">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Total Rows</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Success Rows</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Failed Rows</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Success Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(speed_test.failure_summary).map(([database, stats]) => (
+                            <tr key={database} className="border-b last:border-0">
+                              <td className="p-1.5">
+                                <div className="flex items-center gap-1.5">
+                                  <DatabaseIcon database={database} className="w-3.5 h-3.5" />
+                                  <span>{database}</span>
+                                </div>
+                              </td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.total_rows}</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.success_rows}</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.failed_rows}</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{(stats.success_rate * 100).toFixed(1)}%</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {Object.keys(queryTypeSummary).length > 0 && (
                 <Card size="sm" className="border-border/70">
@@ -2619,6 +2917,116 @@ export function BenchmarkDashboard() {
                         </div>
                       </div>
                     ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {Object.keys(concurrentUserScalability).length > 0 && (
+                <Card size="sm" className="border-border/70">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm sm:text-base">Concurrent User Scalability</CardTitle>
+                    <CardDescription className="text-xs">
+                      Latency, throughput, and resource summary from `concurrent_user_scalability_test`.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-1.5 sm:px-2.5">
+                    <div className="w-full overflow-x-auto">
+                      <table className="w-full min-w-[1180px] text-xs">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Users</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Mean Latency</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">P95</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">P99</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Throughput</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Error</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">CPU Avg</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">CPU Max</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">RAM Avg</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">RAM Max</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">GPU Avg</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">GPU Max</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">VRAM Avg</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">VRAM Max</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(concurrentUserScalability).flatMap(([database, rows]) =>
+                            rows.map((row) => (
+                              <tr key={`${database}-${row.concurrent_users}`} className="border-b last:border-0">
+                                <td className="p-1.5">
+                                  <div className="flex items-center gap-1.5">
+                                    <DatabaseIcon database={database} className="w-3.5 h-3.5" />
+                                    <span>{database}</span>
+                                  </div>
+                                </td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.concurrent_users}</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.mean_latency_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.p95_latency_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.p99_latency_ms.toFixed(2)}ms</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.throughput_rps.toFixed(2)} rps</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.error_rate * 100).toFixed(1)}%</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_cpu_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_cpu_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_ram_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_ram_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_gpu_util_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_gpu_util_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {Object.keys(deepevalQuality).length > 0 && (
+                <Card size="sm" className="border-border/70">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm sm:text-base">DeepEval Answer Quality</CardTitle>
+                    <CardDescription className="text-xs">
+                      Answer relevancy, faithfulness, and contextual retrieval metrics from `deepeval_answer_quality`.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-1.5 sm:px-2.5">
+                    <div className="w-full overflow-x-auto">
+                      <table className="w-full min-w-[820px] text-xs">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Answer Relevancy</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Faithfulness</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Context Relevancy</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Context Precision</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Context Recall</th>
+                            <th className="p-1.5 text-right font-medium text-muted-foreground">Rows</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(deepevalQuality).map(([database, metrics]) => (
+                            <tr key={database} className="border-b last:border-0">
+                              <td className="p-1.5">
+                                <div className="flex items-center gap-1.5">
+                                  <DatabaseIcon database={database} className="w-3.5 h-3.5" />
+                                  <span>{database}</span>
+                                </div>
+                              </td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_answer_relevancy ?? 0) * 100).toFixed(2)}%</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_faithfulness ?? 0) * 100).toFixed(2)}%</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_contextual_relevancy ?? 0) * 100).toFixed(2)}%</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_contextual_precision ?? 0) * 100).toFixed(2)}%</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_contextual_recall ?? 0) * 100).toFixed(2)}%</td>
+                              <td className="p-1.5 text-right font-mono tabular-nums">{metrics.per_query?.length ?? 0}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </CardContent>
                 </Card>
               )}

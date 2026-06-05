@@ -8,23 +8,19 @@ const outputPath = path.join(rootDir, "benchmark-results-for-paper.md");
 const datasetConfigs = [
   {
     label: "Dataset 1",
-    canonicalFile: "benchmark_full_20260506_171446.json",
-  },
-  {
-    label: "Dataset 2",
-    canonicalFile: "benchmark_full_20260506_114940.json",
+    canonicalFile: "benchmark_final 5local db.json",
   },
 ];
 
 const comparisonRows = readJson("thesis_db_embedding_comparison.json");
-const rawFullFileNames = readdirSync(dataDir).filter((name) => name.startsWith("benchmark_full_") && name.endsWith(".json"));
+const rawFullFileNames = readdirSync(dataDir).filter((name) => name.startsWith("benchmark") && name.endsWith(".json"));
 
 const datasets = datasetConfigs.map((config) => {
   const data = readJson(config.canonicalFile);
   const rawMatches = rawFullFileNames.filter((name) => {
     const rawData = readJson(name);
 
-    return rawData?.metadata?.benchmark_date === data?.metadata?.benchmark_date;
+    return getBenchmarkDate(rawData?.metadata ?? {}) === getBenchmarkDate(data?.metadata ?? {});
   });
 
   return {
@@ -82,7 +78,7 @@ lines.push(mdTable(
     return [
       dataset.label,
       metadata.embedding_model,
-      metadata.benchmark_date,
+      getBenchmarkDate(metadata),
       formatInteger(metadata.num_queries),
       formatInteger(metadata.repetitions),
       formatInteger(metadata.top_k),
@@ -143,7 +139,7 @@ for (const dataset of datasets) {
   const speedSummary = dataset.data.speed_test.summary ?? [];
   const queryTypeSummary = dataset.data.speed_test.query_type_summary ?? {};
   const perRepetitionSummary = dataset.data.speed_test.per_repetition_summary ?? {};
-  const qualityData = dataset.data.answerable_retrieval_quality ?? dataset.data.retrieval_quality ?? {};
+  const qualityData = dataset.data.answerable_retrieval_quality ?? dataset.data.retrieval_quality ?? normalizeDeepevalQuality(dataset.data.deepeval_answer_quality ?? {});
   const noAnswerEvaluation = dataset.data.no_answer_evaluation ?? {};
   const topKSensitivity = dataset.data.top_k_sensitivity_test ?? dataset.data.scalability_test ?? {};
   const corpusSizeScalability = dataset.data.corpus_size_scalability_test ?? {};
@@ -161,7 +157,10 @@ for (const dataset of datasets) {
   lines.push(mdTable(
     ["Field", "Value"],
     [
-      ["benchmark_date", metadata.benchmark_date],
+      ["benchmark_date", getBenchmarkDate(metadata)],
+      ["run_id", metadata.run_id ?? "N/A"],
+      ["status", metadata.status ?? "N/A"],
+      ["duration_seconds", formatNumber(metadata.duration_seconds, 2)],
       ["llm_model", metadata.llm_model],
       ["embedding_model", metadata.embedding_model],
       ["num_queries", formatInteger(metadata.num_queries)],
@@ -296,14 +295,54 @@ for (const dataset of datasets) {
   ));
   lines.push("");
 
+  if (dataset.data.concurrent_user_scalability_test) {
+    lines.push("### Concurrent User Scalability Summary");
+    lines.push("");
+    lines.push(mdTable(
+      ["Database", "Users", "Runs", "Mean Latency (ms)", "P95 Latency (ms)", "P99 Latency (ms)", "Throughput (rps)", "Error Rate", "Avg CPU", "Avg RAM (MB)", "Avg GPU"],
+      flattenConcurrentSummary(dataset.data.concurrent_user_scalability_test).map((row) => [
+        row.database,
+        formatInteger(row.concurrent_users),
+        formatInteger(row.runs),
+        formatNumber(row.mean_latency_ms),
+        formatNumber(row.p95_latency_ms),
+        formatNumber(row.p99_latency_ms),
+        formatNumber(row.throughput_rps),
+        formatPercent(row.error_rate),
+        formatPercent((row.avg_cpu_percent ?? 0) / 100),
+        formatNumber(row.avg_ram_used_mb),
+        formatPercent((row.avg_gpu_util_percent ?? 0) / 100),
+      ])
+    ));
+    lines.push("");
+  }
+
+  if (dataset.data.deepeval_answer_quality) {
+    lines.push("### DeepEval Answer Quality Summary");
+    lines.push("");
+    lines.push(mdTable(
+      ["Database", "Answer Relevancy", "Faithfulness", "Context Relevancy", "Context Precision", "Context Recall", "Per-Query Rows"],
+      Object.entries(dataset.data.deepeval_answer_quality).map(([database, metrics]) => [
+        database,
+        formatPercent(metrics.avg_answer_relevancy),
+        formatPercent(metrics.avg_faithfulness),
+        formatPercent(metrics.avg_contextual_relevancy),
+        formatPercent(metrics.avg_contextual_precision),
+        formatPercent(metrics.avg_contextual_recall),
+        formatInteger(metrics.per_query?.length ?? 0),
+      ])
+    ));
+    lines.push("");
+  }
+
 }
 
 lines.push("## Interpretation Guardrails");
 lines.push("");
-lines.push("- `Hit@K` and `avg_f1_score` in these files come from `answerable_retrieval_quality`, so they describe answerable-query retrieval behavior rather than the no-answer task.");
-lines.push("- `no_answer_evaluation` should be cited separately from retrieval quality, because it measures abstention behavior rather than document relevance quality.");
+lines.push("- When `answerable_retrieval_quality` is absent, quality summary fields are normalized from `deepeval_answer_quality`: contextual precision, contextual recall, and faithfulness.");
+lines.push("- `deepeval_answer_quality` is based on a capped sample and should be cited separately from full retrieval speed/scalability measurements.");
 lines.push("- Total latency is influenced by LLM generation variability and extreme outliers, so paper claims should usually anchor on retrieval mean, retrieval p95, total median, and total p95 together.");
-lines.push("- The canonical site files and the matching `benchmark_full_*.json` files represent the same underlying benchmark runs in this workspace.");
+lines.push("- Pinecone is intentionally absent from the active local-database benchmark until a matching Pinecone run is added.");
 lines.push("");
 
 writeFileSync(outputPath, `${lines.join("\n")}\n`, "utf8");
@@ -312,6 +351,24 @@ console.log(`Wrote ${path.basename(outputPath)}`);
 
 function readJson(fileName) {
   return JSON.parse(readFileSync(path.join(dataDir, fileName), "utf8"));
+}
+
+function getBenchmarkDate(metadata) {
+  return metadata.benchmark_date ?? metadata.benchmark_started_at ?? metadata.benchmark_completed_at ?? "";
+}
+
+function normalizeDeepevalQuality(section) {
+  return Object.fromEntries(
+    Object.entries(section).map(([database, metrics]) => [
+      database,
+      {
+        avg_precision: metrics.avg_contextual_precision ?? null,
+        avg_hit_at_k: metrics.avg_contextual_recall ?? null,
+        avg_f1_score: metrics.avg_faithfulness ?? null,
+        per_query: metrics.per_query ?? [],
+      },
+    ])
+  );
 }
 
 function groupBy(items, getKey) {
@@ -390,6 +447,16 @@ function flattenCorpusSummary(section) {
   return rows;
 }
 
+function flattenConcurrentSummary(section) {
+  const rows = [];
+  for (const [database, entries] of Object.entries(section)) {
+    for (const entry of entries ?? []) {
+      rows.push({ database, ...entry });
+    }
+  }
+  return rows;
+}
+
 function buildKeyFindings(datasetsForFindings, comparison) {
   const findings = [];
   const qwenRows = comparison.filter((row) => String(row.embedding_model).includes("qwen3-embedding"));
@@ -444,7 +511,7 @@ function buildDatasetFindings(data) {
   const speedSummary = data.speed_test.summary ?? [];
   const queryTypeSummary = data.speed_test.query_type_summary ?? {};
   const noAnswerEvaluation = data.no_answer_evaluation ?? {};
-  const qualityData = data.answerable_retrieval_quality ?? data.retrieval_quality ?? {};
+  const qualityData = data.answerable_retrieval_quality ?? data.retrieval_quality ?? normalizeDeepevalQuality(data.deepeval_answer_quality ?? {});
 
   const fastestRetrieval = [...speedSummary].sort((a, b) => Number(a.mean_retrieval_ms) - Number(b.mean_retrieval_ms))[0];
   const slowestRetrieval = [...speedSummary].sort((a, b) => Number(b.mean_retrieval_ms) - Number(a.mean_retrieval_ms))[0];

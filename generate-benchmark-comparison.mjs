@@ -6,14 +6,13 @@ const dataDir = path.join(rootDir, "Data Benchmark");
 const outputPath = path.join(dataDir, "thesis_db_embedding_comparison.json");
 
 const sourceFiles = [
-  "benchmark_full_20260506_171446.json",
-  "benchmark_full_20260506_114940.json",
+  "benchmark_final 5local db.json",
 ];
 
 const rows = sourceFiles.flatMap((sourceFile) => {
   const data = readJson(sourceFile);
   const embeddingModel = data.metadata.embedding_model;
-  const qualityData = data.answerable_retrieval_quality ?? data.retrieval_quality ?? {};
+  const qualityData = data.answerable_retrieval_quality ?? data.retrieval_quality ?? normalizeDeepevalQuality(data.deepeval_answer_quality ?? {});
   const winnerDatabase = data.speed_test.winner?.database;
 
   return (data.speed_test.summary ?? []).map((speedRow) => {
@@ -46,6 +45,19 @@ console.log(`Wrote ${path.basename(outputPath)}`);
 
 function readJson(fileName) {
   return JSON.parse(readFileSync(path.join(dataDir, fileName), "utf8"));
+}
+
+function normalizeDeepevalQuality(section) {
+  return Object.fromEntries(
+    Object.entries(section).map(([database, metrics]) => [
+      database,
+      {
+        avg_precision: metrics.avg_contextual_precision ?? null,
+        avg_hit_at_k: metrics.avg_contextual_recall ?? null,
+        avg_f1_score: metrics.avg_faithfulness ?? null,
+      },
+    ])
+  );
 }
 
 function medianRetrievalTime(data, database) {
