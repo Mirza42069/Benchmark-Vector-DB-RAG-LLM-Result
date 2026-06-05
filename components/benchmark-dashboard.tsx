@@ -3,7 +3,6 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import benchmarkData1 from "../Data Benchmark/benchmark_final 5local db.json";
-import thesisDbEmbeddingComparison from "../Data Benchmark/thesis_db_embedding_comparison.json";
 
 const benchmarkDatasets = [benchmarkData1] as unknown as BenchmarkDataShape[];
 const benchmarkSourceFallbacks = [
@@ -168,21 +167,6 @@ interface QualityMetrics {
   avg_hit_at_k?: number;
   avg_f1_score: number;
   per_query: QualityPerQuery[];
-}
-
-interface ThesisDbEmbeddingComparisonItem {
-  embedding_model: string;
-  database: string;
-  retrieval_median_ms: number;
-  retrieval_mean_ms: number;
-  total_median_ms: number;
-  total_mean_ms: number;
-  avg_f1_score: number;
-  avg_precision: number;
-  avg_recall?: number;
-  avg_hit_at_k?: number;
-  is_retrieval_winner: boolean;
-  source_file: string;
 }
 
 interface BenchmarkMetadata {
@@ -656,16 +640,9 @@ export function BenchmarkDashboard() {
       ? (tabParam as TabType)
       : "summary";
 
-  const datasetParam = searchParams.get("dataset");
-  const requestedDataset = Number(datasetParam ?? "1");
-  const selectedDataset = Number.isInteger(requestedDataset)
-    ? Math.min(Math.max(requestedDataset, 1), benchmarkDatasets.length)
-    : 1;
   const searchTerm = searchParams.get("q") ?? "";
-  const comparisonMode =
-    benchmarkDatasets.length > 1 && (searchParams.get("compare") === "1" || searchParams.get("compare") === "true");
 
-  const benchmarkData = benchmarkDatasets[selectedDataset - 1] as BenchmarkDataShape;
+  const benchmarkData = benchmarkDatasets[0] as BenchmarkDataShape;
   const metadata = benchmarkData.metadata as BenchmarkMetadata;
   const documentCount = benchmarkData.document_manifest?.length ?? metadata.num_queries;
   const speed_test = benchmarkData.speed_test;
@@ -673,24 +650,7 @@ export function BenchmarkDashboard() {
   const qualityData = getQualityData(benchmarkData);
   const qualityCoverageLabel = getQualityCoverageLabel(benchmarkData);
   const qualityScopeLabel = getQualityScopeLabel(benchmarkData);
-  const datasetDescriptors = benchmarkDatasets.map((dataset, index) => {
-    const datasetMetadata = dataset.metadata as BenchmarkMetadata;
-    const shortLabel = datasetMetadata.embedding_model.includes("mxbai") ? "M" : "Q";
-    const benchmarkDate = getBenchmarkDate(datasetMetadata);
-
-    return {
-      id: index + 1,
-      shortLabel,
-      embeddingModel: datasetMetadata.embedding_model,
-      title: `Dataset ${index + 1}: ${datasetMetadata.embedding_model}`,
-      subtitle: new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }).format(new Date(benchmarkDate)),
-    };
-  });
-  const activeDatasetDescriptor = datasetDescriptors[selectedDataset - 1];
+  const activeDatasetTitle = metadata.embedding_model;
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -703,50 +663,6 @@ export function BenchmarkDashboard() {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-
-  // Comparison mode data
-  const comparisonData = useMemo(() => {
-    if (!comparisonMode) return null;
-    const data1 = benchmarkDatasets[0];
-    const data2 = benchmarkDatasets[1];
-    const databases = data1.metadata.databases_tested;
-    const qualityData1 = getQualityData(data1);
-    const qualityData2 = getQualityData(data2);
-
-    return databases.map((db) => {
-      const speed1 = (data1.speed_test.summary as SpeedTestSummary[]).find(s => s.database === db);
-      const speed2 = (data2.speed_test.summary as SpeedTestSummary[]).find(s => s.database === db);
-      const quality1 = qualityData1[db];
-      const quality2 = qualityData2[db];
-
-      const calcDelta = (v1: number, v2: number) => v1 !== 0 ? ((v2 - v1) / v1) * 100 : 0;
-
-      return {
-        database: db,
-        dataset1: {
-          avgRetrieval: speed1?.mean_retrieval_ms ?? 0,
-          avgTotal: speed1?.mean_total_ms ?? 0,
-          precision: quality1?.avg_precision ?? 0,
-          coverage: getQualityCoverageValue(quality1),
-          f1Score: quality1?.avg_f1_score ?? 0,
-        },
-        dataset2: {
-          avgRetrieval: speed2?.mean_retrieval_ms ?? 0,
-          avgTotal: speed2?.mean_total_ms ?? 0,
-          precision: quality2?.avg_precision ?? 0,
-          coverage: getQualityCoverageValue(quality2),
-          f1Score: quality2?.avg_f1_score ?? 0,
-        },
-        deltas: {
-          avgRetrieval: calcDelta(speed1?.mean_retrieval_ms ?? 0, speed2?.mean_retrieval_ms ?? 0),
-          avgTotal: calcDelta(speed1?.mean_total_ms ?? 0, speed2?.mean_total_ms ?? 0),
-          precision: calcDelta(quality1?.avg_precision ?? 0, quality2?.avg_precision ?? 0),
-          coverage: calcDelta(getQualityCoverageValue(quality1), getQualityCoverageValue(quality2)),
-          f1Score: calcDelta(quality1?.avg_f1_score ?? 0, quality2?.avg_f1_score ?? 0),
-        },
-      };
-    });
-  }, [comparisonMode]);
 
   // Speed test data
   const speedSummary = speed_test.summary as SpeedTestSummary[];
@@ -769,7 +685,7 @@ export function BenchmarkDashboard() {
   const sourceFiles =
     metadata.source_files && metadata.source_files.length > 0
       ? metadata.source_files
-      : [benchmarkSourceFallbacks[selectedDataset - 1]];
+      : [benchmarkSourceFallbacks[0]];
   const perRepetitionSummary = speed_test.per_repetition_summary ?? {};
   const queryTypeSummary = speed_test.query_type_summary ?? {};
   const deepevalQuality = benchmarkData.deepeval_answer_quality ?? {};
@@ -813,31 +729,6 @@ export function BenchmarkDashboard() {
     });
   };
 
-  const setSelectedDataset = (dataset: number) => {
-    updateUrl((params) => {
-      if (dataset === 1) {
-        params.delete("dataset");
-      } else {
-        params.set("dataset", String(dataset));
-      }
-
-      const nextDatabases =
-        benchmarkDatasets[dataset - 1]?.metadata?.databases_tested ?? [];
-      const currentDb = params.get("db");
-      if (currentDb && currentDb !== "all" && !nextDatabases.includes(currentDb)) {
-        params.delete("db");
-      }
-      if (params.get("db") === "all") {
-        params.delete("db");
-      }
-
-      const currentQualityDb = params.get("qualityDb");
-      if (currentQualityDb && !nextDatabases.includes(currentQualityDb)) {
-        params.delete("qualityDb");
-      }
-    });
-  };
-
   const setFilterDb = (value: string) => {
     updateUrl((params) => {
       if (value === "all") {
@@ -864,16 +755,6 @@ export function BenchmarkDashboard() {
         params.set("q", value);
       } else {
         params.delete("q");
-      }
-    });
-  };
-
-  const toggleComparisonMode = () => {
-    updateUrl((params) => {
-      if (comparisonMode) {
-        params.delete("compare");
-      } else {
-        params.set("compare", "1");
       }
     });
   };
@@ -962,24 +843,21 @@ export function BenchmarkDashboard() {
     ) as Record<string, ConcurrentUserScalabilityItem | null>;
   }, [concurrentUserScalability, databases]);
 
-  const resourceEfficiencyWinners = useMemo(() => {
-    const rows = Object.entries(maxConcurrentByDatabase)
-      .filter((entry): entry is [string, ConcurrentUserScalabilityItem] => entry[1] !== null)
-      .map(([database, row]) => ({ database, row }));
-
-    const minBy = (getValue: (row: ConcurrentUserScalabilityItem) => number | undefined) => {
-      const validRows = rows.filter(({ row }) => Number.isFinite(getValue(row)));
-      if (validRows.length === 0) return null;
-      return validRows.reduce((best, curr) => (getValue(curr.row) ?? Infinity) < (getValue(best.row) ?? Infinity) ? curr : best);
+  const dbCompareWinners = useMemo(() => {
+    const minBy = <T,>(entries: Array<[string, T | null]>, getValue: (value: T) => number | undefined) => {
+      const validEntries = entries.filter((entry): entry is [string, T] => entry[1] !== null && Number.isFinite(getValue(entry[1])));
+      if (validEntries.length === 0) return null;
+      return validEntries.reduce((best, curr) => (getValue(curr[1]) ?? Infinity) < (getValue(best[1]) ?? Infinity) ? curr : best)[0];
     };
 
     return {
-      cpu: minBy((row) => row.avg_cpu_percent),
-      ram: minBy((row) => row.avg_ram_used_mb),
-      gpu: minBy((row) => row.avg_gpu_util_percent),
-      vram: minBy((row) => row.avg_gpu_memory_used_mb),
+      retrieval: speedWinner.database,
+      total: minBy(speedSummary.map((row) => [row.database, row] as [string, typeof row]), (row) => row.mean_total_ms),
+      topK: minBy(Object.entries(maxTopKByDatabase), (row) => row.avgTime),
+      corpus: minBy(Object.entries(maxCorpusByDatabase), (row) => row.avgTime),
+      concurrent: minBy(Object.entries(maxConcurrentByDatabase), (row) => row.mean_latency_ms),
     };
-  }, [maxConcurrentByDatabase]);
+  }, [maxConcurrentByDatabase, maxCorpusByDatabase, maxTopKByDatabase, speedSummary, speedWinner.database]);
 
   const resourceEfficiencyScores = useMemo(() => {
     const rows = Object.entries(maxConcurrentByDatabase)
@@ -1021,40 +899,6 @@ export function BenchmarkDashboard() {
     if (entries.length === 0) return null;
     return entries.reduce((best, curr) => curr[1] > best[1] ? curr : best)[0];
   }, [resourceEfficiencyScores]);
-
-  const qualityLeader = useMemo(() => {
-    const scores = databases.map((db) => ({
-      db,
-      score: qualityData[db]?.avg_f1_score ?? 0,
-    }));
-    if (scores.length === 0) return "N/A";
-    const allEqual = scores.every((s) => Math.abs(s.score - scores[0].score) < 0.001);
-    if (allEqual) return "All Equal";
-    return scores.reduce((best, curr) => (curr.score > best.score ? curr : best)).db;
-  }, [qualityData, databases]);
-  const maxF1Score = useMemo(() => {
-    if (databases.length === 0) return 0;
-    return Math.max(...databases.map((db) => qualityData[db]?.avg_f1_score ?? 0));
-  }, [qualityData, databases]);
-
-  const thesisComparisonRows = thesisDbEmbeddingComparison as ThesisDbEmbeddingComparisonItem[];
-  const thesisCoverageLabel = thesisComparisonRows.some((row) => typeof row.avg_hit_at_k === "number") ? "P/Hit@K" : "P/R";
-  const thesisComparisonByEmbedding = useMemo(() => {
-    const grouped = thesisComparisonRows.reduce<Record<string, ThesisDbEmbeddingComparisonItem[]>>((acc, row) => {
-      if (!acc[row.embedding_model]) {
-        acc[row.embedding_model] = [];
-      }
-      acc[row.embedding_model].push(row);
-      return acc;
-    }, {});
-
-    return Object.entries(grouped)
-      .map(([embeddingModel, rows]) => ({
-        embeddingModel,
-        rows: [...rows].sort((a, b) => a.retrieval_mean_ms - b.retrieval_mean_ms),
-      }))
-      .sort((a, b) => a.embeddingModel.localeCompare(b.embeddingModel));
-  }, [thesisComparisonRows]);
 
   // Filter and Sort for Speed Test
   const filteredSpeedResults = useMemo(() => {
@@ -1204,28 +1048,6 @@ export function BenchmarkDashboard() {
     <div className="min-h-screen sm:h-screen bg-background text-foreground font-sans sm:overflow-hidden text-render-optimize flex">
       {/* Desktop Sidebar */}
       <aside className="hidden sm:flex flex-col w-14 border-r border-border/50 bg-muted/20 shrink-0">
-        {/* Dataset Switcher - Stacked vertically */}
-        <div className="flex flex-col items-center gap-1 p-2 border-b border-border/50">
-          {datasetDescriptors.map((num) => (
-            <button
-              key={num.id}
-              type="button"
-              onClick={() => setSelectedDataset(num.id)}
-              aria-pressed={selectedDataset === num.id}
-              aria-label={num.title}
-              title={num.title}
-              className={cn(
-                "w-10 h-8 text-sm font-mono font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
-                  selectedDataset === num.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              )}
-            >
-              {num.shortLabel}
-            </button>
-          ))}
-        </div>
-
         {/* Tab Navigation */}
         <nav
           role="tablist"
@@ -1487,24 +1309,7 @@ export function BenchmarkDashboard() {
                   <CardTitle className="text-sm sm:text-base flex items-center gap-1.5">
                     <BarChart3 aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-muted-foreground shrink-0" />
                     <span className="truncate">DB Compare</span>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">
-                      {comparisonMode ? "(1 vs 2)" : ""}
-                    </span>
                   </CardTitle>
-                  {benchmarkDatasets.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={toggleComparisonMode}
-                      className={cn(
-                        "h-7 sm:h-6 px-2.5 sm:px-2 text-xs font-medium border transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 shrink-0",
-                        comparisonMode
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-background text-foreground border-border hover:bg-muted active:bg-muted"
-                      )}
-                    >
-                      {comparisonMode ? "Exit" : "Compare"}
-                    </button>
-                  )}
                 </div>
               </CardHeader>
               <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col">
@@ -1516,32 +1321,9 @@ export function BenchmarkDashboard() {
                       const corpusScale = maxCorpusByDatabase[db];
                       const concurrentScale = maxConcurrentByDatabase[db];
                       const efficiencyScore = resourceEfficiencyScores[db];
-                      const isMostEfficient = mostEfficientDatabase === db;
                       const dbColor = cn("border-primary/20", getDatabaseCardClass(db, databases));
                     const textColor = getDatabasePalette(db, databases).text;
-
-                    // Get comparison data for this database
-                    const compItem = comparisonData?.find(c => c.database === db);
-
-                    const DeltaBadge = ({ value, inverted = false }: { value: number; inverted?: boolean }) => {
-                      const isBetter = inverted ? value < 0 : value > 0;
-                      const isZero = Math.abs(value) < 0.01;
-                      if (isZero) return null;
-
-                      return (
-                        <span className={cn(
-                          "text-xs font-medium h-4 px-1 rounded flex items-center gap-0.5 ml-1",
-                          isBetter ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-500"
-                        )}>
-                          {value > 0 ? (
-                            <ArrowUp aria-hidden="true" className="w-2.5 h-2.5" />
-                          ) : (
-                            <ArrowDown aria-hidden="true" className="w-2.5 h-2.5" />
-                          )}
-                          {Math.abs(value).toFixed(0)}%
-                        </span>
-                      );
-                    };
+                    const metricClassName = (isBest: boolean) => cn("font-mono text-base md:text-lg", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-foreground/70");
 
                     return (
                       <div
@@ -1556,7 +1338,7 @@ export function BenchmarkDashboard() {
                             <DatabaseIcon database={db} className="w-5 h-5 shrink-0" />
                             {db}
                           </h3>
-                          {!comparisonMode && db === speedWinner.database && (
+                          {db === speedWinner.database && (
                             <Badge className="bg-primary/10 text-primary border-primary/30 flex items-center gap-1 text-sm h-6 px-2">
                               <Trophy aria-hidden="true" className="w-3 h-3" />
                               Winner
@@ -1569,16 +1351,7 @@ export function BenchmarkDashboard() {
                               <Clock aria-hidden="true" className="w-4 h-4" /> Retrieval
                             </span>
                             <div className="flex items-center">
-                              {comparisonMode && compItem ? (
-                                <>
-                                  <span className="font-mono font-semibold text-base md:text-lg">
-                                    {compItem.dataset1.avgRetrieval.toFixed(1)}→{compItem.dataset2.avgRetrieval.toFixed(1)}ms
-                                  </span>
-                                  <DeltaBadge value={compItem.deltas.avgRetrieval} inverted />
-                                </>
-                              ) : (
-                                <span className="font-mono font-semibold text-base md:text-lg">{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
-                              )}
+                              <span className={metricClassName(dbCompareWinners.retrieval === db)}>{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
                             </div>
                           </div>
                           <div className="flex items-center justify-between rounded-lg bg-background/60 px-3 md:px-4 py-2.5 md:py-3" title="Avg Total">
@@ -1586,16 +1359,7 @@ export function BenchmarkDashboard() {
                               <Gauge aria-hidden="true" className="w-4 h-4" /> Total
                             </span>
                             <div className="flex items-center">
-                              {comparisonMode && compItem ? (
-                                <>
-                                  <span className="font-mono font-semibold text-base md:text-lg">
-                                    {compItem.dataset1.avgTotal.toFixed(0)}→{compItem.dataset2.avgTotal.toFixed(0)}ms
-                                  </span>
-                                  <DeltaBadge value={compItem.deltas.avgTotal} inverted />
-                                </>
-                              ) : (
-                                <span className="font-mono font-semibold text-base md:text-lg">{speed?.mean_total_ms.toFixed(0)}ms</span>
-                              )}
+                              <span className={metricClassName(dbCompareWinners.total === db)}>{speed?.mean_total_ms.toFixed(0)}ms</span>
                             </div>
                           </div>
 
@@ -1606,7 +1370,7 @@ export function BenchmarkDashboard() {
                               <TrendingUp aria-hidden="true" className="w-4 h-4" /> Top-K Scale
                             </span>
                             <div className="flex items-center">
-                              <span className="font-mono font-semibold text-base md:text-lg" title={topKScale ? `k=${topKScale.topK}` : undefined}>
+                              <span className={metricClassName(dbCompareWinners.topK === db)} title={topKScale ? `k=${topKScale.topK}` : undefined}>
                                 {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
                               </span>
                             </div>
@@ -1616,7 +1380,7 @@ export function BenchmarkDashboard() {
                               <Database aria-hidden="true" className="w-4 h-4" /> Corpus Scale
                             </span>
                             <div className="flex items-center">
-                              <span className="font-mono font-semibold text-base md:text-lg" title={corpusScale ? `${corpusScale.docCount}% corpus` : undefined}>
+                              <span className={metricClassName(dbCompareWinners.corpus === db)} title={corpusScale ? `${corpusScale.docCount}% corpus` : undefined}>
                                 {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
                               </span>
                             </div>
@@ -1626,7 +1390,7 @@ export function BenchmarkDashboard() {
                               <Activity aria-hidden="true" className="w-4 h-4" /> Concurrent
                             </span>
                             <div className="flex items-center">
-                              <span className="font-mono font-semibold text-base md:text-lg" title={concurrentScale ? `${concurrentScale.concurrent_users} users` : undefined}>
+                              <span className={metricClassName(dbCompareWinners.concurrent === db)} title={concurrentScale ? `${concurrentScale.concurrent_users} users` : undefined}>
                                 {concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
                               </span>
                             </div>
@@ -1639,8 +1403,7 @@ export function BenchmarkDashboard() {
                               <CheckCircle aria-hidden="true" className="w-4 h-4" /> Efficient
                             </span>
                             <div className="flex items-center gap-1.5">
-                              {isMostEfficient && <Badge className="h-5 px-1.5 text-[10px] bg-green-500/10 text-green-500 border-green-500/30">Best</Badge>}
-                              <span className="font-mono font-semibold text-base md:text-lg">
+                              <span className={metricClassName(mostEfficientDatabase === db)}>
                                 {efficiencyScore !== null && efficiencyScore !== undefined ? efficiencyScore.toFixed(1) : "-"}
                               </span>
                             </div>
@@ -2590,7 +2353,7 @@ export function BenchmarkDashboard() {
                       <BarChart3 aria-hidden="true" className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
                     <div>
-                      <CardTitle className="text-sm sm:text-base">{activeDatasetDescriptor?.title}</CardTitle>
+                      <CardTitle className="text-sm sm:text-base">{activeDatasetTitle}</CardTitle>
                       <CardDescription className="text-xs">
                         Configuration details, source files, and benchmark run metadata.
                       </CardDescription>
@@ -3030,80 +2793,6 @@ export function BenchmarkDashboard() {
                   </CardContent>
                 </Card>
               )}
-
-              <Card size="sm" className="border-border/70">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-lg bg-secondary text-foreground flex items-center justify-center border border-border/60">
-                      <Database aria-hidden="true" className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-sm sm:text-base">Thesis DB + Embedding Comparison</CardTitle>
-                      <CardDescription className="text-xs">
-                        Cross-embedding benchmark summary from `Data Benchmark/thesis_db_embedding_comparison.json`.
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {thesisComparisonByEmbedding.map(({ embeddingModel, rows }) => (
-                    <div key={embeddingModel} className="space-y-1.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {embeddingModel}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground font-mono">{rows.length} DBs</span>
-                      </div>
-
-                      <div className="w-full overflow-x-auto">
-                        <table className="w-full min-w-[760px] text-xs">
-                          <thead>
-                            <tr className="border-b">
-                              <th className="p-1.5 text-left font-medium text-muted-foreground">DB</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval (Median)</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">Retrieval (Mean)</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">Total (Median)</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">Total (Mean)</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">F1</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">{thesisCoverageLabel}</th>
-                              <th className="p-1.5 text-right font-medium text-muted-foreground">Winner</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {rows.map((row) => (
-                              <tr key={`${row.embedding_model}-${row.database}`} className="border-b last:border-0">
-                                <td className="p-1.5">
-                                  <div className="flex items-center gap-1.5">
-                                    <DatabaseIcon database={row.database} className="w-3.5 h-3.5" />
-                                    <span>{row.database}</span>
-                                  </div>
-                                </td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.retrieval_median_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.retrieval_mean_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.total_median_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.total_mean_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_f1_score * 100).toFixed(2)}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.avg_precision * 100).toFixed(1)} / {(((row.avg_hit_at_k ?? row.avg_recall) ?? 0) * 100).toFixed(1)}</td>
-                                <td className="p-1.5 text-right">
-                                  {row.is_retrieval_winner ? (
-                                    <Badge className="bg-primary/10 text-primary border-primary/30 text-xs h-5 px-1.5">Yes</Badge>
-                                  ) : (
-                                    <Badge variant="secondary" className="text-xs h-5 px-1.5">No</Badge>
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <div className="text-xs text-muted-foreground font-mono bg-muted/40 px-2 py-1 truncate" title={rows[0]?.source_file}>
-                        Source: {rows[0]?.source_file}
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
             </div>
           )
         }
@@ -3118,31 +2807,6 @@ export function BenchmarkDashboard() {
         className="fixed bottom-0 inset-x-0 sm:hidden border-t border-border/50 bg-background/95 backdrop-blur-sm z-50 safe-area-inset"
       >
         <div className="flex items-center justify-between px-2 py-1">
-          {/* Dataset Switcher */}
-          <div
-            className="flex items-center border border-border/50 bg-muted/30 p-0.5"
-            role="group"
-            aria-label="Dataset selection"
-          >
-            {datasetDescriptors.map((num) => (
-              <button
-                key={num.id}
-                type="button"
-                onClick={() => setSelectedDataset(num.id)}
-                aria-pressed={selectedDataset === num.id}
-                aria-label={num.title}
-                className={cn(
-                  "w-8 h-8 text-sm font-mono font-medium transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-                  selectedDataset === num.id
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground"
-                )}
-              >
-                {num.shortLabel}
-              </button>
-            ))}
-          </div>
-
           {/* Tab Navigation */}
           <div className="flex items-center" onKeyDown={handleTabKeyDown}>
             <BottomNavTabButton
