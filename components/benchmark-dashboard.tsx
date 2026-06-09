@@ -1319,7 +1319,7 @@ export function BenchmarkDashboard() {
               <div key="summary-tab" className="sm:h-full sm:min-h-0 flex flex-col gap-3 sm:gap-2 md:gap-1.5 sm:overflow-y-auto no-scrollbar pb-4 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
           <h2 className="sr-only">Summary</h2>
           {/* Overall Winner */}
-            <Card size="sm" className="border-primary/30 bg-linear-to-br from-primary/5 via-primary/10 to-transparent relative overflow-hidden">
+            <Card size="sm" className="bg-linear-to-br from-primary/5 via-primary/10 to-transparent relative overflow-hidden">
               <div className="absolute top-0 right-0 p-3 opacity-[0.08] pointer-events-none">
                 <Trophy aria-hidden="true" className="w-12 sm:w-16 h-12 sm:h-16 text-primary" />
               </div>
@@ -1344,7 +1344,7 @@ export function BenchmarkDashboard() {
           {/* Key Metrics Grid - 2 cols on small mobile, 3 on tablet+ */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-1.5">
             {/* Speed Winner */}
-            <Card size="sm" className="border-amber-500/30">
+            <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
                 <div className="flex items-center gap-1 sm:gap-1.5 text-amber-500">
                   <Zap aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
@@ -1360,7 +1360,7 @@ export function BenchmarkDashboard() {
             </Card>
 
             {/* Fastest Query */}
-            <Card size="sm" className="border-green-500/30">
+            <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
                 <div className="flex items-center gap-1 sm:gap-1.5 text-green-500">
                   <ArrowUp aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
@@ -1387,7 +1387,7 @@ export function BenchmarkDashboard() {
             </Card>
 
             {/* Slowest Query - Hidden on very small screens to save space, shown as 2-col span on sm */}
-            <Card size="sm" className="border-red-500/30 col-span-2 sm:col-span-1">
+            <Card size="sm" className="col-span-2 sm:col-span-1">
               <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
                 <div className="flex items-center gap-1 sm:gap-1.5 text-red-500">
                   <ArrowDown aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
@@ -1417,7 +1417,7 @@ export function BenchmarkDashboard() {
           {/* Secondary Metrics - 3 cols on mobile */}
           <div className="grid grid-cols-3 gap-2 sm:gap-1.5">
             {/* Best Scalability */}
-            <Card size="sm" className="border-blue-500/30">
+            <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
                 <div className="flex items-center gap-1 text-blue-500">
                   <TrendingUp aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
@@ -1439,7 +1439,7 @@ export function BenchmarkDashboard() {
             </Card>
 
             {/* Concurrent Users */}
-            <Card size="sm" className="border-cyan-500/30">
+            <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
                 <div className="flex items-center gap-1 text-cyan-500">
                   <Gauge aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
@@ -1459,7 +1459,7 @@ export function BenchmarkDashboard() {
             </Card>
 
             {/* Total Documents */}
-            <Card size="sm" className="border-violet-500/30">
+            <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
                 <div className="flex items-center gap-1 text-violet-500">
                   <Database aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
@@ -1478,9 +1478,9 @@ export function BenchmarkDashboard() {
           {/* Database Comparison */}
             <Card
               size="sm"
-              className="bg-linear-to-br from-background via-background to-muted/25 sm:flex-1 sm:min-h-0"
+              className="sm:flex-1 sm:min-h-0"
             >
-              <CardHeader className="pb-2 pt-2.5 px-3 border-b border-border/40 bg-muted/20 shrink-0">
+              <CardHeader className="pb-2 pt-2.5 px-3 shrink-0">
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="text-sm sm:text-base flex items-center gap-1.5">
                     <BarChart3 aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-muted-foreground shrink-0" />
@@ -1497,7 +1497,7 @@ export function BenchmarkDashboard() {
                       const corpusScale = maxCorpusByDatabase[db];
                       const concurrentScale = maxConcurrentByDatabase[db];
                       const efficiencyScore = resourceEfficiencyScores[db];
-                      const dbColor = cn("border-primary/20", getDatabaseCardClass(db, databases));
+                      const dbColor = getDatabaseCardClass(db, databases);
                     const textColor = getDatabasePalette(db, databases).text;
                     const metricClassName = (isBest: boolean) => cn("font-mono text-sm sm:text-base whitespace-nowrap shrink-0", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-foreground/70");
 
@@ -1505,7 +1505,7 @@ export function BenchmarkDashboard() {
                       <div
                         key={db}
                         className={cn(
-                          "rounded-xl border p-3 relative overflow-hidden flex flex-col",
+                          "rounded-xl p-3 relative overflow-hidden flex flex-col",
                           dbColor
                         )}
                       >
@@ -1537,8 +1537,6 @@ export function BenchmarkDashboard() {
                             <span className={metricClassName(dbCompareWinners.total === db)}>{speed?.mean_total_ms.toFixed(0)}ms</span>
                           </div>
 
-                          <div className="h-px bg-border/60" />
-
                           <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Top-K scale at maximum tested k">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <TrendingUp aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
@@ -1566,8 +1564,6 @@ export function BenchmarkDashboard() {
                               {concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
                             </span>
                           </div>
-
-                          <div className="h-px bg-border/60" />
 
                           <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
@@ -1604,8 +1600,8 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Retrieval Time Chart - Now at top */}
-            <Card className="pt-0 bg-linear-to-br from-background via-background to-muted/20">
-              <CardHeader className="flex items-center gap-1.5 space-y-0 border-b py-2 sm:py-2.5 px-2.5 sm:px-3 sm:flex-row">
+            <Card className="pt-0">
+              <CardHeader className="flex items-center gap-1.5 space-y-0 py-2 sm:py-2.5 px-2.5 sm:px-3 sm:flex-row">
                 <div className="grid flex-1 gap-0.5">
                   <CardTitle className="text-sm sm:text-lg">Retrieval Time</CardTitle>
                 </div>
@@ -1701,10 +1697,7 @@ export function BenchmarkDashboard() {
                   key={db.database}
                   size="sm"
                   className={cn(
-                    "border transition-shadow duration-200 hover:shadow-md overflow-hidden",
-                    db.database === speedWinner.database
-                      ? "border-primary/50 ring-1 ring-primary/20"
-                      : "border-border",
+                    "transition-shadow duration-200 hover:shadow-md overflow-hidden",
                     getDatabaseCardClass(db.database, databases)
                   )}
                 >
@@ -2048,8 +2041,8 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Scalability Line Chart - Now at top */}
-            <Card className="pt-0 bg-linear-to-br from-background via-background to-muted/20">
-              <CardHeader className="flex items-center gap-1.5 space-y-0 border-b py-2 sm:py-2.5 px-2.5 sm:px-3 sm:flex-row">
+            <Card className="pt-0">
+              <CardHeader className="flex items-center gap-1.5 space-y-0 py-2 sm:py-2.5 px-2.5 sm:px-3 sm:flex-row">
                 <div className="grid flex-1 gap-0.5">
                   <CardTitle className="text-sm sm:text-lg">Trend by top_k</CardTitle>
                 </div>
@@ -2127,14 +2120,11 @@ export function BenchmarkDashboard() {
                   key={db}
                   size="sm"
                   className={cn(
-                    "overflow-hidden transition-shadow duration-200 hover:shadow-md border",
-                    db === scalabilityWinner.database
-                      ? "border-primary/50 ring-1 ring-primary/20"
-                      : "border-border",
+                    "overflow-hidden transition-shadow duration-200 hover:shadow-md",
                     getDatabaseCardClass(db, databases)
                   )}
                 >
-                  <CardHeader className="pb-1 bg-muted/30">
+                  <CardHeader className="pb-1">
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-sm flex items-center gap-1.5">
                         <DatabaseIcon database={db} className="w-4 h-4" />
@@ -2307,7 +2297,7 @@ export function BenchmarkDashboard() {
                     "overflow-hidden",
                     getDatabaseCardClass(db, databases)
                   )}>
-                    <CardHeader className="pb-0.5 sm:pb-1 bg-muted/30 px-2 sm:px-2.5">
+                    <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
                       <CardTitle className="text-[11px] sm:text-sm flex items-center gap-1">
                         <DatabaseIcon database={db} className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
                         <span className="truncate">{db}</span>
@@ -2530,10 +2520,10 @@ export function BenchmarkDashboard() {
                 </h2>
               </div>
 
-              <Card size="sm" className="border-border/70">
+              <Card size="sm">
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-3">
-                    <div className="size-12 sm:size-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/25">
+                    <div className="size-12 sm:size-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                       <BarChart3 aria-hidden="true" className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
                     <div>
@@ -2651,7 +2641,7 @@ export function BenchmarkDashboard() {
                         {databases.map((db) => {
                           const row = maxConcurrentByDatabase[db];
                           return (
-                            <div key={db} className={cn("border px-2 py-1.5 text-xs", getDatabaseCardClass(db, databases))}>
+                            <div key={db} className={cn("px-2 py-1.5 text-xs", getDatabaseCardClass(db, databases))}>
                               <div className="mb-1 flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-1.5 font-medium">
                                   <DatabaseIcon database={db} className="w-3.5 h-3.5" />
@@ -2687,7 +2677,7 @@ export function BenchmarkDashboard() {
                 </CardContent>
               </Card>
 
-              <Card size="sm" className="border-border/70">
+              <Card size="sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm sm:text-base">Speed Summary Details</CardTitle>
                   <CardDescription className="text-xs">
@@ -2734,7 +2724,7 @@ export function BenchmarkDashboard() {
               </Card>
 
               {speed_test.failure_summary && Object.keys(speed_test.failure_summary).length > 0 && (
-                <Card size="sm" className="border-border/70">
+                <Card size="sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm sm:text-base">Failure Summary</CardTitle>
                     <CardDescription className="text-xs">
@@ -2776,7 +2766,7 @@ export function BenchmarkDashboard() {
               )}
 
               {Object.keys(queryTypeSummary).length > 0 && (
-                <Card size="sm" className="border-border/70">
+                <Card size="sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm sm:text-base">Query Type Breakdown</CardTitle>
                     <CardDescription className="text-xs">
@@ -2822,7 +2812,7 @@ export function BenchmarkDashboard() {
               )}
 
               {Object.keys(perRepetitionSummary).length > 0 && (
-                <Card size="sm" className="border-border/70">
+                <Card size="sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm sm:text-base">Per-Repetition Summary</CardTitle>
                     <CardDescription className="text-xs">
@@ -2870,7 +2860,7 @@ export function BenchmarkDashboard() {
               )}
 
               {Object.keys(concurrentUserScalability).length > 0 && (
-                <Card size="sm" className="border-border/70">
+                <Card size="sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm sm:text-base">Concurrent User Scalability</CardTitle>
                     <CardDescription className="text-xs">
@@ -2935,7 +2925,7 @@ export function BenchmarkDashboard() {
               )}
 
               {Object.keys(deepevalQuality).length > 0 && (
-                <Card size="sm" className="border-border/70">
+                <Card size="sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm sm:text-base">DeepEval Answer Quality</CardTitle>
                     <CardDescription className="text-xs">
