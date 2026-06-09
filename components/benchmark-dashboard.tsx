@@ -49,6 +49,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -86,7 +87,7 @@ import {
   ArrowDown,
   Info,
 } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle, SidebarThemeToggle } from "@/components/mode-toggle";
 
 // Type definitions
 interface SpeedTestRawResult {
@@ -603,6 +604,29 @@ const DatabaseIcon = ({ database, className = "w-5 h-5" }: { database: string; c
           </defs>
         </svg>
       );
+    case "SQLite":
+      return (
+        <svg aria-hidden="true" focusable="false" className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M4 20C4 11 11 4 20 4c0 9-7 16-16 16z" fill="hsl(265, 89%, 70%)" />
+          <path d="M15.5 7.5c-3.8 1.6-6.6 4.4-8 8.2" stroke="hsl(265, 60%, 97%)" strokeWidth="1.3" strokeLinecap="round" />
+        </svg>
+      );
+    case "LanceDB":
+      return (
+        <svg aria-hidden="true" focusable="false" className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M12 2l9 10-9 10-9-10z" fill="hsl(24, 95%, 53%)" />
+          <path d="M12 2l9 10-9 10z" fill="hsl(24, 95%, 45%)" />
+          <path d="M12 7l4.5 5-4.5 5-4.5-5z" fill="hsl(24, 95%, 64%)" />
+        </svg>
+      );
+    case "Qdrant":
+      return (
+        <svg aria-hidden="true" focusable="false" className={className} viewBox="0 0 24 24" fill="none">
+          <circle cx="10.5" cy="10.5" r="7.3" stroke="hsl(187, 92%, 42%)" strokeWidth="2.4" />
+          <path d="M15.6 15.6l4.9 4.9" stroke="hsl(187, 92%, 42%)" strokeWidth="2.4" strokeLinecap="round" />
+          <circle cx="10.5" cy="10.5" r="2.4" fill="hsl(187, 92%, 50%)" />
+        </svg>
+      );
     default:
       return <Database aria-hidden="true" className={className} />;
   }
@@ -695,7 +719,10 @@ const SidebarTabButton = ({
   icon: Icon,
   activeTab,
   setActiveTab,
-}: TabButtonProps) => (
+}: TabButtonProps) => {
+  // Stagger each icon's reveal so they cascade in when the pill opens.
+  const index = Math.max(tabOptions.indexOf(tab), 0);
+  return (
   <button
     type="button"
     onClick={() => setActiveTab(tab)}
@@ -703,21 +730,20 @@ const SidebarTabButton = ({
     aria-label={label}
     aria-selected={activeTab === tab}
     role="tab"
+    style={{ transitionDelay: `${index * 40}ms` }}
     className={cn(
-      "relative flex items-center justify-center w-10 h-10 transition-colors duration-150",
+      "relative flex items-center justify-center w-10 h-10 rounded-full transition-[color,background-color,opacity,transform] duration-200 ease-out motion-reduce:transition-none",
+      "opacity-0 -translate-x-2 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 group-focus-within/sidebar:opacity-100 group-focus-within/sidebar:translate-x-0",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
       activeTab === tab
-        ? "text-foreground"
+        ? "bg-primary/15 text-primary"
         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
     )}
   >
-    {/* Left border accent for active state */}
-    {activeTab === tab && (
-      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary" />
-    )}
     <Icon aria-hidden="true" className="w-5 h-5" />
   </button>
-);
+  );
+};
 
 // Bottom nav tab button (mobile) - icon with label
 const BottomNavTabButton = ({
@@ -781,6 +807,9 @@ export function BenchmarkDashboard() {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
+  // Cap the speed-test table's initial render — the merged dataset has ~3k rows,
+  // and mounting them all on tab switch is what made the Speed tab janky to open.
+  const [speedRowLimit, setSpeedRowLimit] = useState(150);
 
   // Speed test data
   const speedSummary = speed_test.summary as SpeedTestSummary[];
@@ -1087,6 +1116,13 @@ export function BenchmarkDashboard() {
     setScalabilitySortConfig({ key, direction });
   };
 
+  // aria-sort value for a sortable column header (announces sort state to screen readers)
+  const ariaSortFor = (
+    config: { key: string; direction: "asc" | "desc" } | null,
+    key: string
+  ): "ascending" | "descending" | "none" =>
+    config?.key === key ? (config.direction === "asc" ? "ascending" : "descending") : "none";
+
   // Sorted quality per-query data
   const sortedQualityResults = useMemo(() => {
     const data = qualityData[selectedQualityDb]?.per_query || [];
@@ -1168,57 +1204,74 @@ export function BenchmarkDashboard() {
 
   return (
     <div className="min-h-screen sm:h-screen bg-background text-foreground font-sans sm:overflow-hidden text-render-optimize flex">
-      {/* Desktop Sidebar */}
-      <aside className="hidden sm:flex flex-col w-14 border-r border-border/50 bg-muted/20 shrink-0">
-        {/* Tab Navigation */}
-        <nav
-          role="tablist"
-          aria-label="Main navigation"
-          onKeyDown={handleTabKeyDown}
-          className="flex-1 flex flex-col items-center py-2"
-        >
-          <SidebarTabButton
-            tab="summary"
-            label="Summary"
-            icon={LayoutDashboard}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarTabButton
-            tab="speed"
-            label="Speed Test"
-            icon={Zap}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarTabButton
-            tab="scalability"
-            label="Scalability"
-            icon={TrendingUp}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarTabButton
-            tab="quality"
-            label="Retrieval Quality"
-            icon={Target}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <SidebarTabButton
-            tab="info"
-            label="More Info"
-            icon={Info}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        </nav>
+      {/* Desktop floating sidebar — a pill that reveals on hover near the left edge */}
+      <div className="hidden sm:block group/sidebar pointer-events-none fixed inset-y-0 left-0 z-40">
+        {/* Hover trigger: thin strip hugging the left edge */}
+        <div aria-hidden="true" className="pointer-events-auto absolute inset-y-0 left-0 w-4" />
 
-        {/* Theme Toggle */}
-        <div className="flex flex-col items-center p-2 border-t border-border/50">
-          <ModeToggle />
-        </div>
-      </aside>
+        {/* The pill */}
+        <aside
+          className={cn(
+            "pointer-events-none absolute left-2 top-1/2 flex origin-left -translate-x-full -translate-y-1/2 scale-95 flex-col items-center gap-0.5 opacity-0",
+            "rounded-full border border-border/60 bg-background/80 px-1.5 py-2 shadow-lg ring-1 ring-black/5 backdrop-blur-md",
+            "transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none",
+            "group-hover/sidebar:pointer-events-auto group-hover/sidebar:translate-x-0 group-hover/sidebar:scale-100 group-hover/sidebar:opacity-100",
+            "group-focus-within/sidebar:pointer-events-auto group-focus-within/sidebar:translate-x-0 group-focus-within/sidebar:scale-100 group-focus-within/sidebar:opacity-100"
+          )}
+        >
+          {/* Tab Navigation */}
+          <nav
+            role="tablist"
+            aria-label="Main navigation"
+            onKeyDown={handleTabKeyDown}
+            className="flex flex-col items-center gap-0.5"
+          >
+            <SidebarTabButton
+              tab="summary"
+              label="Summary"
+              icon={LayoutDashboard}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <SidebarTabButton
+              tab="speed"
+              label="Speed Test"
+              icon={Zap}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <SidebarTabButton
+              tab="scalability"
+              label="Scalability"
+              icon={TrendingUp}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <SidebarTabButton
+              tab="quality"
+              label="Retrieval Quality"
+              icon={Target}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <SidebarTabButton
+              tab="info"
+              label="More Info"
+              icon={Info}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+          </nav>
+
+          {/* Theme Toggle */}
+          <div className="mt-1 flex flex-col items-center border-t border-border/50 pt-1.5">
+            <SidebarThemeToggle
+              style={{ transitionDelay: `${tabOptions.length * 40}ms` }}
+              className="-translate-x-2 opacity-0 group-hover/sidebar:translate-x-0 group-hover/sidebar:opacity-100 group-focus-within/sidebar:translate-x-0 group-focus-within/sidebar:opacity-100"
+            />
+          </div>
+        </aside>
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-full sm:h-full overflow-hidden">
@@ -1264,6 +1317,7 @@ export function BenchmarkDashboard() {
             {/* Summary Tab */}
             {activeTab === "summary" && (
               <div key="summary-tab" className="sm:h-full sm:min-h-0 flex flex-col gap-3 sm:gap-2 md:gap-1.5 sm:overflow-y-auto no-scrollbar pb-4 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+          <h2 className="sr-only">Summary</h2>
           {/* Overall Winner */}
             <Card size="sm" className="border-primary/30 bg-linear-to-br from-primary/5 via-primary/10 to-transparent relative overflow-hidden">
               <div className="absolute top-0 right-0 p-3 opacity-[0.08] pointer-events-none">
@@ -1424,9 +1478,9 @@ export function BenchmarkDashboard() {
           {/* Database Comparison */}
             <Card
               size="sm"
-              className="bg-linear-to-br from-background via-background to-muted/25"
+              className="bg-linear-to-br from-background via-background to-muted/25 sm:flex-1 sm:min-h-0"
             >
-              <CardHeader className="pb-2 pt-2.5 px-3 border-b border-border/40 bg-muted/20">
+              <CardHeader className="pb-2 pt-2.5 px-3 border-b border-border/40 bg-muted/20 shrink-0">
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="text-sm sm:text-base flex items-center gap-1.5">
                     <BarChart3 aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-muted-foreground shrink-0" />
@@ -1434,9 +1488,9 @@ export function BenchmarkDashboard() {
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col">
+              <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col sm:flex-1 sm:min-h-0">
                 {/* Mobile: Horizontal scroll for database cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-3 sm:flex-1 sm:auto-rows-fr">
                 {databases.map((db) => {
                       const speed = speedSummary.find(s => s.database === db);
                       const topKScale = maxTopKByDatabase[db];
@@ -1467,15 +1521,15 @@ export function BenchmarkDashboard() {
                             </Badge>
                           )}
                         </div>
-                        <div className="grid gap-1.5 flex-1">
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Avg Retrieval">
+                        <div className="flex flex-col gap-1.5 flex-1">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Avg Retrieval">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Clock aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Retrieval</span>
                             </span>
                             <span className={metricClassName(dbCompareWinners.retrieval === db)}>{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
                           </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Avg Total = retrieval + LLM time (end-to-end per query)">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Avg Total = retrieval + LLM time (end-to-end per query)">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Gauge aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Total</span>
@@ -1485,7 +1539,7 @@ export function BenchmarkDashboard() {
 
                           <div className="h-px bg-border/60" />
 
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Top-K scale at maximum tested k">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Top-K scale at maximum tested k">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <TrendingUp aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Top-K</span>
@@ -1494,7 +1548,7 @@ export function BenchmarkDashboard() {
                               {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Corpus-size scale at maximum tested corpus percentage">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Corpus-size scale at maximum tested corpus percentage">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Database aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Corpus</span>
@@ -1503,7 +1557,7 @@ export function BenchmarkDashboard() {
                               {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Concurrent-user latency at maximum tested users">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Concurrent-user latency at maximum tested users">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Activity aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Concurrent</span>
@@ -1515,7 +1569,7 @@ export function BenchmarkDashboard() {
 
                           <div className="h-px bg-border/60" />
 
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <CheckCircle aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Efficient</span>
@@ -1804,7 +1858,7 @@ export function BenchmarkDashboard() {
                     </colgroup>
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-1.5 font-medium text-muted-foreground">
+                        <th className="text-left p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "query_num")}>
                           <button
                             type="button"
                             onClick={() => requestSort("query_num")}
@@ -1817,7 +1871,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-left p-1.5 font-medium text-muted-foreground">
+                        <th className="text-left p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "query")}>
                           <button
                             type="button"
                             onClick={() => requestSort("query")}
@@ -1830,7 +1884,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "database")}>
                           <button
                             type="button"
                             onClick={() => requestSort("database")}
@@ -1843,7 +1897,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "retrieval_time")}>
                           <button
                             type="button"
                             onClick={() => requestSort("retrieval_time")}
@@ -1856,7 +1910,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "llm_time")}>
                           <button
                             type="button"
                             onClick={() => requestSort("llm_time")}
@@ -1869,7 +1923,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "total_time")}>
                           <button
                             type="button"
                             onClick={() => requestSort("total_time")}
@@ -1882,7 +1936,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "num_docs")}>
                           <button
                             type="button"
                             onClick={() => requestSort("num_docs")}
@@ -1895,7 +1949,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(sortConfig, "success")}>
                           <button
                             type="button"
                             onClick={() => requestSort("success")}
@@ -1911,7 +1965,7 @@ export function BenchmarkDashboard() {
                       </tr>
                     </thead>
                     <tbody className="content-visibility-auto">
-                      {sortedSpeedResults.map((row) => (
+                      {sortedSpeedResults.slice(0, speedRowLimit).map((row) => (
                         <tr
                           key={`${row.global_query_num ?? row.query_num}-${row.database}-${row.repetition ?? 1}`}
                           className="border-b last:border-0 hover:bg-muted/50 transition-colors"
@@ -1945,7 +1999,7 @@ export function BenchmarkDashboard() {
                                 variant="secondary"
                                 className={cn(
                                   "font-normal text-xs h-5 px-1.5",
-                                  row.success ? "text-emerald-600" : "text-red-600"
+                                  row.success ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
                                 )}
                               >
                                 {row.success ? "OK" : "Fail"}
@@ -1962,6 +2016,20 @@ export function BenchmarkDashboard() {
                     </div>
                   )}
                 </div>
+                {sortedSpeedResults.length > speedRowLimit && (
+                  <div className="flex items-center justify-center gap-2 pt-2 text-xs text-muted-foreground">
+                    <span className="font-mono tabular-nums">
+                      {speedRowLimit.toLocaleString()} of {sortedSpeedResults.length.toLocaleString()}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSpeedRowLimit((n) => n + 300)}
+                    >
+                      Show More
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -2147,7 +2215,7 @@ export function BenchmarkDashboard() {
                     </colgroup>
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-1.5 font-medium text-muted-foreground">
+                        <th className="text-left p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(scalabilitySortConfig, "top_k")}>
                           <button
                             type="button"
                             onClick={() => requestScalabilitySort("top_k")}
@@ -2161,7 +2229,7 @@ export function BenchmarkDashboard() {
                           </button>
                         </th>
                         {databases.map((db) => (
-                          <th key={db} className="text-right p-1.5 font-medium text-muted-foreground">
+                          <th key={db} className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(scalabilitySortConfig, db)}>
                             <button
                               type="button"
                               onClick={() => requestScalabilitySort(db)}
@@ -2218,7 +2286,7 @@ export function BenchmarkDashboard() {
         {/* Quality Tab */}
         {
           activeTab === "quality" && (
-            <div key="quality-tab" className="sm:h-full sm:overflow-y-auto no-scrollbar space-y-3 sm:space-y-2 pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
+            <div key="quality-tab" className="sm:h-full sm:min-h-0 sm:flex sm:flex-col sm:overflow-y-auto no-scrollbar space-y-3 sm:space-y-2 pb-6 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
             <div className="space-y-0.5">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight flex items-center gap-1.5">
                 <Activity aria-hidden="true" className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
@@ -2254,7 +2322,7 @@ export function BenchmarkDashboard() {
                             <AnimatedCounter value={metrics.avg_precision * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
-                        <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
+                        <div className="h-1.5 sm:h-2 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_precision}
                             className={getDatabaseBarClass(db, databases)}
@@ -2270,7 +2338,7 @@ export function BenchmarkDashboard() {
                             <AnimatedCounter value={getQualityCoverageValue(metrics) * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
-                        <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
+                        <div className="h-1.5 sm:h-2 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={getQualityCoverageValue(metrics)}
                             className={getDatabaseBarClass(db, databases)}
@@ -2286,7 +2354,7 @@ export function BenchmarkDashboard() {
                             <AnimatedCounter value={metrics.avg_f1_score * 100} decimals={1} suffix="%" />
                           </span>
                         </div>
-                        <div className="h-1.5 sm:h-2 w-full bg-secondary overflow-hidden">
+                        <div className="h-1.5 sm:h-2 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_f1_score}
                             className={getDatabaseBarClass(db, databases)}
@@ -2300,7 +2368,7 @@ export function BenchmarkDashboard() {
             </div>
 
             {/* Per-Query Quality Results */}
-            <Card size="sm">
+            <Card size="sm" className="sm:flex-1 sm:min-h-0">
               <CardHeader className="pb-2 px-2.5 sm:px-3">
                 <div className="flex flex-wrap items-start justify-between gap-1.5">
                   <div>
@@ -2323,8 +2391,8 @@ export function BenchmarkDashboard() {
                   </Select>
                 </div>
               </CardHeader>
-              <CardContent className="px-1.5 sm:px-2.5">
-                <div className="w-full overflow-x-auto -mx-1.5 px-1.5 scroll-snap-x">
+              <CardContent className="px-1.5 sm:px-2.5 sm:flex sm:flex-1 sm:flex-col sm:min-h-0">
+                <div className="w-full overflow-x-auto sm:overflow-auto sm:flex-1 sm:min-h-0 -mx-1.5 px-1.5 scroll-snap-x">
                   <table className="w-full min-w-[520px] table-fixed text-[11px] sm:text-xs">
                     <colgroup>
                       <col className="w-48" />
@@ -2335,7 +2403,7 @@ export function BenchmarkDashboard() {
                     </colgroup>
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-1.5 font-medium text-muted-foreground">
+                        <th className="text-left p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(qualitySortConfig, "query")}>
                           <button
                             type="button"
                             onClick={() => requestQualitySort("query")}
@@ -2348,7 +2416,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(qualitySortConfig, "precision")}>
                           <button
                             type="button"
                             onClick={() => requestQualitySort("precision")}
@@ -2361,7 +2429,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(qualitySortConfig, qualityCoverageLabel === "Recall" ? "recall" : "hit_at_k")}>
                           <button
                             type="button"
                             onClick={() => requestQualitySort(qualityCoverageLabel === "Recall" ? "recall" : "hit_at_k")}
@@ -2374,7 +2442,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(qualitySortConfig, "f1_score")}>
                           <button
                             type="button"
                             onClick={() => requestQualitySort("f1_score")}
@@ -2387,7 +2455,7 @@ export function BenchmarkDashboard() {
                             />
                           </button>
                         </th>
-                        <th className="text-right p-1.5 font-medium text-muted-foreground">
+                        <th className="text-right p-1.5 font-medium text-muted-foreground" aria-sort={ariaSortFor(qualitySortConfig, "relevant_retrieved")}>
                           <button
                             type="button"
                             onClick={() => requestQualitySort("relevant_retrieved")}
@@ -2920,13 +2988,12 @@ export function BenchmarkDashboard() {
 
       {/* Mobile Bottom Navigation */}
       <nav
-        role="tablist"
         aria-label="Main navigation"
         className="fixed bottom-0 inset-x-0 sm:hidden border-t border-border/50 bg-background/95 backdrop-blur-sm z-50 safe-area-inset"
       >
         <div className="flex items-center justify-between px-2 py-1">
           {/* Tab Navigation */}
-          <div className="flex items-center" onKeyDown={handleTabKeyDown}>
+          <div role="tablist" aria-label="Main navigation" className="flex items-center" onKeyDown={handleTabKeyDown}>
             <BottomNavTabButton
               tab="summary"
               label="Summary"
