@@ -2393,7 +2393,7 @@ export function BenchmarkDashboard() {
               </CardHeader>
               <CardContent className="px-1.5 sm:px-2.5 sm:flex sm:flex-1 sm:flex-col sm:min-h-0">
                 <div className="w-full overflow-x-auto sm:overflow-auto sm:flex-1 sm:min-h-0 -mx-1.5 px-1.5 scroll-snap-x">
-                  <table className="w-full min-w-[520px] table-fixed text-[11px] sm:text-xs">
+                  <table className="w-full min-w-[520px] sm:h-full table-fixed text-[11px] sm:text-xs">
                     <colgroup>
                       <col className="w-48" />
                       <col className="w-[104px]" />
