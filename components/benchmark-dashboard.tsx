@@ -47,7 +47,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -87,7 +86,7 @@ import {
   ArrowDown,
   Info,
 } from "lucide-react";
-import { ModeToggle, SidebarThemeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 
 // Type definitions
 interface SpeedTestRawResult {
@@ -633,12 +632,12 @@ const DatabaseIcon = ({ database, className = "w-5 h-5" }: { database: string; c
 };
 
 const databasePalette = [
-  { stroke: "hsl(210, 100%, 50%)", fill: "hsla(210, 100%, 50%, 0.18)", text: "text-blue-500", from: "from-blue-500", to: "to-blue-400" },
-  { stroke: "hsl(142, 71%, 45%)", fill: "hsla(142, 71%, 45%, 0.18)", text: "text-emerald-500", from: "from-emerald-500", to: "to-emerald-400" },
-  { stroke: "hsl(265, 89%, 70%)", fill: "hsla(265, 89%, 70%, 0.18)", text: "text-violet-500", from: "from-violet-500", to: "to-violet-400" },
-  { stroke: "hsl(24, 95%, 53%)", fill: "hsla(24, 95%, 53%, 0.18)", text: "text-orange-500", from: "from-orange-500", to: "to-orange-400" },
-  { stroke: "hsl(187, 92%, 42%)", fill: "hsla(187, 92%, 42%, 0.18)", text: "text-cyan-500", from: "from-cyan-500", to: "to-cyan-400" },
-  { stroke: "hsl(45, 93%, 47%)", fill: "hsla(45, 93%, 47%, 0.18)", text: "text-amber-500", from: "from-amber-500", to: "to-amber-400" },
+  { stroke: "hsl(210, 100%, 50%)", text: "text-blue-500", bar: "bg-blue-500" },
+  { stroke: "hsl(142, 71%, 45%)", text: "text-emerald-500", bar: "bg-emerald-500" },
+  { stroke: "hsl(265, 89%, 70%)", text: "text-violet-500", bar: "bg-violet-500" },
+  { stroke: "hsl(24, 95%, 53%)", text: "text-orange-500", bar: "bg-orange-500" },
+  { stroke: "hsl(187, 92%, 42%)", text: "text-cyan-500", bar: "bg-cyan-500" },
+  { stroke: "hsl(45, 93%, 47%)", text: "text-amber-500", bar: "bg-amber-500" },
 ];
 
 function getBenchmarkDate(metadata: BenchmarkMetadata) {
@@ -651,44 +650,19 @@ function getDatabasePalette(database: string, databases: string[]) {
   return databasePalette[index % databasePalette.length];
 }
 
-function getDatabaseCardClass(database: string, databases: string[]) {
-  switch (database) {
-    case "PostgreSQL":
-      return "bg-linear-to-br from-blue-500/15 via-background to-background";
-    case "ChromaDB":
-      return "bg-linear-to-br from-emerald-500/15 via-background to-background";
-    case "SQLite":
-      return "bg-linear-to-br from-violet-500/15 via-background to-background";
-    case "LanceDB":
-      return "bg-linear-to-br from-orange-500/15 via-background to-background";
-    case "Qdrant":
-      return "bg-linear-to-br from-cyan-500/15 via-background to-background";
-    case "Pinecone":
-      return "bg-linear-to-br from-amber-500/15 via-background to-background";
-    default:
-      return `bg-linear-to-br ${getDatabasePalette(database, databases).from} via-background to-background`;
-  }
-}
+// Table cell that turns green when it holds the best value in its column
+const bestCellClass = (isBest: boolean) =>
+  cn(
+    "p-1.5 text-right font-mono tabular-nums",
+    isBest && "font-semibold text-green-600 dark:text-green-400"
+  );
 
-function getDatabaseBarClass(database: string, databases: string[]) {
-  switch (database) {
-    case "PostgreSQL":
-      return "bg-linear-to-r from-blue-500 to-blue-400";
-    case "ChromaDB":
-      return "bg-linear-to-r from-emerald-500 to-emerald-400";
-    case "SQLite":
-      return "bg-linear-to-r from-violet-500 to-violet-400";
-    case "LanceDB":
-      return "bg-linear-to-r from-orange-500 to-orange-400";
-    case "Qdrant":
-      return "bg-linear-to-r from-cyan-500 to-cyan-400";
-    case "Pinecone":
-      return "bg-linear-to-r from-amber-500 to-amber-400";
-    default: {
-      const palette = getDatabasePalette(database, databases);
-      return `bg-linear-to-r ${palette.from} ${palette.to}`;
-    }
-  }
+// Best value of a column, or null when tied across rows (ties get no highlight)
+function uniqueBest(values: Array<number | null | undefined>, mode: "min" | "max" = "min") {
+  const nums = values.filter((v): v is number => v !== null && v !== undefined && Number.isFinite(v));
+  if (nums.length === 0) return null;
+  const best = mode === "min" ? Math.min(...nums) : Math.max(...nums);
+  return nums.filter((v) => v === best).length === 1 ? best : null;
 }
 
 function buildChartConfig(databases: string[]) {
@@ -712,17 +686,14 @@ interface TabButtonProps {
   variant?: "sidebar" | "bottom";
 }
 
-// Sidebar tab button (desktop) - icon only with left border accent
-const SidebarTabButton = ({
+// Header tab button (desktop) - minimal icon-only
+const HeaderTabButton = ({
   tab,
   label,
   icon: Icon,
   activeTab,
   setActiveTab,
-}: TabButtonProps) => {
-  // Stagger each icon's reveal so they cascade in when the pill opens.
-  const index = Math.max(tabOptions.indexOf(tab), 0);
-  return (
+}: TabButtonProps) => (
   <button
     type="button"
     onClick={() => setActiveTab(tab)}
@@ -730,20 +701,17 @@ const SidebarTabButton = ({
     aria-label={label}
     aria-selected={activeTab === tab}
     role="tab"
-    style={{ transitionDelay: `${index * 40}ms` }}
     className={cn(
-      "relative flex items-center justify-center w-10 h-10 rounded-full transition-[color,background-color,opacity,transform] duration-200 ease-out motion-reduce:transition-none",
-      "opacity-0 -translate-x-2 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 group-focus-within/sidebar:opacity-100 group-focus-within/sidebar:translate-x-0",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
+      "flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-150 motion-reduce:transition-none",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
       activeTab === tab
-        ? "bg-primary/15 text-primary"
-        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+        ? "bg-primary text-primary-foreground"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted"
     )}
   >
-    <Icon aria-hidden="true" className="w-5 h-5" />
+    <Icon aria-hidden="true" className="w-4 h-4" />
   </button>
-  );
-};
+);
 
 // Bottom nav tab button (mobile) - icon with label
 const BottomNavTabButton = ({
@@ -1194,7 +1162,7 @@ export function BenchmarkDashboard() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center" role="status" aria-live="polite">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-primary/30 rounded-full" />
+          <div className="w-16 h-16 border-4 border-secondary rounded-full" />
           <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin motion-reduce:animate-none" />
         </div>
         <span className="sr-only">Loading…</span>
@@ -1204,83 +1172,57 @@ export function BenchmarkDashboard() {
 
   return (
     <div className="min-h-screen sm:h-screen bg-background text-foreground font-sans sm:overflow-hidden text-render-optimize flex">
-      {/* Desktop floating sidebar — a pill that reveals on hover near the left edge */}
-      <div className="hidden sm:block group/sidebar pointer-events-none fixed inset-y-0 left-0 z-40">
-        {/* Hover trigger: thin strip hugging the left edge */}
-        <div aria-hidden="true" className="pointer-events-auto absolute inset-y-0 left-0 w-4" />
-
-        {/* The pill */}
-        <aside
-          className={cn(
-            "pointer-events-none absolute left-2 top-1/2 flex origin-left -translate-x-full -translate-y-1/2 scale-95 flex-col items-center gap-0.5 opacity-0",
-            "rounded-full border border-border/60 bg-background/80 px-1.5 py-2 shadow-lg ring-1 ring-black/5 backdrop-blur-md",
-            "transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none",
-            "group-hover/sidebar:pointer-events-auto group-hover/sidebar:translate-x-0 group-hover/sidebar:scale-100 group-hover/sidebar:opacity-100",
-            "group-focus-within/sidebar:pointer-events-auto group-focus-within/sidebar:translate-x-0 group-focus-within/sidebar:scale-100 group-focus-within/sidebar:opacity-100"
-          )}
-        >
-          {/* Tab Navigation */}
-          <nav
-            role="tablist"
-            aria-label="Main navigation"
-            onKeyDown={handleTabKeyDown}
-            className="flex flex-col items-center gap-0.5"
-          >
-            <SidebarTabButton
-              tab="summary"
-              label="Summary"
-              icon={LayoutDashboard}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-            <SidebarTabButton
-              tab="speed"
-              label="Speed Test"
-              icon={Zap}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-            <SidebarTabButton
-              tab="scalability"
-              label="Scalability"
-              icon={TrendingUp}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-            <SidebarTabButton
-              tab="quality"
-              label="Retrieval Quality"
-              icon={Target}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-            <SidebarTabButton
-              tab="info"
-              label="More Info"
-              icon={Info}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-          </nav>
-
-          {/* Theme Toggle */}
-          <div className="mt-1 flex flex-col items-center border-t border-border/50 pt-1.5">
-            <SidebarThemeToggle
-              style={{ transitionDelay: `${tabOptions.length * 40}ms` }}
-              className="-translate-x-2 opacity-0 group-hover/sidebar:translate-x-0 group-hover/sidebar:opacity-100 group-focus-within/sidebar:translate-x-0 group-focus-within/sidebar:opacity-100"
-            />
-          </div>
-        </aside>
-      </div>
-
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-full sm:h-full overflow-hidden">
-        {/* Header - Metadata only */}
-        <header className="shrink-0 px-3 sm:px-4 md:px-6 py-2 sm:py-2 border-b border-border/50">
+        {/* Header - title, centered navigation, metadata */}
+        <header className="shrink-0 px-3 sm:px-4 md:px-6 py-2 sm:py-2 border-b border-border">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <h1 className="text-base sm:text-lg md:text-xl font-bold tracking-tight leading-tight">
               Vector Database Benchmark
             </h1>
+            {/* Desktop tab navigation */}
+            <nav
+              role="tablist"
+              aria-label="Main navigation"
+              onKeyDown={handleTabKeyDown}
+              className="hidden sm:flex items-center gap-1"
+            >
+              <HeaderTabButton
+                tab="summary"
+                label="Summary"
+                icon={LayoutDashboard}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+              <HeaderTabButton
+                tab="speed"
+                label="Speed Test"
+                icon={Zap}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+              <HeaderTabButton
+                tab="scalability"
+                label="Scalability"
+                icon={TrendingUp}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+              <HeaderTabButton
+                tab="quality"
+                label="Retrieval Quality"
+                icon={Target}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+              <HeaderTabButton
+                tab="info"
+                label="More Info"
+                icon={Info}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+            </nav>
             {/* Metadata badges */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <Badge variant="outline" className="px-2 py-0.5 text-[11px] sm:text-xs">
@@ -1307,6 +1249,9 @@ export function BenchmarkDashboard() {
               <Badge variant="secondary" className="text-[11px] sm:text-xs">
                 K={metadata.top_k}
               </Badge>
+              <div className="hidden sm:block">
+                <ModeToggle />
+              </div>
             </div>
           </div>
         </header>
@@ -1319,7 +1264,7 @@ export function BenchmarkDashboard() {
               <div key="summary-tab" className="sm:h-full sm:min-h-0 flex flex-col gap-3 sm:gap-2 md:gap-1.5 sm:overflow-y-auto no-scrollbar pb-4 sm:pb-2 animate-in fade-in-50 duration-300 motion-reduce:animate-none motion-reduce:duration-0">
           <h2 className="sr-only">Summary</h2>
           {/* Overall Winner */}
-            <Card size="sm" className="bg-linear-to-br from-primary/5 via-primary/10 to-transparent relative overflow-hidden">
+            <Card size="sm" className="relative overflow-hidden">
               <div className="absolute top-0 right-0 p-3 opacity-[0.08] pointer-events-none">
                 <Trophy aria-hidden="true" className="w-12 sm:w-16 h-12 sm:h-16 text-primary" />
               </div>
@@ -1328,10 +1273,10 @@ export function BenchmarkDashboard() {
                   <Trophy aria-hidden="true" className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                   <span>Overall Winner</span>
                 </div>
-              <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+              <CardTitle className={cn("text-2xl sm:text-3xl md:text-4xl font-bold leading-tight", getDatabasePalette(speedWinner.database, databases).text)}>
                 {speedWinner.database}
               </CardTitle>
-              <CardDescription className="text-sm sm:text-base text-foreground/70 leading-snug">
+              <CardDescription className="text-sm sm:text-base text-muted-foreground leading-snug">
                 Best across speed benchmarks with{" "}
                 <span className="font-semibold text-primary">
                   {speedWinner.speed_improvement_percent}%
@@ -1346,13 +1291,13 @@ export function BenchmarkDashboard() {
             {/* Speed Winner */}
             <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
-                <div className="flex items-center gap-1 sm:gap-1.5 text-amber-500">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-muted-foreground">
                   <Zap aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
                   <CardTitle className="text-[11px] sm:text-sm font-medium uppercase tracking-wide leading-tight">Fastest</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="px-2.5 sm:px-2.5">
-                <p className="text-lg sm:text-2xl font-bold leading-tight">{speedWinner.database}</p>
+                <p className={cn("text-lg sm:text-2xl font-bold leading-tight", getDatabasePalette(speedWinner.database, databases).text)}>{speedWinner.database}</p>
                 <p className="text-[11px] sm:text-sm text-muted-foreground">
                   <AnimatedCounter value={speedWinner.avg_retrieval_ms} decimals={1} suffix="ms" /> avg
                 </p>
@@ -1362,7 +1307,7 @@ export function BenchmarkDashboard() {
             {/* Fastest Query */}
             <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
-                <div className="flex items-center gap-1 sm:gap-1.5 text-green-500">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-muted-foreground">
                   <ArrowUp aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
                   <CardTitle className="text-[11px] sm:text-sm font-medium uppercase tracking-wide leading-tight">Best Query</CardTitle>
                 </div>
@@ -1378,7 +1323,7 @@ export function BenchmarkDashboard() {
                         <AnimatedCounter value={fastest.retrieval_time} decimals={1} suffix="ms" />
                       </p>
                       <p className="text-[11px] sm:text-sm text-muted-foreground truncate" title={fastest.query}>
-                        Q{fastest.query_num}: {fastest.database}
+                        Q{fastest.query_num}: <span className={cn("font-medium", getDatabasePalette(fastest.database, databases).text)}>{fastest.database}</span>
                       </p>
                     </>
                   );
@@ -1389,7 +1334,7 @@ export function BenchmarkDashboard() {
             {/* Slowest Query - Hidden on very small screens to save space, shown as 2-col span on sm */}
             <Card size="sm" className="col-span-2 sm:col-span-1">
               <CardHeader className="pb-0.5 sm:pb-1 px-2.5 sm:px-2.5">
-                <div className="flex items-center gap-1 sm:gap-1.5 text-red-500">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-muted-foreground">
                   <ArrowDown aria-hidden="true" className="w-3.5 sm:w-4 h-3.5 sm:h-4 shrink-0" />
                   <CardTitle className="text-[11px] sm:text-sm font-medium uppercase tracking-wide leading-tight">Slowest Query</CardTitle>
                 </div>
@@ -1405,7 +1350,7 @@ export function BenchmarkDashboard() {
                         <AnimatedCounter value={slowest.retrieval_time} decimals={1} suffix="ms" />
                       </p>
                       <p className="text-[11px] sm:text-sm text-muted-foreground truncate" title={slowest.query}>
-                        Q{slowest.query_num}: {slowest.database}
+                        Q{slowest.query_num}: <span className={cn("font-medium", getDatabasePalette(slowest.database, databases).text)}>{slowest.database}</span>
                       </p>
                     </>
                   );
@@ -1419,13 +1364,13 @@ export function BenchmarkDashboard() {
             {/* Best Scalability */}
             <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
-                <div className="flex items-center gap-1 text-blue-500">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <TrendingUp aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
                   <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Scale</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="px-2 sm:px-2.5">
-                <p className="text-base sm:text-2xl font-bold leading-tight truncate">
+                <p className={cn("text-base sm:text-2xl font-bold leading-tight truncate", topKScaleSummary && getDatabasePalette(topKScaleSummary.db, databases).text)}>
                   {topKScaleSummary?.db ?? "N/A"}
                 </p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground">
@@ -1441,13 +1386,13 @@ export function BenchmarkDashboard() {
             {/* Concurrent Users */}
             <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
-                <div className="flex items-center gap-1 text-cyan-500">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <Gauge aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
                   <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Concurrent</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="px-2 sm:px-2.5">
-                <p className="text-base sm:text-2xl font-bold leading-tight truncate">{concurrentSummary?.database ?? "N/A"}</p>
+                <p className={cn("text-base sm:text-2xl font-bold leading-tight truncate", concurrentSummary && getDatabasePalette(concurrentSummary.database, databases).text)}>{concurrentSummary?.database ?? "N/A"}</p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground">
                   {concurrentSummary ? (
                     <>
@@ -1461,7 +1406,7 @@ export function BenchmarkDashboard() {
             {/* Total Documents */}
             <Card size="sm">
               <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
-                <div className="flex items-center gap-1 text-violet-500">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <Database aria-hidden="true" className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
                   <CardTitle className="text-[10px] sm:text-sm font-medium uppercase tracking-wide leading-tight truncate">Documents</CardTitle>
                 </div>
@@ -1497,17 +1442,13 @@ export function BenchmarkDashboard() {
                       const corpusScale = maxCorpusByDatabase[db];
                       const concurrentScale = maxConcurrentByDatabase[db];
                       const efficiencyScore = resourceEfficiencyScores[db];
-                      const dbColor = getDatabaseCardClass(db, databases);
                     const textColor = getDatabasePalette(db, databases).text;
-                    const metricClassName = (isBest: boolean) => cn("font-mono text-sm sm:text-base whitespace-nowrap shrink-0", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-foreground/70");
+                    const metricClassName = (isBest: boolean) => cn("font-mono text-sm sm:text-base whitespace-nowrap shrink-0", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-muted-foreground");
 
                     return (
                       <div
                         key={db}
-                        className={cn(
-                          "rounded-xl p-3 relative overflow-hidden flex flex-col",
-                          dbColor
-                        )}
+                        className="rounded-lg bg-card p-3 relative overflow-hidden flex flex-col"
                       >
                         <div className="flex items-center justify-between gap-1.5 mb-3">
                           <h3 className={cn("text-sm sm:text-base font-bold flex items-center gap-1.5 min-w-0", textColor)}>
@@ -1515,21 +1456,21 @@ export function BenchmarkDashboard() {
                             <span className="truncate">{db}</span>
                           </h3>
                           {db === speedWinner.database && (
-                            <Badge className="bg-primary/10 text-primary border-primary/30 flex items-center gap-0.5 text-[10px] h-5 px-1.5 shrink-0">
+                            <Badge className="flex items-center gap-0.5 text-[10px] h-5 px-1.5 shrink-0">
                               <Trophy aria-hidden="true" className="w-2.5 h-2.5" />
                               Winner
                             </Badge>
                           )}
                         </div>
                         <div className="flex flex-col gap-1.5 flex-1">
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Avg Retrieval">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Avg Retrieval">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Clock aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Retrieval</span>
                             </span>
                             <span className={metricClassName(dbCompareWinners.retrieval === db)}>{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
                           </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Avg Total = retrieval + LLM time (end-to-end per query)">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Avg Total = retrieval + LLM time (end-to-end per query)">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Gauge aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Total</span>
@@ -1537,7 +1478,7 @@ export function BenchmarkDashboard() {
                             <span className={metricClassName(dbCompareWinners.total === db)}>{speed?.mean_total_ms.toFixed(0)}ms</span>
                           </div>
 
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Top-K scale at maximum tested k">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Top-K scale at maximum tested k">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <TrendingUp aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Top-K</span>
@@ -1546,7 +1487,7 @@ export function BenchmarkDashboard() {
                               {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Corpus-size scale at maximum tested corpus percentage">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Corpus-size scale at maximum tested corpus percentage">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Database aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Corpus</span>
@@ -1555,7 +1496,7 @@ export function BenchmarkDashboard() {
                               {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Concurrent-user latency at maximum tested users">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Concurrent-user latency at maximum tested users">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <Activity aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Concurrent</span>
@@ -1565,7 +1506,7 @@ export function BenchmarkDashboard() {
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-lg bg-background/60 px-2.5 py-2 sm:flex-1" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
+                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
                             <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
                               <CheckCircle aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
                               <span className="truncate">Efficient</span>
@@ -1696,19 +1637,16 @@ export function BenchmarkDashboard() {
                 <Card
                   key={db.database}
                   size="sm"
-                  className={cn(
-                    "transition-shadow duration-200 hover:shadow-md overflow-hidden",
-                    getDatabaseCardClass(db.database, databases)
-                  )}
+                  className="transition-shadow duration-200 hover:shadow-md overflow-hidden"
                 >
                   <CardHeader className="pb-1">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-sm flex items-center gap-1.5">
+                      <CardTitle className={cn("text-sm flex items-center gap-1.5", getDatabasePalette(db.database, databases).text)}>
                         <DatabaseIcon database={db.database} className="w-4 h-4" />
                         {db.database}
                       </CardTitle>
                       {db.database === speedWinner.database && (
-                        <Badge className="bg-primary/10 text-primary border-primary/30 text-xs h-5 px-1.5">
+                        <Badge className="text-xs h-5 px-1.5">
                           Winner
                         </Badge>
                       )}
@@ -1730,7 +1668,7 @@ export function BenchmarkDashboard() {
                         <div
                           className={cn(
                             "h-full transition-[width] duration-700 motion-reduce:transition-none rounded-full",
-                            getDatabaseBarClass(db.database, databases)
+                            getDatabasePalette(db.database, databases).bar
                           )}
                           style={{
                             width: `${(Math.min(...speedSummary.map((s) => s.mean_total_ms)) / db.mean_total_ms) * 100}%`,
@@ -1759,29 +1697,27 @@ export function BenchmarkDashboard() {
                       </div>
                     </div>
 
-                    <Separator />
-
                     {/* Additional Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 text-xs">
-                      <div className="text-center p-1.5 bg-muted/50 rounded-md">
+                      <div className="text-center p-1.5 bg-muted rounded-md">
                         <div className="text-muted-foreground text-xs">Min</div>
                         <div className="font-mono font-medium">
                           {db.min_total_ms.toFixed(0)}ms
                         </div>
                       </div>
-                      <div className="text-center p-1.5 bg-muted/50 rounded-md">
+                      <div className="text-center p-1.5 bg-muted rounded-md">
                         <div className="text-muted-foreground text-xs">Median</div>
                         <div className="font-mono font-medium">
                           {db.median_total_ms.toFixed(0)}ms
                         </div>
                       </div>
-                      <div className="text-center p-1.5 bg-muted/50 rounded-md">
+                      <div className="text-center p-1.5 bg-muted rounded-md">
                         <div className="text-muted-foreground text-xs">Std Dev</div>
                         <div className="font-mono font-medium">
                           {db.std_total_ms.toFixed(0)}ms
                         </div>
                       </div>
-                      <div className="text-center p-1.5 bg-muted/50 rounded-md">
+                      <div className="text-center p-1.5 bg-muted rounded-md">
                         <div className="text-muted-foreground text-xs">Max</div>
                         <div className="font-mono font-medium">
                           {db.max_total_ms.toFixed(0)}ms
@@ -1961,7 +1897,7 @@ export function BenchmarkDashboard() {
                       {sortedSpeedResults.slice(0, speedRowLimit).map((row) => (
                         <tr
                           key={`${row.global_query_num ?? row.query_num}-${row.database}-${row.repetition ?? 1}`}
-                          className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                          className="border-b last:border-0 hover:bg-muted transition-colors"
                         >
                           <td className="p-1.5 font-mono tabular-nums">{row.query_num}</td>
                           <td className="p-1.5 truncate" title={row.query}>
@@ -2119,19 +2055,16 @@ export function BenchmarkDashboard() {
                 <Card
                   key={db}
                   size="sm"
-                  className={cn(
-                    "overflow-hidden transition-shadow duration-200 hover:shadow-md",
-                    getDatabaseCardClass(db, databases)
-                  )}
+                  className="overflow-hidden transition-shadow duration-200 hover:shadow-md"
                 >
                   <CardHeader className="pb-1">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-sm flex items-center gap-1.5">
+                      <CardTitle className={cn("text-sm flex items-center gap-1.5", getDatabasePalette(db, databases).text)}>
                         <DatabaseIcon database={db} className="w-4 h-4" />
                         {db}
                       </CardTitle>
                       {db === scalabilityWinner.database && (
-                        <Badge className="bg-primary/10 text-primary border-primary/30 text-xs h-5 px-1.5">
+                        <Badge className="text-xs h-5 px-1.5">
                           Winner
                         </Badge>
                       )}
@@ -2154,7 +2087,7 @@ export function BenchmarkDashboard() {
                             <div
                               className={cn(
                                 "h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
-                                getDatabaseBarClass(db, databases)
+                                getDatabasePalette(db, databases).bar
                               )}
                               style={{
                                 width: `${Math.min(
@@ -2243,7 +2176,7 @@ export function BenchmarkDashboard() {
                         return (
                           <tr
                             key={`${item.top_k}-${idx}`}
-                            className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                            className="border-b last:border-0 hover:bg-muted transition-colors"
                           >
                             <td className="p-1.5 font-medium font-mono tabular-nums">{item.top_k}</td>
                             {databases.map((db) => {
@@ -2293,12 +2226,9 @@ export function BenchmarkDashboard() {
                 const metrics = qualityData[db];
                 const palette = getDatabasePalette(db, databases);
                 return (
-                  <Card key={db} size="sm" className={cn(
-                    "overflow-hidden",
-                    getDatabaseCardClass(db, databases)
-                  )}>
+                  <Card key={db} size="sm" className="overflow-hidden">
                     <CardHeader className="pb-0.5 sm:pb-1 px-2 sm:px-2.5">
-                      <CardTitle className="text-[11px] sm:text-sm flex items-center gap-1">
+                      <CardTitle className={cn("text-[11px] sm:text-sm flex items-center gap-1", palette.text)}>
                         <DatabaseIcon database={db} className="w-3 sm:w-4 h-3 sm:h-4 shrink-0" />
                         <span className="truncate">{db}</span>
                       </CardTitle>
@@ -2315,7 +2245,7 @@ export function BenchmarkDashboard() {
                         <div className="h-1.5 sm:h-2 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_precision}
-                            className={getDatabaseBarClass(db, databases)}
+                            className={palette.bar}
                           />
                         </div>
                       </div>
@@ -2331,7 +2261,7 @@ export function BenchmarkDashboard() {
                         <div className="h-1.5 sm:h-2 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={getQualityCoverageValue(metrics)}
-                            className={getDatabaseBarClass(db, databases)}
+                            className={palette.bar}
                           />
                         </div>
                       </div>
@@ -2347,7 +2277,7 @@ export function BenchmarkDashboard() {
                         <div className="h-1.5 sm:h-2 w-full bg-secondary rounded-full overflow-hidden">
                           <AnimatedProgressBar
                             value={metrics.avg_f1_score}
-                            className={getDatabaseBarClass(db, databases)}
+                            className={palette.bar}
                           />
                         </div>
                       </div>
@@ -2464,7 +2394,7 @@ export function BenchmarkDashboard() {
                       {sortedQualityResults.map((item, idx) => (
                         <tr
                           key={idx}
-                          className="border-b last:border-0 hover:bg-muted/50 transition-colors"
+                          className="border-b last:border-0 hover:bg-muted transition-colors"
                         >
                           <td className="p-1.5 truncate" title={item.query}>
                             {item.query}
@@ -2523,7 +2453,7 @@ export function BenchmarkDashboard() {
               <Card size="sm">
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-3">
-                    <div className="size-12 sm:size-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                    <div className="size-12 sm:size-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center">
                       <BarChart3 aria-hidden="true" className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
                     <div>
@@ -2535,79 +2465,85 @@ export function BenchmarkDashboard() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-6 gap-1.5 text-xs">
-                    <div className="bg-muted/50 p-1.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 text-xs">
+                    <div>
                       <div className="text-muted-foreground">Aggregation</div>
-                        <div className="font-medium">{aggregationLabel}</div>
+                      <div className="font-medium">{aggregationLabel}</div>
                     </div>
-                    <div className="bg-muted/50 p-1.5">
+                    <div>
                       <div className="text-muted-foreground">Runs</div>
-                       <div className="font-medium font-mono tabular-nums">{runsAggregated}</div>
+                      <div className="font-medium font-mono tabular-nums">{runsAggregated}</div>
                     </div>
-                    <div className="bg-muted/50 p-1.5">
-                      <div className="text-muted-foreground">Source Files</div>
-                       <div className="font-medium font-mono tabular-nums">{sourceFiles.length}</div>
-                    </div>
-                    <div className="bg-muted/50 p-1.5">
+                    <div>
                       <div className="text-muted-foreground">Queries</div>
                       <div className="font-medium font-mono tabular-nums">{metadata.num_queries}</div>
                     </div>
                     {metadata.score_threshold !== undefined && (
-                      <div className="bg-muted/50 p-1.5">
+                      <div>
                         <div className="text-muted-foreground">Threshold</div>
                         <div className="font-medium font-mono tabular-nums">{metadata.score_threshold}</div>
                       </div>
                     )}
-                    <div className="bg-muted/50 p-1.5">
+                    <div>
                       <div className="text-muted-foreground">Success Rate</div>
                       <div className="font-medium font-mono tabular-nums">{speedSuccessRate.toFixed(1)}%</div>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 text-xs">
-                    <div className="bg-muted/40 px-2 py-1.5">
-                      <div className="text-muted-foreground">Benchmark Timestamp</div>
+                    <div>
+                      <div className="text-muted-foreground">Timestamp</div>
                       <div className="font-medium font-mono break-all">{getBenchmarkDate(metadata)}</div>
                     </div>
-                    <div className="bg-muted/40 px-2 py-1.5">
+                    <div>
                       <div className="text-muted-foreground">Scalability Docs</div>
                       <div className="font-medium font-mono tabular-nums">
                         {metadata.scalability_doc_counts?.join(", ") ?? "N/A"}
                       </div>
                     </div>
-                    <div className="bg-muted/40 px-2 py-1.5">
+                    <div>
                       <div className="text-muted-foreground">Scalability Queries</div>
                       <div className="font-medium font-mono tabular-nums">
                         {metadata.scalability_query_count ?? "N/A"}
                       </div>
                     </div>
-                    <div className="bg-muted/40 px-2 py-1.5">
+                    <div>
                       <div className="text-muted-foreground">Quality Scope</div>
                       <div className="font-medium">{qualityCoverageLabel} on {qualityScopeLabel}</div>
                     </div>
+                    <div>
+                      <div className="text-muted-foreground">Speed Rows</div>
+                      <div className="font-medium font-mono tabular-nums">{speedRawResults.length}</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Quality Rows</div>
+                      <div className="font-medium font-mono tabular-nums">{sortedQualityResults.length}</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Scalability DBs</div>
+                      <div className="font-medium font-mono tabular-nums">{Object.keys(scalabilityData).length}</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Winner</div>
+                      <div className={cn("font-medium", getDatabasePalette(speedWinner.database, databases).text)}>{speedWinner.database}</div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs">
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground">Models</p>
-                      <div className="space-y-1">
-                        <div className="text-xs bg-muted/40 px-2 py-1 break-all">
-                          <span className="text-muted-foreground">LLM:</span> {metadata.llm_model}
-                        </div>
-                        <div className="text-xs bg-muted/40 px-2 py-1 break-all">
-                          <span className="text-muted-foreground">Embedding:</span> {metadata.embedding_model}
-                        </div>
-                        <div className="text-xs bg-muted/40 px-2 py-1">
-                          <span className="text-muted-foreground">Top-K:</span> {metadata.top_k}
-                        </div>
+                      <p className="font-medium text-muted-foreground">Models</p>
+                      <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+                        <span className="text-muted-foreground">LLM</span>
+                        <span className="font-mono break-all">{metadata.llm_model}</span>
+                        <span className="text-muted-foreground">Embedding</span>
+                        <span className="font-mono break-all">{metadata.embedding_model}</span>
+                        <span className="text-muted-foreground">Top-K</span>
+                        <span className="font-mono tabular-nums">{metadata.top_k}</span>
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground">Source Files</p>
-                      <div className="grid gap-1">
-                         {sourceFiles.map((sourceFile) => (
-                          <div key={sourceFile} className="text-xs font-mono bg-muted/40 px-2 py-1 truncate" title={sourceFile}>
+                      <p className="font-medium text-muted-foreground">Source Files ({sourceFiles.length})</p>
+                      <div className="space-y-0.5">
+                        {sourceFiles.map((sourceFile) => (
+                          <div key={sourceFile} className="font-mono truncate" title={sourceFile}>
                             {sourceFile}
                           </div>
                         ))}
@@ -2615,35 +2551,30 @@ export function BenchmarkDashboard() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
-                    <div className="bg-muted/40 px-2 py-1">
-                      <span className="text-muted-foreground">Speed rows:</span>{" "}
-                      <span className="font-mono tabular-nums">{speedRawResults.length}</span>
-                    </div>
-                    <div className="bg-muted/40 px-2 py-1">
-                      <span className="text-muted-foreground">Quality rows:</span>{" "}
-                      <span className="font-mono tabular-nums">{sortedQualityResults.length}</span>
-                    </div>
-                    <div className="bg-muted/40 px-2 py-1">
-                      <span className="text-muted-foreground">Scalability DBs:</span>{" "}
-                      <span className="font-mono tabular-nums">{Object.keys(scalabilityData).length}</span>
-                    </div>
-                    <div className="bg-muted/40 px-2 py-1">
-                      <span className="text-muted-foreground">Winner:</span>{" "}
-                      <span className="font-medium">{speedWinner.database}</span>
-                    </div>
-                  </div>
-
                   {Object.keys(maxConcurrentByDatabase).length > 0 && (
                     <div className="space-y-1.5">
                       <p className="text-xs font-medium text-muted-foreground">Resource Usage at Max Concurrent Users</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-1.5">
-                        {databases.map((db) => {
+                        {(() => {
+                          const rows = databases.map((database) => maxConcurrentByDatabase[database]);
+                          const best = {
+                            cpuAvg: uniqueBest(rows.map((r) => r?.avg_cpu_percent)),
+                            cpuMax: uniqueBest(rows.map((r) => r?.max_cpu_percent)),
+                            ramAvg: uniqueBest(rows.map((r) => r?.avg_ram_used_mb)),
+                            ramMax: uniqueBest(rows.map((r) => r?.max_ram_used_mb)),
+                            gpuAvg: uniqueBest(rows.map((r) => r?.avg_gpu_util_percent)),
+                            gpuMax: uniqueBest(rows.map((r) => r?.max_gpu_util_percent)),
+                            vramAvg: uniqueBest(rows.map((r) => r?.avg_gpu_memory_used_mb)),
+                            vramMax: uniqueBest(rows.map((r) => r?.max_gpu_memory_used_mb)),
+                          };
+                          const bestValueClass = (isBest: boolean) =>
+                            cn("text-right", isBest && "font-semibold text-green-600 dark:text-green-400");
+                          return databases.map((db) => {
                           const row = maxConcurrentByDatabase[db];
                           return (
-                            <div key={db} className={cn("px-2 py-1.5 text-xs", getDatabaseCardClass(db, databases))}>
+                            <div key={db} className="rounded-lg border bg-card px-2 py-1.5 text-xs">
                               <div className="mb-1 flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-1.5 font-medium">
+                                <div className={cn("flex items-center gap-1.5 font-medium", getDatabasePalette(db, databases).text)}>
                                   <DatabaseIcon database={db} className="w-3.5 h-3.5" />
                                   <span>{db}</span>
                                 </div>
@@ -2651,25 +2582,26 @@ export function BenchmarkDashboard() {
                               </div>
                               <div className="grid grid-cols-2 gap-x-2 gap-y-1 font-mono tabular-nums">
                                 <span className="text-muted-foreground">CPU avg</span>
-                                <span className="text-right">{row?.avg_cpu_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className={bestValueClass(row?.avg_cpu_percent === best.cpuAvg)}>{row?.avg_cpu_percent?.toFixed(1) ?? "-"}%</span>
                                 <span className="text-muted-foreground">CPU max</span>
-                                <span className="text-right">{row?.max_cpu_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className={bestValueClass(row?.max_cpu_percent === best.cpuMax)}>{row?.max_cpu_percent?.toFixed(1) ?? "-"}%</span>
                                 <span className="text-muted-foreground">RAM avg</span>
-                                <span className="text-right">{row?.avg_ram_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className={bestValueClass(row?.avg_ram_used_mb === best.ramAvg)}>{row?.avg_ram_used_mb?.toFixed(0) ?? "-"}MB</span>
                                 <span className="text-muted-foreground">RAM max</span>
-                                <span className="text-right">{row?.max_ram_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className={bestValueClass(row?.max_ram_used_mb === best.ramMax)}>{row?.max_ram_used_mb?.toFixed(0) ?? "-"}MB</span>
                                 <span className="text-muted-foreground">GPU avg</span>
-                                <span className="text-right">{row?.avg_gpu_util_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className={bestValueClass(row?.avg_gpu_util_percent === best.gpuAvg)}>{row?.avg_gpu_util_percent?.toFixed(1) ?? "-"}%</span>
                                 <span className="text-muted-foreground">GPU max</span>
-                                <span className="text-right">{row?.max_gpu_util_percent?.toFixed(1) ?? "-"}%</span>
+                                <span className={bestValueClass(row?.max_gpu_util_percent === best.gpuMax)}>{row?.max_gpu_util_percent?.toFixed(1) ?? "-"}%</span>
                                 <span className="text-muted-foreground">VRAM avg</span>
-                                <span className="text-right">{row?.avg_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className={bestValueClass(row?.avg_gpu_memory_used_mb === best.vramAvg)}>{row?.avg_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</span>
                                 <span className="text-muted-foreground">VRAM max</span>
-                                <span className="text-right">{row?.max_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</span>
+                                <span className={bestValueClass(row?.max_gpu_memory_used_mb === best.vramMax)}>{row?.max_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</span>
                               </div>
                             </div>
                           );
-                        })}
+                          });
+                        })()}
                       </div>
                       <p className="text-[11px] leading-snug text-muted-foreground">{GPU_USAGE_NOTE}</p>
                     </div>
@@ -2700,7 +2632,17 @@ export function BenchmarkDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {speedSummary.map((row) => (
+                        {(() => {
+                          const best = {
+                            meanRetrieval: uniqueBest(speedSummary.map((r) => r.mean_retrieval_ms)),
+                            p95Retrieval: uniqueBest(speedSummary.map((r) => r.p95_retrieval_ms)),
+                            meanTotal: uniqueBest(speedSummary.map((r) => r.mean_total_ms)),
+                            medianTotal: uniqueBest(speedSummary.map((r) => r.median_total_ms)),
+                            p95Total: uniqueBest(speedSummary.map((r) => r.p95_total_ms)),
+                            minTotal: uniqueBest(speedSummary.map((r) => r.min_total_ms)),
+                            maxTotal: uniqueBest(speedSummary.map((r) => r.max_total_ms)),
+                          };
+                          return speedSummary.map((row) => (
                           <tr key={row.database} className="border-b last:border-0">
                             <td className="p-1.5">
                               <div className="flex items-center gap-1.5">
@@ -2708,15 +2650,16 @@ export function BenchmarkDashboard() {
                                 <span>{row.database}</span>
                               </div>
                             </td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.mean_retrieval_ms.toFixed(2)}ms</td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.p95_retrieval_ms?.toFixed(2) ?? "-"}ms</td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.mean_total_ms.toFixed(2)}ms</td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.median_total_ms.toFixed(2)}ms</td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.p95_total_ms?.toFixed(2) ?? "-"}ms</td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.min_total_ms.toFixed(2)}ms</td>
-                            <td className="p-1.5 text-right font-mono tabular-nums">{row.max_total_ms.toFixed(2)}ms</td>
+                            <td className={bestCellClass(row.mean_retrieval_ms === best.meanRetrieval)}>{row.mean_retrieval_ms.toFixed(2)}ms</td>
+                            <td className={bestCellClass(row.p95_retrieval_ms === best.p95Retrieval)}>{row.p95_retrieval_ms?.toFixed(2) ?? "-"}ms</td>
+                            <td className={bestCellClass(row.mean_total_ms === best.meanTotal)}>{row.mean_total_ms.toFixed(2)}ms</td>
+                            <td className={bestCellClass(row.median_total_ms === best.medianTotal)}>{row.median_total_ms.toFixed(2)}ms</td>
+                            <td className={bestCellClass(row.p95_total_ms === best.p95Total)}>{row.p95_total_ms?.toFixed(2) ?? "-"}ms</td>
+                            <td className={bestCellClass(row.min_total_ms === best.minTotal)}>{row.min_total_ms.toFixed(2)}ms</td>
+                            <td className={bestCellClass(row.max_total_ms === best.maxTotal)}>{row.max_total_ms.toFixed(2)}ms</td>
                           </tr>
-                        ))}
+                          ));
+                        })()}
                       </tbody>
                     </table>
                   </div>
@@ -2744,7 +2687,16 @@ export function BenchmarkDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.entries(speed_test.failure_summary).map(([database, stats]) => (
+                          {(() => {
+                            const failureSummary = speed_test.failure_summary;
+                            if (!failureSummary) return null;
+                            const entries = Object.entries(failureSummary);
+                            const best = {
+                              successRows: uniqueBest(entries.map(([, s]) => s.success_rows), "max"),
+                              failedRows: uniqueBest(entries.map(([, s]) => s.failed_rows)),
+                              successRate: uniqueBest(entries.map(([, s]) => s.success_rate), "max"),
+                            };
+                            return entries.map(([database, stats]) => (
                             <tr key={database} className="border-b last:border-0">
                               <td className="p-1.5">
                                 <div className="flex items-center gap-1.5">
@@ -2753,11 +2705,12 @@ export function BenchmarkDashboard() {
                                 </div>
                               </td>
                               <td className="p-1.5 text-right font-mono tabular-nums">{stats.total_rows}</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.success_rows}</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.failed_rows}</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{(stats.success_rate * 100).toFixed(1)}%</td>
+                              <td className={bestCellClass(stats.success_rows === best.successRows)}>{stats.success_rows}</td>
+                              <td className={bestCellClass(stats.failed_rows === best.failedRows)}>{stats.failed_rows}</td>
+                              <td className={bestCellClass(stats.success_rate === best.successRate)}>{(stats.success_rate * 100).toFixed(1)}%</td>
                             </tr>
-                          ))}
+                            ));
+                          })()}
                         </tbody>
                       </table>
                     </div>
@@ -2788,7 +2741,15 @@ export function BenchmarkDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.entries(queryTypeSummary).map(([database, stats]) => (
+                          {(() => {
+                            const entries = Object.entries(queryTypeSummary);
+                            const best = {
+                              ansRetrieval: uniqueBest(entries.map(([, s]) => s.answerable?.mean_retrieval_ms)),
+                              ansTotal: uniqueBest(entries.map(([, s]) => s.answerable?.mean_total_ms)),
+                              noAnsRetrieval: uniqueBest(entries.map(([, s]) => s.no_answer?.mean_retrieval_ms)),
+                              noAnsTotal: uniqueBest(entries.map(([, s]) => s.no_answer?.mean_total_ms)),
+                            };
+                            return entries.map(([database, stats]) => (
                             <tr key={database} className="border-b last:border-0">
                               <td className="p-1.5">
                                 <div className="flex items-center gap-1.5">
@@ -2797,13 +2758,14 @@ export function BenchmarkDashboard() {
                                 </div>
                               </td>
                               <td className="p-1.5 text-right font-mono tabular-nums">{stats.answerable?.queries_tested ?? 0}</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.answerable?.mean_retrieval_ms.toFixed(2) ?? "-"}ms</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.answerable?.mean_total_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className={bestCellClass(stats.answerable?.mean_retrieval_ms === best.ansRetrieval)}>{stats.answerable?.mean_retrieval_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className={bestCellClass(stats.answerable?.mean_total_ms === best.ansTotal)}>{stats.answerable?.mean_total_ms.toFixed(2) ?? "-"}ms</td>
                               <td className="p-1.5 text-right font-mono tabular-nums">{stats.no_answer?.queries_tested ?? 0}</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.no_answer?.mean_retrieval_ms.toFixed(2) ?? "-"}ms</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{stats.no_answer?.mean_total_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className={bestCellClass(stats.no_answer?.mean_retrieval_ms === best.noAnsRetrieval)}>{stats.no_answer?.mean_retrieval_ms.toFixed(2) ?? "-"}ms</td>
+                              <td className={bestCellClass(stats.no_answer?.mean_total_ms === best.noAnsTotal)}>{stats.no_answer?.mean_total_ms.toFixed(2) ?? "-"}ms</td>
                             </tr>
-                          ))}
+                            ));
+                          })()}
                         </tbody>
                       </table>
                     </div>
@@ -2890,8 +2852,31 @@ export function BenchmarkDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.entries(concurrentUserScalability).flatMap(([database, rows]) =>
-                            rows.map((row) => (
+                          {(() => {
+                            const allRows = Object.values(concurrentUserScalability).flat();
+                            // Compare only rows with the same concurrent-user count
+                            const bestForUsers = (users: number) => {
+                              const group = allRows.filter((r) => r.concurrent_users === users);
+                              return {
+                                meanLatency: uniqueBest(group.map((r) => r.mean_latency_ms)),
+                                p95: uniqueBest(group.map((r) => r.p95_latency_ms)),
+                                p99: uniqueBest(group.map((r) => r.p99_latency_ms)),
+                                throughput: uniqueBest(group.map((r) => r.throughput_rps), "max"),
+                                error: uniqueBest(group.map((r) => r.error_rate)),
+                                cpuAvg: uniqueBest(group.map((r) => r.avg_cpu_percent)),
+                                cpuMax: uniqueBest(group.map((r) => r.max_cpu_percent)),
+                                ramAvg: uniqueBest(group.map((r) => r.avg_ram_used_mb)),
+                                ramMax: uniqueBest(group.map((r) => r.max_ram_used_mb)),
+                                gpuAvg: uniqueBest(group.map((r) => r.avg_gpu_util_percent)),
+                                gpuMax: uniqueBest(group.map((r) => r.max_gpu_util_percent)),
+                                vramAvg: uniqueBest(group.map((r) => r.avg_gpu_memory_used_mb)),
+                                vramMax: uniqueBest(group.map((r) => r.max_gpu_memory_used_mb)),
+                              };
+                            };
+                            return Object.entries(concurrentUserScalability).flatMap(([database, rows]) =>
+                              rows.map((row) => {
+                                const best = bestForUsers(row.concurrent_users);
+                                return (
                               <tr key={`${database}-${row.concurrent_users}`} className="border-b last:border-0">
                                 <td className="p-1.5">
                                   <div className="flex items-center gap-1.5">
@@ -2900,22 +2885,24 @@ export function BenchmarkDashboard() {
                                   </div>
                                 </td>
                                 <td className="p-1.5 text-right font-mono tabular-nums">{row.concurrent_users}</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.mean_latency_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.p95_latency_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.p99_latency_ms.toFixed(2)}ms</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.throughput_rps.toFixed(2)} rps</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{(row.error_rate * 100).toFixed(1)}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_cpu_percent?.toFixed(1) ?? "-"}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_cpu_percent?.toFixed(1) ?? "-"}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_ram_used_mb?.toFixed(0) ?? "-"}MB</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_ram_used_mb?.toFixed(0) ?? "-"}MB</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_gpu_util_percent?.toFixed(1) ?? "-"}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_gpu_util_percent?.toFixed(1) ?? "-"}%</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.avg_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</td>
-                                <td className="p-1.5 text-right font-mono tabular-nums">{row.max_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className={bestCellClass(row.mean_latency_ms === best.meanLatency)}>{row.mean_latency_ms.toFixed(2)}ms</td>
+                                <td className={bestCellClass(row.p95_latency_ms === best.p95)}>{row.p95_latency_ms.toFixed(2)}ms</td>
+                                <td className={bestCellClass(row.p99_latency_ms === best.p99)}>{row.p99_latency_ms.toFixed(2)}ms</td>
+                                <td className={bestCellClass(row.throughput_rps === best.throughput)}>{row.throughput_rps.toFixed(2)} rps</td>
+                                <td className={bestCellClass(row.error_rate === best.error)}>{(row.error_rate * 100).toFixed(1)}%</td>
+                                <td className={bestCellClass(row.avg_cpu_percent === best.cpuAvg)}>{row.avg_cpu_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className={bestCellClass(row.max_cpu_percent === best.cpuMax)}>{row.max_cpu_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className={bestCellClass(row.avg_ram_used_mb === best.ramAvg)}>{row.avg_ram_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className={bestCellClass(row.max_ram_used_mb === best.ramMax)}>{row.max_ram_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className={bestCellClass(row.avg_gpu_util_percent === best.gpuAvg)}>{row.avg_gpu_util_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className={bestCellClass(row.max_gpu_util_percent === best.gpuMax)}>{row.max_gpu_util_percent?.toFixed(1) ?? "-"}%</td>
+                                <td className={bestCellClass(row.avg_gpu_memory_used_mb === best.vramAvg)}>{row.avg_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</td>
+                                <td className={bestCellClass(row.max_gpu_memory_used_mb === best.vramMax)}>{row.max_gpu_memory_used_mb?.toFixed(0) ?? "-"}MB</td>
                               </tr>
-                            ))
-                          )}
+                                );
+                              })
+                            );
+                          })()}
                         </tbody>
                       </table>
                     </div>
@@ -2947,7 +2934,16 @@ export function BenchmarkDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.entries(deepevalQuality).map(([database, metrics]) => (
+                          {(() => {
+                            const entries = Object.entries(deepevalQuality);
+                            const best = {
+                              relevancy: uniqueBest(entries.map(([, m]) => m.avg_answer_relevancy ?? 0), "max"),
+                              faithfulness: uniqueBest(entries.map(([, m]) => m.avg_faithfulness ?? 0), "max"),
+                              ctxRelevancy: uniqueBest(entries.map(([, m]) => m.avg_contextual_relevancy ?? 0), "max"),
+                              ctxPrecision: uniqueBest(entries.map(([, m]) => m.avg_contextual_precision ?? 0), "max"),
+                              ctxRecall: uniqueBest(entries.map(([, m]) => m.avg_contextual_recall ?? 0), "max"),
+                            };
+                            return entries.map(([database, metrics]) => (
                             <tr key={database} className="border-b last:border-0">
                               <td className="p-1.5">
                                 <div className="flex items-center gap-1.5">
@@ -2955,14 +2951,15 @@ export function BenchmarkDashboard() {
                                   <span>{database}</span>
                                 </div>
                               </td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_answer_relevancy ?? 0) * 100).toFixed(2)}%</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_faithfulness ?? 0) * 100).toFixed(2)}%</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_contextual_relevancy ?? 0) * 100).toFixed(2)}%</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_contextual_precision ?? 0) * 100).toFixed(2)}%</td>
-                              <td className="p-1.5 text-right font-mono tabular-nums">{((metrics.avg_contextual_recall ?? 0) * 100).toFixed(2)}%</td>
+                              <td className={bestCellClass((metrics.avg_answer_relevancy ?? 0) === best.relevancy)}>{((metrics.avg_answer_relevancy ?? 0) * 100).toFixed(2)}%</td>
+                              <td className={bestCellClass((metrics.avg_faithfulness ?? 0) === best.faithfulness)}>{((metrics.avg_faithfulness ?? 0) * 100).toFixed(2)}%</td>
+                              <td className={bestCellClass((metrics.avg_contextual_relevancy ?? 0) === best.ctxRelevancy)}>{((metrics.avg_contextual_relevancy ?? 0) * 100).toFixed(2)}%</td>
+                              <td className={bestCellClass((metrics.avg_contextual_precision ?? 0) === best.ctxPrecision)}>{((metrics.avg_contextual_precision ?? 0) * 100).toFixed(2)}%</td>
+                              <td className={bestCellClass((metrics.avg_contextual_recall ?? 0) === best.ctxRecall)}>{((metrics.avg_contextual_recall ?? 0) * 100).toFixed(2)}%</td>
                               <td className="p-1.5 text-right font-mono tabular-nums">{metrics.per_query?.length ?? 0}</td>
                             </tr>
-                          ))}
+                            ));
+                          })()}
                         </tbody>
                       </table>
                     </div>
@@ -2979,7 +2976,7 @@ export function BenchmarkDashboard() {
       {/* Mobile Bottom Navigation */}
       <nav
         aria-label="Main navigation"
-        className="fixed bottom-0 inset-x-0 sm:hidden border-t border-border/50 bg-background/95 backdrop-blur-sm z-50 safe-area-inset"
+        className="fixed bottom-0 inset-x-0 sm:hidden border-t border-border bg-background z-50 safe-area-inset"
       >
         <div className="flex items-center justify-between px-2 py-1">
           {/* Tab Navigation */}

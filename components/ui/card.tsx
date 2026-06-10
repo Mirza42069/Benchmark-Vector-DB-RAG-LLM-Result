@@ -11,7 +11,7 @@ function Card({
     <div
       data-slot="card"
       data-size={size}
-      className={cn("bg-card text-card-foreground gap-2 overflow-hidden rounded-lg py-2 text-xs/relaxed has-[>img:first-child]:pt-0 data-[size=sm]:gap-1.5 data-[size=sm]:py-1.5 *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg group/card flex flex-col", className)}
+      className={cn("bg-card text-card-foreground gap-2 overflow-hidden rounded-xl py-2 text-xs/relaxed has-[>img:first-child]:pt-0 data-[size=sm]:gap-1.5 data-[size=sm]:py-1.5 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl group/card flex flex-col", className)}
       {...props}
     />
   )
@@ -22,7 +22,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "gap-1 rounded-t-lg px-2.5 group-data-[size=sm]/card:px-2 [.border-b]:pb-2 group-data-[size=sm]/card:[.border-b]:pb-1.5 group/card-header @container/card-header grid auto-rows-min items-start has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
+        "gap-1 rounded-t-xl px-2.5 group-data-[size=sm]/card:px-2 [.border-b]:pb-2 group-data-[size=sm]/card:[.border-b]:pb-1.5 group/card-header @container/card-header grid auto-rows-min items-start has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
         className
       )}
       {...props}
@@ -77,7 +77,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("rounded-b-lg px-2.5 group-data-[size=sm]/card:px-2 [.border-t]:pt-2 group-data-[size=sm]/card:[.border-t]:pt-1.5 flex items-center", className)}
+      className={cn("rounded-b-xl px-2.5 group-data-[size=sm]/card:px-2 [.border-t]:pt-2 group-data-[size=sm]/card:[.border-t]:pt-1.5 flex items-center", className)}
       {...props}
     />
   )
