@@ -702,10 +702,10 @@ const HeaderTabButton = ({
     aria-selected={activeTab === tab}
     role="tab"
     className={cn(
-      "flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-150 motion-reduce:transition-none",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+      "relative flex h-8 w-8 items-center justify-center transition-colors duration-150 motion-reduce:transition-none",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/40",
       activeTab === tab
-        ? "bg-primary text-primary-foreground"
+        ? "text-primary-foreground"
         : "text-muted-foreground hover:text-foreground hover:bg-muted"
     )}
   >
@@ -1185,8 +1185,14 @@ export function BenchmarkDashboard() {
               role="tablist"
               aria-label="Main navigation"
               onKeyDown={handleTabKeyDown}
-              className="hidden sm:flex items-center gap-1"
+              className="relative hidden sm:flex items-center rounded-md border border-border overflow-hidden"
             >
+              {/* Sliding indicator behind the active tab */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-0 left-0 w-8 bg-primary transition-transform duration-200 ease-out motion-reduce:transition-none"
+                style={{ transform: `translateX(${tabOptions.indexOf(activeTab) * 2}rem)` }}
+              />
               <HeaderTabButton
                 tab="summary"
                 label="Summary"
@@ -1225,30 +1231,32 @@ export function BenchmarkDashboard() {
             </nav>
             {/* Metadata badges */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <Badge variant="outline" className="px-2 py-0.5 text-[11px] sm:text-xs">
-                {new Intl.DateTimeFormat(undefined, {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                }).format(new Date(getBenchmarkDate(metadata)))}
-              </Badge>
-              <Badge variant="secondary" className="text-[11px] sm:text-xs">
-                {metadata.llm_model}
-              </Badge>
-              <Badge variant="secondary" className="text-[11px] sm:text-xs">
-                {metadata.embedding_model}
-              </Badge>
-              {metadata.score_threshold !== undefined && (
-                <Badge variant="secondary" className="text-[11px] sm:text-xs">
-                  threshold {metadata.score_threshold}
+              <div className="flex flex-wrap items-center gap-0.5 rounded-md border border-border p-0.5">
+                <Badge variant="outline" className="rounded-sm border-0 bg-transparent px-2 py-0.5 text-[11px] sm:text-xs">
+                  {new Intl.DateTimeFormat(undefined, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  }).format(new Date(getBenchmarkDate(metadata)))}
                 </Badge>
-              )}
-              <Badge variant="secondary" className="text-[11px] sm:text-xs">
-                {metadata.num_queries}Q
-              </Badge>
-              <Badge variant="secondary" className="text-[11px] sm:text-xs">
-                K={metadata.top_k}
-              </Badge>
+                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
+                  {metadata.llm_model}
+                </Badge>
+                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
+                  {metadata.embedding_model}
+                </Badge>
+                {metadata.score_threshold !== undefined && (
+                  <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
+                    threshold {metadata.score_threshold}
+                  </Badge>
+                )}
+                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
+                  {metadata.num_queries}Q
+                </Badge>
+                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
+                  K={metadata.top_k}
+                </Badge>
+              </div>
               <div className="hidden sm:block">
                 <ModeToggle />
               </div>
