@@ -57,6 +57,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -444,6 +450,27 @@ type TabType = "summary" | "speed" | "scalability" | "quality" | "info";
 
 const tabOptions: TabType[] = ["summary", "speed", "scalability", "quality", "info"];
 
+interface MetadataBadgeProps {
+  label: string;
+  children: React.ReactNode;
+}
+
+function MetadataBadge({ label, children }: MetadataBadgeProps) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Badge
+          variant="outline"
+          className="rounded-sm border-border bg-muted px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-muted sm:text-xs"
+        >
+          {children}
+        </Badge>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={6}>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
 
 // Sub-components moved outside to avoid re-creation on render
 const FormatMs = ({ ms }: { ms: number }) => (
@@ -804,7 +831,10 @@ export function BenchmarkDashboard() {
   const perRepetitionSummary = speed_test.per_repetition_summary ?? {};
   const queryTypeSummary = speed_test.query_type_summary ?? {};
   const deepevalQuality = benchmarkData.deepeval_answer_quality ?? {};
-  const concurrentUserScalability = benchmarkData.concurrent_user_scalability_test ?? {};
+  const concurrentUserScalability = useMemo(
+    () => benchmarkData.concurrent_user_scalability_test ?? {},
+    [benchmarkData.concurrent_user_scalability_test]
+  );
 
   // Scalability test data
   // Databases list - declared early as it's used in useMemo hooks below
@@ -907,7 +937,7 @@ export function BenchmarkDashboard() {
     return times.reduce((min, curr) => curr.time < min.time ? curr : min);
   }, [databases, scalabilityData]);
 
-  const concurrentSummary = useMemo(() => {
+  const concurrentSummary = (() => {
     const rows = Object.entries(concurrentUserScalability).flatMap(([database, entries]) =>
       (entries ?? []).map((entry) => ({ database, ...entry }))
     );
@@ -922,7 +952,7 @@ export function BenchmarkDashboard() {
       concurrentUsers: maxUsers,
       meanLatencyMs: best.mean_latency_ms,
     };
-  }, [concurrentUserScalability]);
+  })();
 
   const maxTopKByDatabase = useMemo(() => {
     return Object.fromEntries(
@@ -1231,32 +1261,34 @@ export function BenchmarkDashboard() {
             </nav>
             {/* Metadata badges */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <div className="flex flex-wrap items-center gap-0.5 rounded-md border border-border p-0.5">
-                <Badge variant="outline" className="rounded-sm border-0 bg-transparent px-2 py-0.5 text-[11px] sm:text-xs">
-                  {new Intl.DateTimeFormat(undefined, {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  }).format(new Date(getBenchmarkDate(metadata)))}
-                </Badge>
-                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
-                  {metadata.llm_model}
-                </Badge>
-                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
-                  {metadata.embedding_model}
-                </Badge>
-                {metadata.score_threshold !== undefined && (
-                  <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
-                    threshold {metadata.score_threshold}
-                  </Badge>
-                )}
-                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
-                  {metadata.num_queries}Q
-                </Badge>
-                <Badge variant="secondary" className="rounded-sm text-[11px] sm:text-xs">
-                  K={metadata.top_k}
-                </Badge>
-              </div>
+              <TooltipProvider>
+                <div className="flex flex-wrap items-center gap-0.5 rounded-md border border-border bg-muted/40 p-0.5">
+                  <MetadataBadge label="Benchmark date">
+                    {new Intl.DateTimeFormat(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }).format(new Date(getBenchmarkDate(metadata)))}
+                  </MetadataBadge>
+                  <MetadataBadge label="LLM model">
+                    {metadata.llm_model}
+                  </MetadataBadge>
+                  <MetadataBadge label="Embedding model">
+                    {metadata.embedding_model}
+                  </MetadataBadge>
+                  {metadata.score_threshold !== undefined && (
+                    <MetadataBadge label="Similarity score threshold">
+                      threshold {metadata.score_threshold}
+                    </MetadataBadge>
+                  )}
+                  <MetadataBadge label="Number of benchmark queries">
+                    {metadata.num_queries}Q
+                  </MetadataBadge>
+                  <MetadataBadge label="Top-k retrieval setting">
+                    K={metadata.top_k}
+                  </MetadataBadge>
+                </div>
+              </TooltipProvider>
               <div className="hidden sm:block">
                 <ModeToggle />
               </div>
