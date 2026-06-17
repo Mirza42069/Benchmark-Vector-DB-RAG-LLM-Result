@@ -50,6 +50,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -455,6 +460,14 @@ interface MetadataBadgeProps {
   children: React.ReactNode;
 }
 
+interface MetricTooltipCardProps {
+  label: string;
+  tooltip: React.ReactNode;
+  icon: React.ElementType;
+  value: React.ReactNode;
+  valueClassName?: string;
+}
+
 function MetadataBadge({ label, children }: MetadataBadgeProps) {
   return (
     <Tooltip>
@@ -467,6 +480,34 @@ function MetadataBadge({ label, children }: MetadataBadgeProps) {
         </Badge>
       </TooltipTrigger>
       <TooltipContent sideOffset={6}>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+function MetricTooltipCard({
+  label,
+  tooltip,
+  icon: Icon,
+  value,
+  valueClassName,
+}: MetricTooltipCardProps) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          tabIndex={0}
+          className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-muted px-2.5 py-2 transition-all duration-200 hover:-translate-y-0.5 hover:bg-muted/80 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:flex-1"
+        >
+          <span className="flex min-w-0 items-center gap-1.5 truncate text-xs text-muted-foreground">
+            <Icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">{label}</span>
+          </span>
+          <span className={valueClassName}>{value}</span>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={8} className="max-w-64 leading-relaxed">
+        {tooltip}
+      </TooltipContent>
     </Tooltip>
   );
 }
@@ -721,23 +762,24 @@ const HeaderTabButton = ({
   activeTab,
   setActiveTab,
 }: TabButtonProps) => (
-  <button
-    type="button"
-    onClick={() => setActiveTab(tab)}
-    title={label}
-    aria-label={label}
-    aria-selected={activeTab === tab}
-    role="tab"
-    className={cn(
-      "relative flex h-8 w-8 items-center justify-center transition-colors duration-150 motion-reduce:transition-none",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/40",
-      activeTab === tab
-        ? "text-primary-foreground"
-        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-    )}
-  >
-    <Icon aria-hidden="true" className="w-4 h-4" />
-  </button>
+  <MenubarMenu>
+    <MenubarTrigger
+      onClick={() => setActiveTab(tab)}
+      title={label}
+      aria-label={label}
+      aria-selected={activeTab === tab}
+      role="tab"
+      className={cn(
+        "relative z-10 size-8 justify-center rounded-none p-0 transition-all duration-150 motion-reduce:transition-none",
+        "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/40",
+        activeTab === tab
+          ? "bg-transparent text-primary-foreground hover:bg-transparent hover:text-primary-foreground aria-expanded:bg-transparent"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted"
+      )}
+    >
+      <Icon aria-hidden="true" className="w-4 h-4" />
+    </MenubarTrigger>
+  </MenubarMenu>
 );
 
 // Bottom nav tab button (mobile) - icon with label
@@ -1211,11 +1253,11 @@ export function BenchmarkDashboard() {
               Vector Database Benchmark
             </h1>
             {/* Desktop tab navigation */}
-            <nav
+            <Menubar
               role="tablist"
               aria-label="Main navigation"
               onKeyDown={handleTabKeyDown}
-              className="relative hidden sm:flex items-center rounded-md border border-border overflow-hidden"
+              className="relative hidden h-8 overflow-hidden rounded-md border-border bg-background p-0 sm:flex"
             >
               {/* Sliding indicator behind the active tab */}
               <span
@@ -1258,7 +1300,7 @@ export function BenchmarkDashboard() {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
               />
-            </nav>
+            </Menubar>
             {/* Metadata badges */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <TooltipProvider>
@@ -1502,60 +1544,52 @@ export function BenchmarkDashboard() {
                             </Badge>
                           )}
                         </div>
+                        <TooltipProvider>
                         <div className="flex flex-col gap-1.5 flex-1">
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Avg Retrieval">
-                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
-                              <Clock aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">Retrieval</span>
-                            </span>
-                            <span className={metricClassName(dbCompareWinners.retrieval === db)}>{speed?.mean_retrieval_ms.toFixed(1)}ms</span>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Avg Total = retrieval + LLM time (end-to-end per query)">
-                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
-                              <Gauge aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">Total</span>
-                            </span>
-                            <span className={metricClassName(dbCompareWinners.total === db)}>{speed?.mean_total_ms.toFixed(0)}ms</span>
-                          </div>
-
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Top-K scale at maximum tested k">
-                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
-                              <TrendingUp aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">Top-K</span>
-                            </span>
-                            <span className={metricClassName(dbCompareWinners.topK === db)} title={topKScale ? `k=${topKScale.topK}` : undefined}>
-                              {topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Corpus-size scale at maximum tested corpus percentage">
-                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
-                              <Database aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">Corpus</span>
-                            </span>
-                            <span className={metricClassName(dbCompareWinners.corpus === db)} title={corpusScale ? `${corpusScale.docCount}% corpus` : undefined}>
-                              {corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Concurrent-user latency at maximum tested users">
-                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
-                              <Activity aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">Concurrent</span>
-                            </span>
-                            <span className={metricClassName(dbCompareWinners.concurrent === db)} title={concurrentScale ? `${concurrentScale.concurrent_users} users` : undefined}>
-                              {concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center justify-between gap-2 min-w-0 rounded-md bg-muted px-2.5 py-2 sm:flex-1" title="Weighted normalized efficiency from max-concurrent latency (40%), average CPU (20%), RAM (15%), GPU (15%), and VRAM (10%). Higher is better.">
-                            <span className="text-muted-foreground text-xs flex items-center gap-1.5 min-w-0 truncate">
-                              <CheckCircle aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">Efficient</span>
-                            </span>
-                            <span className={metricClassName(mostEfficientDatabase === db)}>
-                              {efficiencyScore !== null && efficiencyScore !== undefined ? efficiencyScore.toFixed(1) : "-"}
-                            </span>
-                          </div>
+                          <MetricTooltipCard
+                            label="Retrieval"
+                            icon={Clock}
+                            tooltip="Average vector retrieval time per query. Lower is better."
+                            value={`${speed?.mean_retrieval_ms.toFixed(1)}ms`}
+                            valueClassName={metricClassName(dbCompareWinners.retrieval === db)}
+                          />
+                          <MetricTooltipCard
+                            label="Total"
+                            icon={Gauge}
+                            tooltip="Average end-to-end query time, including retrieval plus LLM generation. Lower is better."
+                            value={`${speed?.mean_total_ms.toFixed(0)}ms`}
+                            valueClassName={metricClassName(dbCompareWinners.total === db)}
+                          />
+                          <MetricTooltipCard
+                            label="Top-K"
+                            icon={TrendingUp}
+                            tooltip={topKScale ? `Latency at the maximum tested retrieval depth, k=${topKScale.topK}. Lower is better.` : "No Top-K scalability result is available."}
+                            value={topKScale ? `${topKScale.avgTime.toFixed(1)}ms` : "-"}
+                            valueClassName={metricClassName(dbCompareWinners.topK === db)}
+                          />
+                          <MetricTooltipCard
+                            label="Corpus"
+                            icon={Database}
+                            tooltip={corpusScale ? `Latency at the maximum tested corpus size, ${corpusScale.docCount}% of the corpus. Lower is better.` : "No corpus-size scalability result is available."}
+                            value={corpusScale ? `${corpusScale.avgTime.toFixed(1)}ms` : "-"}
+                            valueClassName={metricClassName(dbCompareWinners.corpus === db)}
+                          />
+                          <MetricTooltipCard
+                            label="Concurrent"
+                            icon={Activity}
+                            tooltip={concurrentScale ? `Mean latency at the maximum tested concurrency, ${concurrentScale.concurrent_users} users. Lower is better.` : "No concurrent-user scalability result is available."}
+                            value={concurrentScale ? `${concurrentScale.mean_latency_ms.toFixed(1)}ms` : "-"}
+                            valueClassName={metricClassName(dbCompareWinners.concurrent === db)}
+                          />
+                          <MetricTooltipCard
+                            label="Efficient"
+                            icon={CheckCircle}
+                            tooltip="Weighted normalized efficiency from max-concurrent latency, CPU, RAM, GPU, and VRAM usage. Higher is better."
+                            value={efficiencyScore !== null && efficiencyScore !== undefined ? efficiencyScore.toFixed(1) : "-"}
+                            valueClassName={metricClassName(mostEfficientDatabase === db)}
+                          />
                         </div>
+                        </TooltipProvider>
                       </div>
                     );
                   })}
