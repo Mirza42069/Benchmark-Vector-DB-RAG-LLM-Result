@@ -771,7 +771,7 @@ const HeaderTabButton = ({
       role="tab"
       className={cn(
         "relative z-10 size-8 justify-center rounded-none p-0 transition-all duration-150 motion-reduce:transition-none",
-        "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/40",
+        "focus-visible:outline-none focus-visible:ring-0",
         activeTab === tab
           ? "bg-transparent text-primary-foreground hover:bg-transparent hover:text-primary-foreground aria-expanded:bg-transparent"
           : "text-muted-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted"
