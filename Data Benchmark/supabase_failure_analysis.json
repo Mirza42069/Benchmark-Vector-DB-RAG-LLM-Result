@@ -1,0 +1,105 @@
+{
+  "title": "Supabase (PostgreSQL + pgvector, free tier) benchmark failure analysis",
+  "date": "2026-07-17",
+  "status": "excluded_from_full_benchmark_runs",
+  "summary": "Supabase could not reliably complete the benchmark. The 4096-dimensional embeddings exceed pgvector's ANN index limits, forcing exact sequential-scan search. On the free-tier Nano compute instance, each query reads ~300 MB from disk, which exhausts the instance's burstable disk I/O budget during sustained runs. Query latency then degrades from seconds to over 10 minutes, triggering PostgreSQL statement_timeout cancellations, and the overloaded instance intermittently kills connections during store initialization.",
+  "environment": {
+    "provider": "Supabase (managed PostgreSQL 17.6, aarch64)",
+    "plan": "free tier",
+    "compute_instance": "Nano (shared CPU, ~0.5 GB RAM, burstable disk I/O)",
+    "region": "aws-0-ap-northeast-1",
+    "connection": "Supavisor session pooler, port 5432, sslmode=require",
+    "max_connections": 60,
+    "embedding_model": "qwen3-embedding:8b",
+    "embedding_dimension": 4096,
+    "integration": "langchain_postgres.PGVector 0.0.17 + psycopg 3"
+  },
+  "dataset": {
+    "table": "langchain_pg_embedding",
+    "total_rows": 61470,
+    "total_size": "1077 MB (heap 65 MB; vectors TOASTed, ~16 KB per row)",
+    "collections": {
+      "its_guidebook": 17480,
+      "its_guidebook_docs_20": 984,
+      "its_guidebook_docs_40": 5814,
+      "its_guidebook_docs_60": 8261,
+      "its_guidebook_docs_80": 13300,
+      "its_guidebook_docs_100": 15631
+    }
+  },
+  "root_causes": [
+    {
+      "id": 1,
+      "cause": "4096-dimensional vectors cannot be ANN-indexed by pgvector",
+      "detail": "pgvector HNSW supports at most 2000 dimensions for the vector type and 4000 for halfvec. The native 4096-dim embedding therefore forces exact nearest-neighbor search: a full scan computing cosine distance against every vector in the target collection (17,480 rows / ~286 MB for the main collection) on every query.",
+      "classification": "inherent_to_any_plan_tier"
+    },
+    {
+      "id": 2,
+      "cause": "Working set does not fit in free-tier RAM",
+      "detail": "Each query must detoast ~286 MB of vector data. The Nano instance (~0.5 GB RAM) cannot cache it, so every query re-reads it from disk. pg_stat_statements recorded ~136 GB of cumulative disk block reads over 454 benchmark queries (~300 MB per query).",
+      "classification": "free_tier_limitation"
+    },
+    {
+      "id": 3,
+      "cause": "Burstable disk I/O budget exhaustion (throttling)",
+      "detail": "The free-tier instance has a small burstable disk I/O budget that refills slowly and is shared across runs. Once depleted during a sustained run, the same query degrades from ~0.7-20 s to 8.5+ minutes. This explains why one run survived 5 hours (2026-07-16) while the next failed in under 1 hour (2026-07-17): the second run started with an already-drained budget.",
+      "classification": "free_tier_limitation"
+    },
+    {
+      "id": 4,
+      "cause": "PostgreSQL statement_timeout cancels degraded queries",
+      "detail": "Supabase's default session statement_timeout is 2 minutes. Throttled exact-scan queries exceeded it (first failure: speed-test query 5). After raising the timeout to 10 minutes via a per-connection SET, a later query still exceeded 10 minutes under throttling (second failure: speed-test query 42). Worst-case latency under I/O throttling is effectively unbounded, so no fixed timeout guarantees completion.",
+      "classification": "consequence_of_causes_2_and_3"
+    },
+    {
+      "id": 5,
+      "cause": "Transient connection loss during store initialization",
+      "detail": "Error at 2026-07-17 06:15: '(EDBHANDLEREXITED) connection to database closed' on 'select pg_catalog.version()' while PGVector.__init__ opened its first connection. The database itself did not restart (uptime ~13 h at diagnosis; 12 of 60 backends in use), indicating a single Supavisor backend handler died on the overloaded instance, likely under memory pressure. This dropped Supabase from the scalability phase of that run.",
+      "classification": "free_tier_instability"
+    }
+  ],
+  "measured_evidence": {
+    "source": "pg_stat_statements on the live instance, 2026-07-17",
+    "benchmark_query_calls": 454,
+    "mean_exec_time_s": 16.0,
+    "min_exec_time_s": 0.7,
+    "max_completed_exec_time_s": 512.9,
+    "cancelled_queries_exceeded_s": 600,
+    "total_exec_time_s": 7278,
+    "shared_blocks_read": 17807467,
+    "approx_disk_read_total_gb": 136,
+    "approx_disk_read_per_query_mb": 300,
+    "note": "Cancelled statements are not recorded by pg_stat_statements, so true worst-case latency exceeds the 512.9 s maximum shown for completed queries."
+  },
+  "failure_timeline": [
+    {
+      "date": "2026-07-16",
+      "event": "Benchmark run sustained ~5 hours before stopping; speed-test query cancelled by the default 2-minute statement_timeout (psycopg.errors.QueryCanceled at query 5)."
+    },
+    {
+      "date": "2026-07-17",
+      "event": "Fixes applied: statement_timeout raised to 10 min per connection, btree index added on langchain_pg_embedding.collection_id, single query verified at ~22 s."
+    },
+    {
+      "date": "2026-07-17",
+      "event": "Next run failed in under 1 hour at speed-test query 42: QueryCanceled despite the 10-minute timeout, due to disk I/O throttling from the already-depleted burst budget."
+    },
+    {
+      "date": "2026-07-17 06:15",
+      "event": "Store initialization failed with (EDBHANDLEREXITED) connection to database closed; Supabase dropped from the scalability phase of that run."
+    }
+  ],
+  "mitigations_applied": [
+    "Per-connection SET statement_timeout (default 600000 ms) via SQLAlchemy connect event in utils/cloud_vector_stores.create_supabase_engine, applied so it survives the Supavisor pooler",
+    "btree index ix_langchain_pg_embedding_collection_id so per-collection scans do not touch other collections' rows",
+    "Speed test records a failed Supabase query and continues instead of aborting the whole run",
+    "Top-K sensitivity and corpus scalability phases warn and skip a failed Supabase level instead of aborting the whole run",
+    "statement_timeout value recorded in exported run metadata (database_limitations.Supabase.statement_timeout_ms)"
+  ],
+  "decision": {
+    "outcome": "Supabase excluded from full benchmark runs (checkbox left unselected).",
+    "rationale": "The free-tier compute instance cannot sustain unindexed 4096-dimensional exact nearest-neighbor search at this corpus size: latency varies from 0.7 s to over 10 minutes within a single run depending on the remaining disk I/O budget, making results non-reproducible and runs unreliable. The collected partial data is reported as a platform-limitation finding.",
+    "expected_on_paid_tier": "A Small/Medium compute instance (2-4 GB RAM) could cache the ~1 GB table, stabilizing queries at consistent single-digit seconds without throttling; search would remain exact and therefore still the slowest of the evaluated databases."
+  }
+}

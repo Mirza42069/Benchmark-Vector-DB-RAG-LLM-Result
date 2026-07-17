@@ -1,28 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+});
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
-
-const geistSans = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const geistSerif = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Vector Database Benchmark Results",
-  description: "Performance analysis of RAG pipeline across Pinecone, PostgreSQL, and ChromaDB vector databases",
+  description: "Performance analysis of a RAG pipeline across PostgreSQL, ChromaDB, SQLite, LanceDB, Qdrant, Pinecone, and Firebase vector databases",
 };
 
 export const viewport: Viewport = {
@@ -40,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistSerif.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body
         className="font-sans antialiased"
       >

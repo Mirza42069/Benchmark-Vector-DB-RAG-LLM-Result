@@ -1,0 +1,373 @@
+{
+  "metadata": {
+    "status": "completed",
+    "run_id": "20260717_064207",
+    "benchmark_started_at": "2026-07-17T06:42:07.923665",
+    "benchmark_completed_at": "2026-07-17T06:55:09.402170",
+    "llm_model": "gemma4:e4b",
+    "embedding_model": "qwen3-embedding:8b",
+    "collection_name": "its_guidebook",
+    "top_k": 1,
+    "deepeval_query_cap": 10,
+    "deepeval_query_count": 10,
+    "databases_tested": [
+      "Firebase"
+    ]
+  },
+  "benchmark_plan": {
+    "thesis_title": "The Effect of Vector Database Selection on Scalability and Response Speed in a Retrieval-Augmented Generation",
+    "databases_tested": [
+      "Firebase"
+    ],
+    "top_k": 1,
+    "deepeval_query_cap": 10,
+    "deepeval_query_count": 10,
+    "random_seed": 42,
+    "run_mode": "deepeval_quality_only"
+  },
+  "database_limitations": {
+    "Firebase": {
+      "embedding_model": "qwen3-embedding:8b",
+      "native_dimension": 4096,
+      "stored_dimension": 2048,
+      "transformation": "first_2048_dimensions_then_l2_normalization",
+      "ingestion_mode": "resumable_across_free_tier_daily_quota_windows",
+      "free_tier_daily_write_quota": 20000,
+      "ingestion_note": "Firebase collections were ingested across multiple daily quota windows because the full and scalability collections require more writes than the Firestore free-tier daily allowance. This affects ingestion duration only; ingestion time is excluded from benchmark retrieval metrics.",
+      "limitation": "Cloud Firestore supports at most 2048-dimensional vector embeddings. Firebase therefore used a reduced representation and is not dimension-identical to databases evaluated with the native embedding."
+    }
+  },
+  "deepeval_query_manifest": [
+    {
+      "query": "Kapan jadwal pengajuan Batch I insentif publikasi terindeks tahun 2026?",
+      "query_type": "answerable",
+      "source_file": "PD-DRPM-ITS-005-Panduan-Insentif-Publikasi-Terindeks-Dana-ITS-Tahun-2026.pdf",
+      "language": ""
+    },
+    {
+      "query": "Berapa insentif untuk artikel Q1 dengan persentil minimal 90 dan co-author luar negeri?",
+      "query_type": "answerable",
+      "source_file": "PD-DRPM-ITS-005-Panduan-Insentif-Publikasi-Terindeks-Dana-ITS-Tahun-2026.pdf",
+      "language": ""
+    },
+    {
+      "query": "Dua luaran publikasi apa yang wajib dihasilkan peserta Post-Doctoral 2026?",
+      "query_type": "answerable",
+      "source_file": "Post-Doctoral-2026-1-1.pdf",
+      "language": ""
+    },
+    {
+      "query": "Berapa periode maksimal histori saldo yang dapat dilihat pada menu balance history MCM 2.0?",
+      "query_type": "answerable",
+      "source_file": "Buku-Panduan-untuk-Corporate-User.pdf",
+      "language": ""
+    },
+    {
+      "query": "Opsi jadwal apa saja yang tersedia pada fitur Auto Report di Kopra by Mandiri?",
+      "query_type": "answerable",
+      "source_file": "Panduan-Kopra-by-Mandiri-Reports-Cek-Saldo.pdf",
+      "language": ""
+    },
+    {
+      "query": "Berapa persentil Scopus yang digunakan untuk mendefinisikan publikasi Top Tier pada panduan EQUITY WCU 2026?",
+      "query_type": "answerable",
+      "source_file": "PD-DRPM-ITS-026-Panduan-Insentif-Publikasi-Top-Tiers-Dana-EQUITY-WCU-Tahun-2026.pdf",
+      "language": ""
+    },
+    {
+      "query": "Apa syarat H-index Scopus untuk pengusul SRG Tipe A?",
+      "query_type": "answerable",
+      "source_file": "2026_Panduan-Riset-Penugasan-ITS-SRG-1.pdf",
+      "language": ""
+    },
+    {
+      "query": "Apa format email default mahasiswa ITS menurut panduan mahasiswa baru DPTSI 2025?",
+      "query_type": "answerable",
+      "source_file": "Panduan-Mahasiswa-Baru-DPTSI-2025_revised-1.pdf",
+      "language": ""
+    },
+    {
+      "query": "Jam berapa layanan kereta MRT Jakarta mulai beroperasi setiap hari?",
+      "query_type": "answerable",
+      "source_file": "MAN 01 - Perjanjian Angkutan dengan Penumpang 2021.pdf",
+      "language": ""
+    },
+    {
+      "query": "Kapan periode penerimaan proposal PMKI 2026?",
+      "query_type": "answerable",
+      "source_file": "Panduan-PMKI_ITS_2026-1.pdf",
+      "language": ""
+    }
+  ],
+  "deepeval_answer_quality": {
+    "Firebase": {
+      "avg_answer_relevancy": 1.0,
+      "avg_faithfulness": 1.0,
+      "avg_contextual_relevancy": 0.1819,
+      "avg_contextual_precision": 0.4,
+      "avg_contextual_recall": 0.3,
+      "per_query": [
+        {
+          "query": "Kapan jadwal pengajuan Batch I insentif publikasi terindeks tahun 2026?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Kapan jadwal pengajuan Batch I insentif publikasi terindeks tahun 2026?' harus mencakup fakta kunci berikut: Batch I, 17 Maret 2026, 6 April 2026.",
+          "actual_output": "Berdasarkan konteks yang diberikan, tidak terdapat informasi mengenai jadwal pengajuan Batch I insentif publikasi terindeks tahun 2026. Konteks tersebut hanya membahas tentang penerima insentif untuk Batch II Tahun 2025.",
+          "retrieved_sources": [
+            "138_IT2_T_HK.00.01_XII_2025-SK-Rektor-Penerima-Insentif-Publikasi-Internasional-Terindeks-Batch-II-Tahun-2025.pdf"
+          ],
+          "retrieval_time": 1205.9166431427002,
+          "llm_time": 12224.655866622925,
+          "total_time": 13430.572509765625,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the answer is perfectly relevant to the input question, addressing all aspects without any irrelevant statements.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found, meaning the actual output was perfectly faithful to the retrieval context!",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.0,
+          "ContextualRelevancy_reason": "The score is 0.00 because the context is entirely irrelevant; the input asks about 'Batch I insentif publikasi terindeks tahun 2026?', but the reasons for irrelevancy confirm that the context only provides details for 'BATCH II TAHUN 2025' and specifies a date of 'TANGGAL 30 DESEMBER 2025', which contradicts both the requested batch and year.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 0,
+          "ContextualPrecision_reason": "The score is 0.00 because the retrieval context contains only irrelevant nodes. Specifically, Node 1 states that \"The context discusses 'Batch II Tahun 2025' and lists recipients, which is different from the required information regarding 'Batch I insentif publikasi terindeks tahun 2026?' The document does not contain any scheduling dates for Batch I in 2026.'\" Since no relevant nodes are present to be ranked higher than irrelevant nodes, the contextual precision score cannot exceed zero.",
+          "ContextualPrecision_success": false,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.00 because the key facts mentioned in the expected output (e.g., 'Batch I', '17 Maret 2026', '6 April 2026') are entirely unsupported by any node(s) in retrieval context, which only discusses different batches and years.",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Berapa insentif untuk artikel Q1 dengan persentil minimal 90 dan co-author luar negeri?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Berapa insentif untuk artikel Q1 dengan persentil minimal 90 dan co-author luar negeri?' harus mencakup fakta kunci berikut: Q1, 90, co-author luar negeri, Rp35.000.000.",
+          "actual_output": "Berdasarkan konteks yang tersedia, tidak terdapat informasi mengenai insentif untuk artikel Q1 atau insentif yang mempertimbangkan adanya *co-author* luar negeri.",
+          "retrieved_sources": [
+            "SBI-ITS-2025.pdf"
+          ],
+          "retrieval_time": 3890.899419784546,
+          "llm_time": 4996.733903884888,
+          "total_time": 8887.633323669434,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the actual output perfectly addresses all aspects of the input query, and there are no irrelevant statements present.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.14285714285714285,
+          "ContextualRelevancy_reason": "The score is 0.14 because although 'The context discusses INSENTIF PENGELOLA JURNAL ITS.', the retrieved information is highly irrelevant as it only specifies incentives for various ranking tiers (e.g., 'Scopus ( Q2 )', 'Peringkat SINTA-1 ( S1 )'), which are all different from the specific criteria requested in the input, namely 'Q1 dengan persentil minimal 90'.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 0,
+          "ContextualPrecision_reason": "The score is 0.00 because even the highest-ranked node in retrieval contexts (Rank 1) is irrelevant. This node states: \"The context provides a list of incentives based on SINTA and Scopus rankings (e.g., 'Scopus ( Q2 )', 'Peringkat SINTA-1 ( S1 )'), but it does not contain any information regarding 'Q1' articles, 'persentil minimal 90', 'co-author luar negeri', or the specific incentive amount of 'Rp35.000.000'. Therefore, it is not useful for generating the expected output.\" Since no relevant nodes were found to rank higher than this irrelevant node, the score cannot be improved.",
+          "ContextualPrecision_success": false,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.00 because the key facts mentioned in the expected output (Q1, 90, co-author luar negeri, Rp35.000.000) cannot be attributed to any node(s) in retrieval context; specifically, node 1 only provides information regarding Q2, No-Q, and SINTA levels.",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Dua luaran publikasi apa yang wajib dihasilkan peserta Post-Doctoral 2026?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Dua luaran publikasi apa yang wajib dihasilkan peserta Post-Doctoral 2026?' harus mencakup fakta kunci berikut: Scopus Q1 90%, review Q2, luaran.",
+          "actual_output": "Dua luaran publikasi yang wajib dihasilkan adalah:\n\n1. **Satu artikel Jurnal Internasional Scopus-Q1 90%.**\n2. **Satu artikel Review minimal Scopus-Q2** (dengan status minimal *submitted* hingga November 2026, dan harus minimal *accepted* paling lambat Desember 2027).",
+          "retrieved_sources": [
+            "Post-Doctoral-2026-1-1.pdf"
+          ],
+          "retrieval_time": 769.7088718414307,
+          "llm_time": 4093.6262607574463,
+          "total_time": 4863.335132598877,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the answer directly addresses the required publications for Post-Doctoral 2026, and there are no irrelevant statements present.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.75,
+          "ContextualRelevancy_reason": "The score is 0.75 because although one reason notes that 'The statement is too general,' the relevant context provides a highly specific answer to the query by stating there must be 'minimal 2 (dua) artikel kolaborasi bersama mitra LN,' detailing them as '1 (satu) Artikel Jurnal Internasional Scopus-Q1' and '1 (satu) Artikel Review minimal Scopus-Q2'.",
+          "ContextualRelevancy_success": true,
+          "ContextualPrecision_score": 1.0,
+          "ContextualPrecision_reason": "The score is 1.00 because all necessary information was found in Node 1, which states that \"The context directly answers the question by stating that there must be 'luaran minimal 2 (dua) artikel kolaborasi bersama mitra LN, yaitu 1 (satu) Artikel Jurnal Internasional Scopus-Q1 90%, dan 1 (satu) Artikel Review minimal Scopus-Q2,' which provides all the key facts mentioned in the expected output.\" Since there are no irrelevant nodes to rank lower than this highly relevant node, the perfect score is achieved.",
+          "ContextualPrecision_success": true,
+          "ContextualRecall_score": 1.0,
+          "ContextualRecall_reason": "The score is 1.00 because the expected output perfectly summarizes all key facts, such as 'Scopus-Q1 90%' and 'Artikel Review minimal Scopus-Q2', which are fully supported by node 1 in retrieval context.",
+          "ContextualRecall_success": true
+        },
+        {
+          "query": "Berapa periode maksimal histori saldo yang dapat dilihat pada menu balance history MCM 2.0?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Berapa periode maksimal histori saldo yang dapat dilihat pada menu balance history MCM 2.0?' harus mencakup fakta kunci berikut: balance history, maksimal 12 bulan, periode inquiry 1 bulan.",
+          "actual_output": "Mohon berikan konteks yang dimaksud agar saya dapat menjawab pertanyaan Anda.",
+          "retrieved_sources": [
+            "13.Panduan-Program-Diaspora-Berdampak-2026.pdf"
+          ],
+          "retrieval_time": 762.6960277557373,
+          "llm_time": 2509.1001987457275,
+          "total_time": 3271.796226501465,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score of 1.00 is appropriate because the output successfully and completely answers the question regarding the maximum period of balance history available in MCM 2.0. Since no irrelevant statements were found, the content is highly focused and directly addresses the user's query.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.0,
+          "ContextualRelevancy_reason": "The score is 0.00 because the context only provides a version label ('VERSI DRAFT 1.2'), which, as noted in the irrelevance reasons, 'does not contain information regarding the maximum number of periods for viewing balance history in MCM 2.0,' and there are no relevant statements provided.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 0,
+          "ContextualPrecision_reason": "The score is 0.00 because no relevant nodes were found to rank higher than irrelevant nodes. The single node provided at Rank 1 is marked as irrelevant, stating that \"The context only provides a version label ('VERSI DRAFT 1.2') and contains no factual information regarding the maximum period of balance history (e.g., 'maksimal 12 bulan' or 'periode inquiry 1 bulan'), which are essential facts required by the expected output.\" Since all available nodes in retrieval contexts are irrelevant, the contextual precision score cannot be higher.",
+          "ContextualPrecision_success": false,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.0 because the expected output requires specific factual details (balance history, maksimal 12 bulan, and periode inquiry 1 bulan) which are not present in node(s) in retrieval context; the context only contains general version information ('VERSI DRAFT 1.2').",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Opsi jadwal apa saja yang tersedia pada fitur Auto Report di Kopra by Mandiri?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Opsi jadwal apa saja yang tersedia pada fitur Auto Report di Kopra by Mandiri?' harus mencakup fakta kunci berikut: Auto Report, One Time, Daily, Weekly, Monthly.",
+          "actual_output": "Berdasarkan konteks yang tersedia, tidak terdapat informasi mengenai fitur Auto Report atau opsi jadwal program di Kopra by Mandiri. Konteks hanya mencantumkan judul bagian seperti Mekanisme Pelaporan dan Jadwal Program.",
+          "retrieved_sources": [
+            "13.Panduan-Program-Diaspora-Berdampak-2026.pdf"
+          ],
+          "retrieval_time": 710.1705074310303,
+          "llm_time": 3314.605712890625,
+          "total_time": 4024.7762203216553,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the answer is highly relevant and fully addresses the input query regarding the available schedule options in the Auto Report feature of Kopra by Mandiri, with no irrelevant statements found.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.3333333333333333,
+          "ContextualRelevancy_reason": "The score is 0.33 because although the statement 'N. JADWAL PROGRAM' relates to schedules, the context remains largely irrelevant as it fails to provide information about the specific 'Auto Report' feature or its schedule options, only mentioning general topics like 'M. MEKANISME PELAPORAN' and 'Lampiran 1 Format Usulan.'",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 0,
+          "ContextualPrecision_reason": "The score is 0.00 because the only node presented in retrieval contexts, at Rank 1, is an irrelevant node with the reason \"The context only provides section headings ('M. MEKANISME PELAPORAN' and 'N. JADWAL PROGRAM') and page numbers, but it does not list the specific scheduling options (One Time, Daily, Weekly, Monthly) required by the expected output.\" Since no relevant nodes are present at all, there is nothing to rank higher than an irrelevant node, thus maintaining a score of 0.00.",
+          "ContextualPrecision_success": false,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.00 because the Expected Output lists specific operational details (Auto Report, One Time, Daily, Weekly, Monthly) which are not present in any node(s) in retrieval context. The context only contains general structural headings like 'M. MEKANISME PELAPORAN...' and 'N. JADWAL PROGRAM...', failing to support the key facts required by the question.",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Berapa persentil Scopus yang digunakan untuk mendefinisikan publikasi Top Tier pada panduan EQUITY WCU 2026?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Berapa persentil Scopus yang digunakan untuk mendefinisikan publikasi Top Tier pada panduan EQUITY WCU 2026?' harus mencakup fakta kunci berikut: Top Tier, 10%, Scopus.",
+          "actual_output": "Persentil yang digunakan untuk mendefinisikan publikasi Top Tier adalah **≥ 90%**.",
+          "retrieved_sources": [
+            "Panduan-Penelitian-EQUITY-WCU-2025-LPDP-Kemditisaintek.pdf"
+          ],
+          "retrieval_time": 706.6168785095215,
+          "llm_time": 2262.0880603790283,
+          "total_time": 2968.70493888855,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the actual output is highly relevant and directly addresses the input query regarding the Scopus percentile used to define Top Tier publications for the EQUITY WCU 2026 guide. There are no irrelevant statements present.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.25,
+          "ContextualRelevancy_reason": "The score is 0.25 because while a relevant statement provides a specific percentile ('Persentil ≥ 90%'), the overall context remains low in relevance, as indicated by reasons such as discussing 'authorship requirements' or 'reporting procedures,' which are not directly related to defining the required Scopus percentile.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 1.0,
+          "ContextualPrecision_reason": "The score of 1.00 is perfect because all nodes presented are highly relevant, meaning it cannot be higher. Specifically, Node 1 provides the exact answer by stating that 'The context directly addresses the criteria for publications, mentioning 'bereputasi terindeks Scopus Q1' and specifying a percentile requirement: 'Persentil ≥ 90%'. This information is highly relevant to answering the question about the required Scopus percentile for Top Tier publications.' Since there are no irrelevant nodes presented below it, the ranking precision is maximal.",
+          "ContextualPrecision_success": true,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.00 because while the Expected Output mentions key concepts like 'Top Tier' and 'Scopus', the critical detail regarding the required percentile ('10%') cannot be found in any node(s) in retrieval context. Node 1 specifies a different threshold ('Persentil ≥ 90%...'), leaving the core factual claim unsupported.",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Apa syarat H-index Scopus untuk pengusul SRG Tipe A?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Apa syarat H-index Scopus untuk pengusul SRG Tipe A?' harus mencakup fakta kunci berikut: SRG, Tipe A, H-index, 4.",
+          "actual_output": "Berdasarkan konteks yang diberikan, informasi mengenai syarat H-index Scopus untuk pengusul SRG Tipe A tidak tersedia. Konteks hanya mencantumkan informasi untuk SRG Tipe C dan SRG Tipe D.",
+          "retrieved_sources": [
+            "2026_Panduan-Riset-Penugasan-ITS-SRG-1.pdf"
+          ],
+          "retrieval_time": 892.4152851104736,
+          "llm_time": 2627.9423236846924,
+          "total_time": 3520.357608795166,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the output highly relevantly and completely addresses the specific question regarding Scopus H-index requirements for Type A SRG applicants, and there are no irrelevant statements to detract from its accuracy.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.0,
+          "ContextualRelevancy_reason": "The score is 0.00 because the context is entirely irrelevant; specifically, the provided reasons state that the context discusses requirements for 'SRG Tipe C' and 'SRG Tipe D', while the input explicitly asks about 'syarat H-index Scopus untuk pengusul SRG Tipe A'. Furthermore, no statements in the retrieval context were found to be relevant.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 0,
+          "ContextualPrecision_reason": "The score is 0.00 because even at Rank 1, the node in retrieval contexts is marked as irrelevant. The content states that \"The input asks about 'syarat H-index Scopus untuk pengusul SRG Tipe A?'. The provided context only contains information regarding criteria for 'SRG Tipe C' and 'SRG Tipe D', and does not mention any requirements or H-index thresholds for 'Tipe A'.\" Since no relevant nodes are found in the top rankings, the contextual precision score cannot be higher.",
+          "ContextualPrecision_success": false,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.00 because the Expected Output requires specific details regarding 'SRG Tipe A' and H-index requirements, none of which are supported by any node(s) in retrieval context; the available nodes only provided information for 'Tipe C' and 'Tipe D'.",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Apa format email default mahasiswa ITS menurut panduan mahasiswa baru DPTSI 2025?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Apa format email default mahasiswa ITS menurut panduan mahasiswa baru DPTSI 2025?' harus mencakup fakta kunci berikut: email, nrp@student.its.ac.id, ITS.",
+          "actual_output": "Format email resmi mahasiswa ITS adalah **nrp@student.its.ac.id**.",
+          "retrieved_sources": [
+            "Guidebook-for-New-Students-DPTSI-2025_revised-1.pdf"
+          ],
+          "retrieval_time": 768.65553855896,
+          "llm_time": 2909.4178676605225,
+          "total_time": 3678.0734062194824,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the actual output was perfectly relevant to the input query, and there were no irrelevant statements found.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.2,
+          "ContextualRelevancy_reason": "The score is 0.20 because although the context provides a specific format in the statement, 'The format of the official ITS email account is nrp@student.its.ac.id,' the overall relevance is low since the reasons for irrelevancy repeatedly point out that the context does not specify this required format according to DPTSI 2025.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 1.0,
+          "ContextualPrecision_reason": "The score is 1.00 because the retrieval context perfectly ranks all relevant information. Specifically, Node 1 provides a direct and accurate answer to the query using the reason: \"The context directly answers the question by stating that 'Upon admission to ITS, each student is automatically provided with an official ITS email account in the format nrp@student.its.ac.id,' which provides the exact key fact required by the expected output.\" Since there are no irrelevant nodes presented, the ranking is flawless.",
+          "ContextualPrecision_success": true,
+          "ContextualRecall_score": 1.0,
+          "ContextualRecall_reason": "The score is 1.00 because all key facts mentioned in the Expected Output are fully supported by the retrieval context; specifically, node 2 explicitly provides the crucial fact 'nrp@student.its.ac.id,' ensuring comprehensive coverage.",
+          "ContextualRecall_success": true
+        },
+        {
+          "query": "Jam berapa layanan kereta MRT Jakarta mulai beroperasi setiap hari?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Jam berapa layanan kereta MRT Jakarta mulai beroperasi setiap hari?' harus mencakup fakta kunci berikut: MRT Jakarta, 05.00, operasi.",
+          "actual_output": "Berdasarkan konteks yang diberikan, informasi mengenai jam mulai beroperasi layanan kereta MRT Jakarta tidak tersedia.",
+          "retrieved_sources": [
+            "SBI-ITS-2025.pdf"
+          ],
+          "retrieval_time": 793.623685836792,
+          "llm_time": 3288.567304611206,
+          "total_time": 4082.190990447998,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the answer is highly relevant to the input query, and there are no irrelevant statements present.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.0,
+          "ContextualRelevancy_reason": "The score is 0.00 because the input asks about operational hours ('Jam berapa layanan kereta MRT Jakarta mulai beroperasi setiap hari?'), but the context only lists 'routes and prices, such as '21 Jakarta Mataram 5.316.000 3.230.000', but provides no information regarding the operational hours or starting times of the MRT.' Furthermore, there are no relevant statements provided.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 0,
+          "ContextualPrecision_reason": "The score is 0.00 because there are no relevant nodes retrieved; the only node in retrieval contexts at Rank 1 states: \"The context provides a list of travel routes and distances from Jakarta to various other cities (e.g., 'Jakarta Mataram 5.316.000'), which is completely irrelevant to the operating hours or daily schedule of the local MRT service.\" Since no relevant nodes were found, contextual precision cannot be measured.",
+          "ContextualPrecision_success": false,
+          "ContextualRecall_score": 0.0,
+          "ContextualRecall_reason": "The score is 0.00 because the expected output requires specific operational details regarding MRT Jakarta's starting time ('05.00'), which are not supported by any node(s) in retrieval context. The retrieved nodes only contain general route and station data, failing to provide the necessary information about daily operating hours.",
+          "ContextualRecall_success": false
+        },
+        {
+          "query": "Kapan periode penerimaan proposal PMKI 2026?",
+          "expected_output": "Jawaban ideal untuk pertanyaan 'Kapan periode penerimaan proposal PMKI 2026?' harus mencakup fakta kunci berikut: Penerimaan Proposal, 13 Februari, 7 Maret 2026, PMKI.",
+          "actual_output": "Periode Penerimaan Proposal adalah 13 Februari – 7 Maret 2026.",
+          "retrieved_sources": [
+            "Panduan-RKI_ITS_2026-.pdf"
+          ],
+          "retrieval_time": 776.6554355621338,
+          "llm_time": 4157.294273376465,
+          "total_time": 4933.949708938599,
+          "AnswerRelevancy_score": 1.0,
+          "AnswerRelevancy_reason": "The score is 1.00 because the answer is highly relevant and directly addresses the inquiry regarding the PMKI 2026 proposal period. There are no irrelevant statements to detract from its accuracy.",
+          "AnswerRelevancy_success": true,
+          "Faithfulness_score": 1.0,
+          "Faithfulness_reason": "The score is 1.00 because there were no contradictions found in the provided list.",
+          "Faithfulness_success": true,
+          "ContextualRelevancy_score": 0.14285714285714285,
+          "ContextualRelevancy_reason": "The score is 0.14 because although a direct answer is provided in the relevant statement ('Periode penerimaan proposal adalah 13 Februari – 7 Maret 2026.'), the context contains numerous irrelevant details, such as discussing 'Evaluasi Proposal' or 'Acara Penandatanganan Kontrak RKI 2026', which significantly dilute the overall contextual relevance.",
+          "ContextualRelevancy_success": false,
+          "ContextualPrecision_score": 1.0,
+          "ContextualPrecision_reason": "The score of 1.00 is spot on! All relevant information was found at Rank 1 in the node whose reason states: \"The context directly answers the query by providing the specific date range for proposal acceptance: 'Penerimaan Proposal : 13 Februari – 7 Maret 2026', which matches the key facts required in the expected output.\" Since there are no irrelevant nodes presented to rank lower than this highly relevant node, the perfect ranking is achieved.",
+          "ContextualPrecision_success": true,
+          "ContextualRecall_score": 1.0,
+          "ContextualRecall_reason": "The score is 1.00 because all key facts required for the ideal answer, including 'Penerimaan Proposal : 13 Februari – 7 Maret 2026,' are fully and accurately provided by node(s) in retrieval context.",
+          "ContextualRecall_success": true
+        }
+      ]
+    }
+  }
+}

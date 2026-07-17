@@ -4,19 +4,36 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import benchmarkData1 from "../Data Benchmark/benchmark_final 5local db.json";
 import benchmarkDataPinecone from "../Data Benchmark/benchmark_final PN.json";
+import benchmarkDataFirebase from "../Data Benchmark/benchmark_full_firebase limited.json";
+import deepevalFirebase from "../Data Benchmark/deepeval_quality_firebase.json";
+import supabaseFailureAnalysis from "../Data Benchmark/supabase_failure_analysis.json";
 
-// Merge the local-DB benchmark with the Pinecone benchmark so all databases are
-// compared together. Both runs share identical config (models, queries, corpus,
-// top-k levels), so they combine cleanly into one dataset.
+// Merge the local-DB benchmark with the Pinecone and Firebase benchmarks so all
+// databases are compared together. The runs share the same queries, corpus, and
+// scalability levels, so they combine into one dataset. Firebase's DeepEval scores
+// were exported as a separate quality-only file (no speed_test section), so its
+// deepeval_answer_quality record is layered on after the full merge.
+const mergedBenchmarkData = mergeBenchmarkDatasets(
+  benchmarkData1 as unknown as BenchmarkDataShape,
+  benchmarkDataPinecone as unknown as BenchmarkDataShape,
+  benchmarkDataFirebase as unknown as BenchmarkDataShape,
+);
 const benchmarkDatasets = [
-  mergeBenchmarkDatasets(
-    benchmarkData1 as unknown as BenchmarkDataShape,
-    benchmarkDataPinecone as unknown as BenchmarkDataShape,
-  ),
+  {
+    ...mergedBenchmarkData,
+    deepeval_answer_quality: mergeRecord(
+      mergedBenchmarkData.deepeval_answer_quality,
+      (deepevalFirebase as unknown as Pick<BenchmarkDataShape, "deepeval_answer_quality">)
+        .deepeval_answer_quality,
+    ),
+  },
 ];
 const benchmarkSourceFallbacks = [
   "benchmark_final 5local db.json",
   "benchmark_final PN.json",
+  "benchmark_full_firebase limited.json",
+  "deepeval_quality_firebase.json",
+  "supabase_failure_analysis.json",
 ];
 
 function usePrefersReducedMotion() {
@@ -96,6 +113,7 @@ import {
   ArrowUp,
   ArrowDown,
   Info,
+  TriangleAlert,
 } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -211,9 +229,22 @@ interface BenchmarkMetadata {
   scalability_query_count?: number;
 }
 
+interface DatabaseLimitationInfo {
+  embedding_model?: string;
+  native_dimension?: number;
+  stored_dimension?: number;
+  transformation?: string;
+  ingestion_mode?: string;
+  free_tier_daily_write_quota?: number;
+  ingestion_note?: string;
+  limitation?: string;
+  statement_timeout_ms?: number;
+}
+
 interface BenchmarkDataShape {
   metadata: BenchmarkMetadata;
   document_manifest?: unknown[];
+  database_limitations?: Record<string, DatabaseLimitationInfo>;
   speed_test: {
     winner: {
       database: string;
@@ -376,6 +407,10 @@ function mergeBenchmarkDatasets(
         acc.deepeval_answer_quality,
         addition.deepeval_answer_quality
       ),
+      database_limitations: mergeRecord(
+        acc.database_limitations,
+        addition.database_limitations
+      ),
     };
   }, base);
 }
@@ -449,6 +484,21 @@ function getScalabilityData(benchmarkData: BenchmarkDataShape) {
   ) as Record<string, ScalabilityResult[]>;
 }
 
+// Short, plain-language version shown in the hover tooltip next to the Firebase
+// name; the full technical detail lives in the Info tab's Database Limitations card.
+const FIREBASE_LIMITATION_SHORT = "Firebase could not store the full embeddings and ran with slightly different test settings, so its numbers are not a perfect comparison. Click for details.";
+
+// Condensed Supabase texts for the exclusion card.
+const SUPABASE_SUMMARY_SHORT = "The free tier instance could not finish the benchmark. pgvector cannot index vectors of 4096 dimensions, so every query fully scans about 300 MB from disk. Once the small disk budget drains, queries slow from seconds to over 10 minutes and get cancelled.";
+const SUPABASE_ROOT_CAUSES_SHORT = "pgvector cannot index vectors this large, the data does not fit in the free tier RAM, the disk budget runs out and throttles queries, slow queries hit the timeout and get cancelled, and the overloaded instance sometimes drops connections.";
+const SUPABASE_PAID_TIER_SHORT = "A paid instance with 2-4 GB of RAM could cache the table and keep queries at a stable few seconds, though search would stay exact and still be the slowest tested.";
+
+// Firebase limitations card texts, same structure as the Supabase card:
+// intro paragraph, labeled list, labeled takeaway.
+const FIREBASE_INTRO = "Firebase (Cloud Firestore, free tier) ran the full benchmark with reduced embeddings. Firestore only stores vectors up to 2048 dimensions, so the original 4096 dimension embeddings were truncated to fit.";
+const FIREBASE_LIMITS_LIST = "embeddings stored at 2048 of 4096 dimensions, a limit of 20,000 document writes per day, a speed test at top K 2 with 1 repetition while the other databases used top K 5 with 5 repetitions, and a DeepEval quality sample evaluated at top K 1.";
+const FIREBASE_IMPACT = "Firebase does not use identical embeddings to the other databases, so its results, especially retrieval quality, are not a perfect comparison.";
+
 const GPU_USAGE_NOTE = "GPU utilization was measured host-side using nvidia-smi sampling. For short retrieval-only tests, GPU utilization may appear as 0% if brief embedding bursts occur between sampling intervals. Therefore, GPU utilization is interpreted as approximate, but it is still included in the dashboard efficiency score together with concurrent latency, CPU usage, RAM usage, and VRAM usage.";
 
 type TabType = "summary" | "speed" | "scalability" | "quality" | "info";
@@ -496,7 +546,7 @@ function MetricTooltipCard({
       <TooltipTrigger asChild>
         <div
           tabIndex={0}
-          className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-muted px-2.5 py-2 transition-all duration-200 hover:-translate-y-0.5 hover:bg-muted/80 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:flex-1"
+          className="flex min-w-0 items-center justify-between gap-1.5 rounded-md bg-muted px-2 py-1.5 transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-muted/80 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:flex-1"
         >
           <span className="flex min-w-0 items-center gap-1.5 truncate text-xs text-muted-foreground">
             <Icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
@@ -694,6 +744,21 @@ const DatabaseIcon = ({ database, className = "w-5 h-5" }: { database: string; c
           <circle cx="10.5" cy="10.5" r="2.4" fill="hsl(187, 92%, 50%)" />
         </svg>
       );
+    case "Supabase":
+      return (
+        <svg aria-hidden="true" focusable="false" className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M13.9 1.6c.5-.6 1.6-.3 1.6.6V10h5.5c1 0 1.5 1.1.9 1.9l-8 10.5c-.5.6-1.6.3-1.6-.6V14H6.9c-1 0-1.5-1.1-.9-1.9l7.9-10.5z" fill="hsl(153, 60%, 43%)" />
+          <path d="M13.9 1.6c.5-.6 1.6-.3 1.6.6V10H8.3l5.6-8.4z" fill="hsl(153, 60%, 53%)" />
+        </svg>
+      );
+    case "Firebase":
+      return (
+        <svg aria-hidden="true" focusable="false" className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M5 18.5L7.6 3.9c.1-.6.9-.75 1.2-.2l2.1 3.9L5 18.5z" fill="hsl(36, 100%, 50%)" />
+          <path d="M5 18.5L14.6 8.9l-1.9-3.6L5 18.5z" fill="hsl(45, 97%, 50%)" />
+          <path d="M5 18.5l9.2-9.2 1.6-3c.3-.55 1.05-.5 1.2.1l2.5 12.1-6.2 3.5c-.7.4-1.5.4-2.2 0L5 18.5z" fill="hsl(4, 90%, 58%)" />
+        </svg>
+      );
     default:
       return <Database aria-hidden="true" className={className} />;
   }
@@ -706,6 +771,7 @@ const databasePalette = [
   { stroke: "hsl(24, 95%, 53%)", text: "text-orange-500", bar: "bg-orange-500" },
   { stroke: "hsl(187, 92%, 42%)", text: "text-cyan-500", bar: "bg-cyan-500" },
   { stroke: "hsl(45, 93%, 47%)", text: "text-amber-500", bar: "bg-amber-500" },
+  { stroke: "hsl(4, 90%, 58%)", text: "text-red-500", bar: "bg-red-500" },
 ];
 
 function getBenchmarkDate(metadata: BenchmarkMetadata) {
@@ -713,7 +779,7 @@ function getBenchmarkDate(metadata: BenchmarkMetadata) {
 }
 
 function getDatabasePalette(database: string, databases: string[]) {
-  const knownIndex = ["PostgreSQL", "ChromaDB", "SQLite", "LanceDB", "Qdrant", "Pinecone"].indexOf(database);
+  const knownIndex = ["PostgreSQL", "ChromaDB", "SQLite", "LanceDB", "Qdrant", "Pinecone", "Firebase"].indexOf(database);
   const index = knownIndex >= 0 ? knownIndex : Math.max(databases.indexOf(database), 0);
   return databasePalette[index % databasePalette.length];
 }
@@ -770,8 +836,8 @@ const HeaderTabButton = ({
       aria-selected={activeTab === tab}
       role="tab"
       className={cn(
-        "relative z-10 size-8 justify-center rounded-none p-0 transition-all duration-150 motion-reduce:transition-none",
-        "focus-visible:outline-none focus-visible:ring-0",
+        "relative z-10 size-8 justify-center rounded-none p-0 transition-colors duration-150 motion-reduce:transition-none",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset",
         activeTab === tab
           ? "bg-transparent text-primary-foreground hover:bg-transparent hover:text-primary-foreground aria-expanded:bg-transparent"
           : "text-muted-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted"
@@ -873,6 +939,7 @@ export function BenchmarkDashboard() {
   const perRepetitionSummary = speed_test.per_repetition_summary ?? {};
   const queryTypeSummary = speed_test.query_type_summary ?? {};
   const deepevalQuality = benchmarkData.deepeval_answer_quality ?? {};
+  const databaseLimitations = benchmarkData.database_limitations ?? {};
   const concurrentUserScalability = useMemo(
     () => benchmarkData.concurrent_user_scalability_test ?? {},
     [benchmarkData.concurrent_user_scalability_test]
@@ -915,6 +982,15 @@ export function BenchmarkDashboard() {
       }
     });
   };
+
+  // Deferred scroll target: set together with setActiveTab("info") so the scroll
+  // runs after the info tab's content has actually rendered.
+  const pendingScrollTargetRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (activeTab !== "info" || !pendingScrollTargetRef.current) return;
+    document.getElementById(pendingScrollTargetRef.current)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    pendingScrollTargetRef.current = null;
+  }, [activeTab]);
 
   const setFilterDb = (value: string) => {
     updateUrl((params) => {
@@ -1505,7 +1581,7 @@ export function BenchmarkDashboard() {
           {/* Database Comparison */}
             <Card
               size="sm"
-              className="sm:flex-1 sm:min-h-0"
+              className="sm:flex-1"
             >
               <CardHeader className="pb-2 pt-2.5 px-3 shrink-0">
                 <div className="flex items-center justify-between gap-2">
@@ -1515,9 +1591,9 @@ export function BenchmarkDashboard() {
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col sm:flex-1 sm:min-h-0">
+              <CardContent className="pt-3 pb-3 px-2.5 sm:px-3 flex flex-col sm:flex-1">
                 {/* Mobile: Horizontal scroll for database cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-3 sm:flex-1 sm:auto-rows-fr">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-2 sm:flex-1 sm:auto-rows-fr">
                 {databases.map((db) => {
                       const speed = speedSummary.find(s => s.database === db);
                       const topKScale = maxTopKByDatabase[db];
@@ -1525,17 +1601,38 @@ export function BenchmarkDashboard() {
                       const concurrentScale = maxConcurrentByDatabase[db];
                       const efficiencyScore = resourceEfficiencyScores[db];
                     const textColor = getDatabasePalette(db, databases).text;
-                    const metricClassName = (isBest: boolean) => cn("font-mono text-sm sm:text-base whitespace-nowrap shrink-0", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-muted-foreground");
+                    const metricClassName = (isBest: boolean) => cn("font-mono text-sm whitespace-nowrap shrink-0", isBest ? "font-bold text-green-600 dark:text-green-400" : "font-medium text-muted-foreground");
 
                     return (
                       <div
                         key={db}
-                        className="rounded-lg bg-card p-3 relative overflow-hidden flex flex-col"
+                        className="rounded-lg bg-card p-2.5 relative overflow-hidden flex flex-col"
                       >
-                        <div className="flex items-center justify-between gap-1.5 mb-3">
-                          <h3 className={cn("text-sm sm:text-base font-bold flex items-center gap-1.5 min-w-0", textColor)}>
+                        <TooltipProvider>
+                        <div className="flex items-center justify-between gap-1.5 mb-2">
+                          <h3 className={cn("text-sm font-bold flex items-center gap-1.5 min-w-0", textColor)}>
                             <DatabaseIcon database={db} className="w-4 h-4 shrink-0" />
                             <span className="truncate">{db}</span>
+                            {databaseLimitations[db] && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    type="button"
+                                    aria-label={`View ${db} limitations`}
+                                    onClick={() => {
+                                      pendingScrollTargetRef.current = "database-limitations";
+                                      setActiveTab("info");
+                                    }}
+                                    className="shrink-0 cursor-pointer rounded-sm text-amber-500 transition-colors hover:text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+                                  >
+                                    <TriangleAlert aria-hidden="true" className="w-3.5 h-3.5" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent sideOffset={6} className="max-w-64 leading-relaxed">
+                                  {db === "Firebase" ? FIREBASE_LIMITATION_SHORT : databaseLimitations[db].limitation}
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
                           </h3>
                           {db === speedWinner.database && (
                             <Badge className="flex items-center gap-0.5 text-[10px] h-5 px-1.5 shrink-0">
@@ -1544,7 +1641,6 @@ export function BenchmarkDashboard() {
                             </Badge>
                           )}
                         </div>
-                        <TooltipProvider>
                         <div className="flex flex-col gap-1.5 flex-1">
                           <MetricTooltipCard
                             label="Retrieval"
@@ -2564,7 +2660,15 @@ export function BenchmarkDashboard() {
                     </div>
                     <div>
                       <div className="text-muted-foreground">Timestamp</div>
-                      <div className="font-medium font-mono break-all">{getBenchmarkDate(metadata)}</div>
+                      <div className="font-medium font-mono">
+                        {new Intl.DateTimeFormat(undefined, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }).format(new Date(getBenchmarkDate(metadata)))}
+                      </div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Scalability Docs</div>
@@ -3039,6 +3143,52 @@ export function BenchmarkDashboard() {
                     </div>
                   </CardContent>
                 </Card>
+              )}
+
+              {Object.keys(databaseLimitations).length > 0 && (
+                <div className="grid gap-3 sm:gap-2 xl:grid-cols-2 items-start">
+                  <Card size="sm" id="database-limitations" className="scroll-mt-2 border-amber-500/40 bg-amber-500/10">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm sm:text-base flex items-center gap-1.5">
+                        <TriangleAlert aria-hidden="true" className="w-4 h-4 text-amber-500 shrink-0" />
+                        Firebase Limitations
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-xs">
+                      <div className="space-y-2">
+                        <p className="max-w-prose leading-relaxed">{FIREBASE_INTRO}</p>
+                        <p className="max-w-prose leading-relaxed">
+                          <span className="font-semibold text-amber-700 dark:text-amber-400">Limitations:</span> {FIREBASE_LIMITS_LIST}
+                        </p>
+                        <p className="max-w-prose leading-relaxed">
+                          <span className="font-semibold text-emerald-600 dark:text-emerald-400">Impact:</span> {FIREBASE_IMPACT}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card size="sm" className="border-red-500/40 bg-red-500/10">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm sm:text-base flex items-center gap-1.5">
+                        <DatabaseIcon database="Supabase" className="w-4 h-4" />
+                        Supabase Exclusion
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-xs">
+                      <div className="space-y-2">
+                        <p className="max-w-prose leading-relaxed">
+                          {supabaseFailureAnalysis.title} ({supabaseFailureAnalysis.date}). {SUPABASE_SUMMARY_SHORT}
+                        </p>
+                        <p className="max-w-prose leading-relaxed">
+                          <span className="font-semibold text-red-600 dark:text-red-400">Root causes:</span> {SUPABASE_ROOT_CAUSES_SHORT}
+                        </p>
+                        <p className="max-w-prose leading-relaxed">
+                          <span className="font-semibold text-emerald-600 dark:text-emerald-400">Expected on paid tier:</span> {SUPABASE_PAID_TIER_SHORT}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               )}
             </div>
           )
